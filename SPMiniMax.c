@@ -7,5 +7,5 @@
 
 
 void foo(){
-
+	printf("hellow sasha\n");
 }
