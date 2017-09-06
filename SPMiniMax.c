@@ -7,6 +7,6 @@
 
 
 void foo(){
-	printf("hellow sasha!!!\n");
-	printf("zaindvsscsd!\n");
+	printf("you are a candy\n");
+	printf("i am the king\n");
 }
