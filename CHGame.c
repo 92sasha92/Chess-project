@@ -53,7 +53,11 @@ void defaultBoard(CHGame *src){
 
 int chGameCreateMode1(CHGame* src,int difficulty,int userColor){
 	if(src->gameMode == 1){
+		if(userColor != CH_GAME_BLACK_PLAYER_SYMBOL && userColor != CH_GAME_WHITE_PLAYER_SYMBOL)
+			return 0;
 		src->userColor = userColor;
+		if(difficulty < 1 || 4 < difficulty)
+			return 0;
 		src->difficulty = difficulty;
 		src->list = spArrayListCreate(3); /* every undo move include computer and user moves */
 		if (!(src->list)) {
@@ -76,10 +80,20 @@ CHGame* chGameCreate(int gameMode,int userColor,int difficulty,int currentTurn) 
 		return NULL;
 	}
 	defaultBoard(src);
-	src->gameMode = gameMode;
-	src->currentTurn = currentTurn;
-	if(!chGameCreateMode1(src,difficulty,userColor))
+	if(gameMode != 1 && gameMode != 2){
+		free(src);
 		return NULL;
+	}
+	src->gameMode = gameMode;
+	if(currentTurn != CH_GAME_BLACK_PLAYER_SYMBOL && currentTurn != CH_GAME_WHITE_PLAYER_SYMBOL){
+		free(src);
+		return NULL;
+	}
+	src->currentTurn = currentTurn;
+	if(!chGameCreateMode1(src,difficulty,userColor)){
+		free(src);
+		return NULL;
+	}
 	return src;
 }
 
@@ -295,7 +309,10 @@ CH_GAME_MESSAGE chGameSetMove(CHGame* src, int fRow,int fCol,int toRow,int toCol
 
 CH_GAME_MESSAGE chGameSave(CHGame* src,char *path){
 	int i,j;
-	FILE *fp = fopen(path,"w");
+	FILE *fp;
+	if(src == NULL)
+		return CH_GAME_INVALID_ARGUMENT;
+	fp = fopen(path,"w");
 	if (!fp)
 		return CH_GAME_FILE_PROBLEM;
 	fprintf(fp,"%s","<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -321,8 +338,10 @@ CH_GAME_MESSAGE chGameSave(CHGame* src,char *path){
 }
 
 
-void isCheck(CHGame* src){
+CH_GAME_MESSAGE isCheck(CHGame* src){
 	int kRow,kCol;
+	if(src == NULL)
+		return CH_GAME_INVALID_ARGUMENT;
 	findKing(src->gameBoard,src->currentTurn,&kRow,&kCol);
 	if(!isMyPieceSafe(src->gameBoard, CH_GAME_EMPTY_ENTRY, 0, 0, 0, 0, src->currentTurn, kRow, kCol,KING_MODE)){
 		if(src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL)
@@ -331,6 +350,7 @@ void isCheck(CHGame* src){
 			printf("Check: black King is threatened!\n");
 
 	}
+	return CH_GAME_SUCCESS;
 }
 
 int chIsCheckmateOrTie(CHGame* src){
