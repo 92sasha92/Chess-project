@@ -326,9 +326,9 @@ void isCheck(CHGame* src){
 	findKing(src->gameBoard,src->currentTurn,&kRow,&kCol);
 	if(!isMyPieceSafe(src->gameBoard, CH_GAME_EMPTY_ENTRY, 0, 0, 0, 0, src->currentTurn, kRow, kCol,KING_MODE)){
 		if(src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL)
-			printf("Check: white King is threatend!\n");
+			printf("Check: white King is threatened!\n");
 		else
-			printf("Check: black King is threatend!\n");
+			printf("Check: black King is threatened!\n");
 
 	}
 }
