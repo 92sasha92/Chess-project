@@ -66,5 +66,4 @@ void destroyMoveList(CHMovesList *list);
 
 bool isThePieceMyColor(char c, int color);
 bool isMyPieceSafe(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, int fRow, int fCol, int toRow, int toCol, int color, int mRow, int mCol,int mode);
-bool isTheKingSafe(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, int fRow, int fCol, int toRow, int toCol, int color, int kRow, int kCol);
 #endif /* CHMOVES_H_ */
