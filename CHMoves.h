@@ -42,9 +42,20 @@ typedef struct ch_list{
 	struct ch_list *next;
 }CHMovesList;
 
-
+/** Checks if the char c is a symbol representing a Black piece.
+ * @param c - a char representing a piece on the board.
+ * @return
+ * 1 - if the char representing a Black piece symbol.
+ * 0 - Otherwise.
+ */
 bool isABlackPiece(char c);
 
+/** Checks if the char c is a symbol representing a White piece.
+ * @param c - a char representing a piece on the board.
+ * @return
+ * 1 - if the char representing a White piece symbol.
+ * 0 - Otherwise.
+ */
 bool isAWhitePiece(char c);
 
 void findKing(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color,int *kRow,int *kCol);
