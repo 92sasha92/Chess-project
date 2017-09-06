@@ -8,5 +8,5 @@
 
 void foo(){
 	printf("hellow sasha\n");
-	printf("hi\n");
+	printf("hi.\n");
 }
