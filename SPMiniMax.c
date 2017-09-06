@@ -8,4 +8,5 @@
 
 void foo(){
 	printf("hellow sasha!!!\n");
+	printf("zaindvsscsd!\n");
 }
