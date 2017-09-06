@@ -58,12 +58,41 @@ bool isABlackPiece(char c);
  */
 bool isAWhitePiece(char c);
 
+/** Finds the king of your color on the current board game and puts his place in the given addresses kRow and kCol.
+ * @param kRow - and address of an int that will hold the row of the king when found.
+ * @param kCol - and address of an int that will hold the column of the king when found.
+ * if the king isn't on the board the game isn't legal so the function wont do anything.
+ */
 void findKing(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color,int *kRow,int *kCol);
 
+
+
+
+
+
+/** Creates a move list of possible moves for a given piece on the board game.
+ * @param gameBoard - a given game board of the currnet game
+ * @param c - a representing symbol of the piece that the move list will be created for.
+ * @
+ *
+ */
 CHMovesList *createMoveList(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],char c,int row,int col,int color);
 
+/**
+ * Frees all memory allocation of the move list.
+ * If list == NULL the function does nothing.
+ *
+ * @param list - the move list
+ */
 void destroyMoveList(CHMovesList *list);
 
+/** Checks if the char c is a symbol representing a piece of the color given as a param to the function.
+ * @param c - a char representing a piece on the board.
+ * @param color - the color to check.
+ * @return
+ * 1 - if the char c representing a piece of the color given to the function.
+ * 0 - Otherwise.
+ */
 bool isThePieceMyColor(char c, int color);
 bool isMyPieceSafe(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, int fRow, int fCol, int toRow, int toCol, int color, int mRow, int mCol,int mode);
 #endif /* CHMOVES_H_ */
