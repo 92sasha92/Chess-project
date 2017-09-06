@@ -186,8 +186,11 @@ void printMoves(CHGame* src,CHMovesList *list){
 
 CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol){
 	bool isCorrectCol = false;
-	char c = src->gameBoard[fRow][fCol];
+	char c;
 	CHMovesList *list;
+	if(src == NULL)
+		return CH_GAME_INVALID_ARGUMENT;
+	c = src->gameBoard[fRow][fCol];
 	if(src->currentTurn == 0)
 		isCorrectCol = isABlackPiece(c);
 	else
@@ -282,8 +285,11 @@ void chPawnPromotion(CHGame* src,int row,int col){
 
 CH_GAME_MESSAGE chGameSetMove(CHGame* src, int fRow,int fCol,int toRow,int toCol){
 	bool isCorrectCol = false;
-	char c = src->gameBoard[fRow][fCol];
+	char c;
 	CHMovesList *list;
+	if(src == NULL)
+		return CH_GAME_INVALID_ARGUMENT;
+	c = src->gameBoard[fRow][fCol];
 	if(src->currentTurn == 0)
 		isCorrectCol = isABlackPiece(c);
 	else

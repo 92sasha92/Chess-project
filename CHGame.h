@@ -78,8 +78,19 @@ CHGame* chGameCreate(int gameMode,int userColor,int difficulty,int currentTurn);
  */
 void chGameDestroy(CHGame* src);
 
-
+/** Prints all possible moves of the piece located at position <fRow,fCol>.
+ * @param src - The source game.
+ * @param fRow - The row of the piece on the board.
+ * @param fCol - The column of the piece on the board.
+ * @return
+ * CH_GAME_INVALID_ARGUMENT - if src is NULL
+ * CH_GAME_INVALID_COLOR - If position <x,y> does not contain a piece of the user's color.
+ * CH_GAME_MEMORY_PROBLEM - If can't allocate memory for the list of moves
+ * CH_GAME_NO_MOVES - if there isn't any moves for this piece
+ * CH_GAME_SUCCESS - otherwise
+ */
 CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol);
+
 /**
  * Sets the next move in a given game by specifying the position of the piece and where to move it.
  *
