@@ -69,6 +69,7 @@ int chGameCreateMode1(CHGame* src,int difficulty,int userColor){
 	}
 	else{
 		src->list = NULL;
+		src->difficulty = 0;
 	}
 	return 1;
 }
@@ -136,16 +137,6 @@ bool isValidMove(CHMovesList *list,int toRow,int toCol){
 	return false;
 }
 
-
-
-
-
-typedef struct ch_nodeForSort{
-	int row;
-	int col;
-}CHNodeForSort;
-
-
 int cmpfunc(const void * a, const void * b) {
 	if (((CHNodeForSort*)a)->row - ((CHNodeForSort*) b)->row == 0) {
 		return ((CHNodeForSort*)a)->col - ((CHNodeForSort*) b)->col;
@@ -153,7 +144,7 @@ int cmpfunc(const void * a, const void * b) {
 	return ((CHNodeForSort*)a)->row - ((CHNodeForSort*) b)->row;
 }
 
-void printMoves(CHGame* src,CHMovesList *list){
+void printMoves(CHGame* src,CHMovesList *list,char c,int fRow,int fCol){
 	CHMovesList *node = list;
 	int numOfMoves = 0;
     int i = 0;
@@ -173,7 +164,7 @@ void printMoves(CHGame* src,CHMovesList *list){
 	for(i = 0;i < numOfMoves;i++){
 		printf("<%d,%c>",arr[i].row + 1,arr[i].col + 65);
 		if(/*src->gameMode == 1 && */src->difficulty < 3){
-			if(!isMyPieceSafe(src->gameBoard,CH_GAME_EMPTY_ENTRY,0,0,0,0,src->currentTurn,arr[i].row,arr[i].col,REGULAR_PIECE_MODE)){
+			if(!isMyPieceSafe(src->gameBoard,c,fRow,fCol,arr[i].row,arr[i].col,src->currentTurn,arr[i].row,arr[i].col,REGULAR_PIECE_MODE)){
 				printf("*");
 			}
 			if(!isThePieceMyColor(src->gameBoard[arr[i].row][arr[i].col],src->currentTurn) && src->gameBoard[arr[i].row][arr[i].col] != CH_GAME_EMPTY_ENTRY)
@@ -206,7 +197,7 @@ CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol){
 		destroyMoveList(list);
 		return CH_GAME_NO_MOVES;
 	}
-	printMoves(src,list);
+	printMoves(src,list,c,fRow,fCol);
 	destroyMoveList(list);
 	return CH_GAME_SUCCESS;
 }

@@ -361,7 +361,7 @@ CHMovesList *pawnMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 				curCol = col;
 			if (curCol >= 0 && curCol < CH_GAME_N_COLUMNS) {
 				curC = gameBoard[curRow][curCol];
-				if (!isThePieceMyColor(curC, color) && ((i != 2 && curC != CH_GAME_EMPTY_ENTRY) || (i == 2 && curC == CH_GAME_EMPTY_ENTRY)) && isMyPieceSafe(gameBoard,c,row,col,curRow,curCol,color, kRow, kCol,0)) {
+				if (!isThePieceMyColor(curC, color) && ((i != 2 && curC != CH_GAME_EMPTY_ENTRY) || (i == 2 && curC == CH_GAME_EMPTY_ENTRY)) && isMyPieceSafe(gameBoard,c,row,col,curRow,curCol,color, kRow, kCol,KING_MODE)) {
 					list = insertFirst(list, curRow, curCol);
 					if (list == NULL )
 						return NULL ;
