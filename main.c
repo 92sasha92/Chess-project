@@ -62,7 +62,8 @@ int main(){
 							printf("Exiting...\n");
 							return 0;
 						} else {
-							isCheck(game);
+							if(isCheck(game) == CH_GAME_INVALID_ARGUMENT)
+								return -1;
 						}
 					}
 				} else {
