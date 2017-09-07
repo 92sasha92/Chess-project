@@ -65,16 +65,21 @@ bool isAWhitePiece(char c);
  */
 void findKing(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color,int *kRow,int *kCol);
 
-
-
-
-
-
 /** Creates a move list of possible moves for a given piece on the board game.
- * @param gameBoard - a given game board of the currnet game
+ * @param gameBoard - a given game board of the current game
  * @param c - a representing symbol of the piece that the move list will be created for.
- * @
+ * @param row - the row of the piece on the board
+ * @param column - the column of the piece on the board
+ * @param color - the color of the piece
+ * @return
+ * a move list such that
+ * in every node of the list
+ * row - contains a row of the possible move if isValid is true
+ * column - contains a column of the possible move if isValid is true
+ * isValid - set to true if the argument of the node where initialized
+ * next - is a pointer to the next node or NULL if there isn't another one
  *
+ * NULL - if there was memory allocation failure
  */
 CHMovesList *createMoveList(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],char c,int row,int col,int color);
 
@@ -94,5 +99,24 @@ void destroyMoveList(CHMovesList *list);
  * 0 - Otherwise.
  */
 bool isThePieceMyColor(char c, int color);
+
+/**
+ * Checks if the piece in <mRow,mCol> is safe after the move of c from <fRow,fCol> to <toRow,toCol>. If c = '_' then there isn't a move and
+ * the arguments fRow,fCol,toRow,toCol doesn't matter. if mode is 0 than the piece that will be checked will be always the king of the current player
+ * otherwise any piece of the current player.
+ * @param gameBoard - the current game board of the game
+ * @param fRow - the row of the char c if its not '_'
+ * @param fCol - the column of the char c if its not '_'
+ * @param toRow - the row to move char c to if its not '_'
+ * @param toCol - the column to move char c to if its not '_'
+ * @param color - the color of the current player.
+ * @param mRow - the row of the piece to check
+ * @param mCol - the column of the piece to check
+ * @return
+ * 1 - if the piece is safe from the opponent after the move from <fRow,fCol> to <toRow,toCol>(if c != '_')
+ * or if the piece is safe in the current board state (if c== '_').
+ * 0 - if the piece is threatened by the opponent after the move from <fRow,fCol> to <toRow,toCol>(if c != '_')
+ * or if the piece is threatened by the opponent in the current board state (if c== '_').
+ */
 bool isMyPieceSafe(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, int fRow, int fCol, int toRow, int toCol, int color, int mRow, int mCol,int mode);
 #endif /* CHMOVES_H_ */

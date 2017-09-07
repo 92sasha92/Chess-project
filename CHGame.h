@@ -12,6 +12,12 @@
 #include "CHMoves.h"
 
 
+
+typedef struct ch_nodeForSort{
+	int row;
+	int col;
+}CHNodeForSort;
+
 typedef struct ch_fiar_game_t {
 	char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS];
 	int gameMode;

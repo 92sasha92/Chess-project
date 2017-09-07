@@ -35,19 +35,22 @@ typedef struct command_ch {
 
 
 /**
- * Parses a specified line. If the line is a command which has an integer
- * argument then the argument is parsed and is saved in the field arg and the
- * field validArg is set to true. In any other case then 'validArg' is set to
- * false and the value 'arg' is undefined
+ * Parses a specified line. If the line is a command which has integer
+ * arguments then the arguments are parsed and are saved in the fields fRow,fCol,toRow,toCol or if the command is save and then the path is saved to the path argument
+ * and the field validArg is set to true . In any other case then 'validArg' is set to
+ * false and the values fRow,fCol,toRow,toCol and path are undefined.
  *
  * @return
  * A parsed line such that:
  *   cmd - contains the command type, if the line is invalid then this field is
  *         set to INVALID_LINE
- *   validArg - is set to true if the command is game_mode/difficulty/user_color and the integer argument
- *              is valid or the command is load and there is a string after the load command
- *   arg      - the integer argument in case validArg is set to true and the command is not load
- *   path - the string argument in case validArg is set to true and the command is load
+ *   validArg - is set to true if the command is move/get_moves and the integer arguments.
+ *              are valid or the command is save and there is a string after the save command.
+ *   fRow      - the row argument of the piece in case validArg is set to true and the command is not save.
+ *   fCol      - the column argument of the piece in case validArg is set to true and the command is not save.
+ *   toRow     - the row argument to move the piece to in case validArg is set to true and the command is move.
+ *   toCol     - the column argument to move the piece to in case validArg is set to true and the command is move.
+ *   path      - the string argument in case validArg is set to true and the command is save.
  */
 CHCommand chParserPraseLine(const char* str);
 
