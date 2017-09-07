@@ -53,7 +53,11 @@ void defaultBoard(CHGame *src){
 
 int chGameCreateMode1(CHGame* src,int difficulty,int userColor){
 	if(src->gameMode == 1){
+		if(userColor != CH_GAME_BLACK_PLAYER_SYMBOL && userColor != CH_GAME_WHITE_PLAYER_SYMBOL)
+			return 0;
 		src->userColor = userColor;
+		if(difficulty < 1 || 4 < difficulty)
+			return 0;
 		src->difficulty = difficulty;
 		src->list = spArrayListCreate(3); /* every undo move include computer and user moves */
 		if (!(src->list)) {
@@ -65,6 +69,7 @@ int chGameCreateMode1(CHGame* src,int difficulty,int userColor){
 	}
 	else{
 		src->list = NULL;
+		src->difficulty = 0;
 	}
 	return 1;
 }
@@ -76,10 +81,20 @@ CHGame* chGameCreate(int gameMode,int userColor,int difficulty,int currentTurn) 
 		return NULL;
 	}
 	defaultBoard(src);
-	src->gameMode = gameMode;
-	src->currentTurn = currentTurn;
-	if(!chGameCreateMode1(src,difficulty,userColor))
+	if(gameMode != 1 && gameMode != 2){
+		free(src);
 		return NULL;
+	}
+	src->gameMode = gameMode;
+	if(currentTurn != CH_GAME_BLACK_PLAYER_SYMBOL && currentTurn != CH_GAME_WHITE_PLAYER_SYMBOL){
+		free(src);
+		return NULL;
+	}
+	src->currentTurn = currentTurn;
+	if(!chGameCreateMode1(src,difficulty,userColor)){
+		free(src);
+		return NULL;
+	}
 	return src;
 }
 
@@ -122,16 +137,6 @@ bool isValidMove(CHMovesList *list,int toRow,int toCol){
 	return false;
 }
 
-
-
-
-
-typedef struct ch_nodeForSort{
-	int row;
-	int col;
-}CHNodeForSort;
-
-
 int cmpfunc(const void * a, const void * b) {
 	if (((CHNodeForSort*)a)->row - ((CHNodeForSort*) b)->row == 0) {
 		return ((CHNodeForSort*)a)->col - ((CHNodeForSort*) b)->col;
@@ -139,7 +144,7 @@ int cmpfunc(const void * a, const void * b) {
 	return ((CHNodeForSort*)a)->row - ((CHNodeForSort*) b)->row;
 }
 
-void printMoves(CHGame* src,CHMovesList *list){
+void printMoves(CHGame* src,CHMovesList *list,char c,int fRow,int fCol){
 	CHMovesList *node = list;
 	int numOfMoves = 0;
     int i = 0;
@@ -159,7 +164,7 @@ void printMoves(CHGame* src,CHMovesList *list){
 	for(i = 0;i < numOfMoves;i++){
 		printf("<%d,%c>",arr[i].row + 1,arr[i].col + 65);
 		if(/*src->gameMode == 1 && */src->difficulty < 3){
-			if(!isMyPieceSafe(src->gameBoard,CH_GAME_EMPTY_ENTRY,0,0,0,0,src->currentTurn,arr[i].row,arr[i].col,REGULAR_PIECE_MODE)){
+			if(!isMyPieceSafe(src->gameBoard,c,fRow,fCol,arr[i].row,arr[i].col,src->currentTurn,arr[i].row,arr[i].col,REGULAR_PIECE_MODE)){
 				printf("*");
 			}
 			if(!isThePieceMyColor(src->gameBoard[arr[i].row][arr[i].col],src->currentTurn) && src->gameBoard[arr[i].row][arr[i].col] != CH_GAME_EMPTY_ENTRY)
@@ -172,8 +177,11 @@ void printMoves(CHGame* src,CHMovesList *list){
 
 CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol){
 	bool isCorrectCol = false;
-	char c = src->gameBoard[fRow][fCol];
+	char c;
 	CHMovesList *list;
+	if(src == NULL)
+		return CH_GAME_INVALID_ARGUMENT;
+	c = src->gameBoard[fRow][fCol];
 	if(src->currentTurn == 0)
 		isCorrectCol = isABlackPiece(c);
 	else
@@ -189,7 +197,7 @@ CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol){
 		destroyMoveList(list);
 		return CH_GAME_NO_MOVES;
 	}
-	printMoves(src,list);
+	printMoves(src,list,c,fRow,fCol);
 	destroyMoveList(list);
 	return CH_GAME_SUCCESS;
 }
@@ -268,8 +276,11 @@ void chPawnPromotion(CHGame* src,int row,int col){
 
 CH_GAME_MESSAGE chGameSetMove(CHGame* src, int fRow,int fCol,int toRow,int toCol){
 	bool isCorrectCol = false;
-	char c = src->gameBoard[fRow][fCol];
+	char c;
 	CHMovesList *list;
+	if(src == NULL)
+		return CH_GAME_INVALID_ARGUMENT;
+	c = src->gameBoard[fRow][fCol];
 	if(src->currentTurn == 0)
 		isCorrectCol = isABlackPiece(c);
 	else
@@ -295,7 +306,10 @@ CH_GAME_MESSAGE chGameSetMove(CHGame* src, int fRow,int fCol,int toRow,int toCol
 
 CH_GAME_MESSAGE chGameSave(CHGame* src,char *path){
 	int i,j;
-	FILE *fp = fopen(path,"w");
+	FILE *fp;
+	if(src == NULL)
+		return CH_GAME_INVALID_ARGUMENT;
+	fp = fopen(path,"w");
 	if (!fp)
 		return CH_GAME_FILE_PROBLEM;
 	fprintf(fp,"%s","<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -321,8 +335,10 @@ CH_GAME_MESSAGE chGameSave(CHGame* src,char *path){
 }
 
 
-void isCheck(CHGame* src){
+CH_GAME_MESSAGE isCheck(CHGame* src){
 	int kRow,kCol;
+	if(src == NULL)
+		return CH_GAME_INVALID_ARGUMENT;
 	findKing(src->gameBoard,src->currentTurn,&kRow,&kCol);
 	if(!isMyPieceSafe(src->gameBoard, CH_GAME_EMPTY_ENTRY, 0, 0, 0, 0, src->currentTurn, kRow, kCol,KING_MODE)){
 		if(src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL)
@@ -331,6 +347,7 @@ void isCheck(CHGame* src){
 			printf("Check: black King is threatened!\n");
 
 	}
+	return CH_GAME_SUCCESS;
 }
 
 int chIsCheckmateOrTie(CHGame* src){
