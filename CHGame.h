@@ -61,8 +61,8 @@ int chGameCreateMode1(CHGame* src,int difficulty,int userColor);
 /**
  * Creates a new game with a specified game mode,current Turn,user Color and difficulty(if in 1 player mode).
  * @gameMode - The in with the game will be played.can be wither  1 or 2.
- *              i. 1 – one player mode (a player vs. AI)
- *             ii. 2 – two players mode
+ *              i. 1 ï¿½ one player mode (a player vs. AI)
+ *             ii. 2 ï¿½ two players mode
  * @userColor - Is relevant only if the game is set to a '1-player'.
  *              The value can be 0 or 1, where 0 and 1 symbolize the black and white colors, respectively.
  *              if the game set to 'two players mode' the value is ignored.
@@ -153,5 +153,16 @@ CH_GAME_MESSAGE isCheck(CHGame* src);
  */
 CH_GAME_MESSAGE chGameSave(CHGame* src,char *path);
 
+/**
+ * Creates a copy of a given game.
+ * The new copy has the same status as the src game.
+ *
+ * @param src - the source game which will be copied
+ * @return
+ * NULL if either src is NULL or a memory allocation failure occurred.
+ * Otherwise, an new copy of the source game is returned.
+ *
+ */
+CHGame* chGameCopy(CHGame* src);
 
 #endif /* CHGAME_H_ */

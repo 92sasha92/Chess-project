@@ -379,7 +379,34 @@ int chIsCheckmateOrTie(CHGame* src){
 	}
 }
 
+CHGame* chGameCopy(CHGame* src){
+	if (src == NULL){
+		return NULL;
+	}
+	
+	CHGame* new_src = (CHGame*) malloc(sizeof(CHGame)); /* allocate place in memory */
+	if (!new_src){
+		chGameDestroy(src);
+		printf("Error: malloc has failed\n");
+		return NULL;
+	}
 
+	new_src->currentTurn = src->currentTurn;
+	for (int i = 0; i < CH_GAME_N_ROWS; i++) {
+		for (int j = 0; j < CH_GAME_N_COLUMNS; j++) {
+			new_src->gameBoard[i][j] = src->gameBoard[i][j]; /* copy the board */
+		}
+	}
+	
+	new_src->gameMode = src->gameMode;
+	new_src->currentTurn = src->currentTurn;
+	if(!chGameCreateMode1(new_src,src->difficulty,src->userColor)){
+		free(src);
+		return NULL;
+	}
+	return src;
+
+}
 
 
 

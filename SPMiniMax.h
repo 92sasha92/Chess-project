@@ -7,7 +7,6 @@
 
 #ifndef SPMINIMAX_H_
 #define SPMINIMAX_H_
-#define fuck
 
 
 #endif /* SPMINIMAX_H_ */
