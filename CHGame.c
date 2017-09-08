@@ -401,10 +401,14 @@ CHGame* chGameCopy(CHGame* src){
 	new_src->gameMode = src->gameMode;
 	new_src->currentTurn = src->currentTurn;
 	if(!chGameCreateMode1(new_src,src->difficulty,src->userColor)){
-		free(src);
+		free(new_src);
+		chGameDestroy(src);
 		return NULL;
 	}
-	return src;
+
+	new_src->list = spArrayListCopy(src->list); /* copy the history list */
+	
+	return new_src;
 
 }
 
