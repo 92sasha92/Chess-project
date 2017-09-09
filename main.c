@@ -47,13 +47,13 @@ int main(){
 							isTurnChanged = true;
 						}
 						winner = chIsCheckmateOrTie(game);
-						if (winner == -2)
+						if (winner == CH_GAME_INVALID_ARGUMENT)
 							return -1;
-						else if (winner != -1) {
+						else if (winner != CH_GAME_NO_WIN_OR_TIE) {
 							chGamePrintBoard(game);
-							if (winner == CH_GAME_WHITE_PLAYER_SYMBOL)
+							if (winner == CH_GAME_WHITE_WINS)
 								printf("Checkmate! white player wins the game\n");
-							else if (winner == CH_GAME_BLACK_PLAYER_SYMBOL)
+							else if (winner == CH_GAME_BLACK_WINS)
 								printf("Checkmate! black player wins the game\n");
 							else {
 								printf("The game is tied\n");
@@ -96,7 +96,6 @@ int main(){
 			}
 		}
 		else{
-
 		}
 	}
 	return 0;

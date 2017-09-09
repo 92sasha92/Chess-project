@@ -34,9 +34,13 @@ typedef enum ch_fiar_game_message_t {
 	CH_GAME_NO_MOVES,
 	CH_GAME_MEMORY_PROBLEM,
 	CH_GAME_SUCCESS,
-	CH_GAME_FILE_PROBLEM
+	CH_GAME_FILE_PROBLEM,
+  	CH_GAME_BLACK_WINS,
+  	CH_GAME_WHITE_WINS,
+  	CH_GAME_TIE,
+  	CH_GAME_NO_WIN_OR_TIE,
+  	CH_GAME_NO_HISTORY
 } CH_GAME_MESSAGE;
-
 
 /** Prints the board of the current game.
  *  @param src - the source game.
@@ -119,13 +123,14 @@ CH_GAME_MESSAGE chGameSetMove(CHGame* src, int fRow,int fCol,int toRow,int toCol
  *
  * @param src - The target game
  * @return
- * -2 - if src is NULL
- * -1 - if there isn't a tie/checkmate
- *  0 - If there is a checkmate and black won.
- *  1 - If there is a checkmate and white won.
- *  2 - if there is a tie
+ * CH_GAME_INVALID_ARGUMENT - if src is NULL
+ * CH_GAME_NO_WIN_OR_TIE - if there isn't a tie/checkmate
+ * CH_GAME_BLACK_WINS - If there is a checkmate and black won.
+ * CH_GAME_WHITE_WINS - If there is a checkmate and white won.
+ * CH_GAME_TIE - if there is a tie
  */
-int chIsCheckmateOrTie(CHGame* src);
+
+CH_GAME_MESSAGE chIsCheckmateOrTie(CHGame* src);
 
 
 
@@ -164,5 +169,20 @@ CH_GAME_MESSAGE chGameSave(CHGame* src,char *path);
  *
  */
 CHGame* chGameCopy(CHGame* src);
+
+/**
+ * Removes a piece that was put in the previous turn to its previous position and changes the current
+ * player's turn. If the user invoked this command more than historySize times
+ * in a row then an error occurs.
+ *
+ * @param src - The source game
+ * @return
+ * CH_GAME_INVALID_ARGUMENT 	 - if src == NULL
+ * CH_GAME_GAME_NO_HISTORY       - if the user invoked this function more then
+ *                                 historySize in a row.
+ * CH_GAME_GAME_SUCCESS          - on success. The last disc that was put on the
+ *                                 board is removed and the current player is changed
+ */
+CH_GAME_MESSAGE chGameUndoPrevMove(CHGame* src);
 
 #endif /* CHGAME_H_ */

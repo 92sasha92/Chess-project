@@ -9,7 +9,7 @@ SPArrayList* spArrayListCreate(int maxSize){
 	}
 	list->maxSize = maxSize;
 	list->actualSize = 0;
-	list->elements = (int *)malloc(sizeof(int)*list->maxSize);
+	list->elements = (int *)malloc(sizeof(CHMoveNode)*list->maxSize);
 	if(!(list->elements)){
 		return NULL;
 	}
@@ -27,7 +27,7 @@ SPArrayList* spArrayListCopy(SPArrayList* src){
 	}
 	copyList->actualSize = src->actualSize;
 	copyList->maxSize = src->maxSize;
-	copyList->elements = (int *)malloc(sizeof(int)*src->maxSize);
+	copyList->elements = (int *)malloc(sizeof(CHMoveNode)*src->maxSize);
 	if(!(copyList->elements)){
 		return NULL;
 	}
@@ -58,7 +58,7 @@ SP_ARRAY_LIST_MESSAGE spArrayListClear(SPArrayList* src){
 }
 
 
-SP_ARRAY_LIST_MESSAGE spArrayListAddAt(SPArrayList* src, int elem, int index){
+SP_ARRAY_LIST_MESSAGE spArrayListAddAt(SPArrayList* src, CHMoveNode elem, int index){
 	if(src == NULL || index < 0 || index > src->actualSize){
 		return SP_ARRAY_LIST_INVALID_ARGUMENT;
 	}
@@ -76,12 +76,12 @@ SP_ARRAY_LIST_MESSAGE spArrayListAddAt(SPArrayList* src, int elem, int index){
 }
 
 
- SP_ARRAY_LIST_MESSAGE spArrayListAddFirst(SPArrayList* src, int elem){
+ SP_ARRAY_LIST_MESSAGE spArrayListAddFirst(SPArrayList* src, CHMoveNode elem){
 	 return spArrayListAddAt(src,elem,0);
  }
 
 
-SP_ARRAY_LIST_MESSAGE spArrayListAddLast(SPArrayList* src, int elem){
+SP_ARRAY_LIST_MESSAGE spArrayListAddLast(SPArrayList* src, CHMoveNode elem){
 	if(src==NULL){
 		return SP_ARRAY_LIST_INVALID_ARGUMENT;
 	}
@@ -120,25 +120,25 @@ SP_ARRAY_LIST_MESSAGE spArrayListRemoveLast(SPArrayList* src){
 }
 
 
-int spArrayListGetAt(SPArrayList* src, int index){
+CHMoveNode spArrayListGetAt(SPArrayList* src, int index){
 	if(src == NULL || index >= src->actualSize || index < 0){
-		return -1;
+		return NULL;
 	}
 	return src->elements[index];
 }
 
 
-int spArrayListGetFirst(SPArrayList* src){
+CHMoveNode spArrayListGetFirst(SPArrayList* src){
 	if(src == NULL || src->actualSize == 0){
-		return -1;
+		return NULL;
 	}
 	return src->elements[0];
 }
 
 
-int spArrayListGetLast(SPArrayList* src){
+CHMoveNode spArrayListGetLast(SPArrayList* src){
 	if(src == NULL || src->actualSize == 0){
-		return -1;
+		return NULL;
 	}
 	return src->elements[src->actualSize-1];
 }
