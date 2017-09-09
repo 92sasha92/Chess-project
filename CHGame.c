@@ -350,12 +350,13 @@ CH_GAME_MESSAGE isCheck(CHGame* src){
 	return CH_GAME_SUCCESS;
 }
 
-int chIsCheckmateOrTie(CHGame* src){
+
+CH_GAME_MESSAGE chIsCheckmateOrTie(CHGame* src){
 	int i,j,kRow,kCol;
 	char curC;
 	CHMovesList *list;
 	if(src == NULL)
-		return -2;
+		CH_GAME_INVALID_ARGUMENT;
 	findKing(src->gameBoard,src->currentTurn,&kRow,&kCol);
 	for(i = 0;i < CH_GAME_N_ROWS;i++){
 		for(j = 0;j < CH_GAME_N_COLUMNS;j++){
@@ -364,7 +365,7 @@ int chIsCheckmateOrTie(CHGame* src){
 				list = createMoveList(src->gameBoard,curC,i,j,src->currentTurn);
 				if(list->isValid){
 					destroyMoveList(list);
-					return -1;
+					return CH_GAME_NO_WIN_OR_TIE;
 				}
 				destroyMoveList(list);
 			}
@@ -372,10 +373,15 @@ int chIsCheckmateOrTie(CHGame* src){
 	}
 
 	if(isMyPieceSafe(src->gameBoard, CH_GAME_EMPTY_ENTRY, 0, 0, 0, 0, src->currentTurn, kRow, kCol,KING_MODE)){
-		return 2;
+		return CH_GAME_TIE;
 	}
 	else{
-		return (!src->currentTurn);
+		if (src->currentTurn == CH_GAME_BLACK_PLAYER_SYMBOL){
+			return CH_GAME_WHITE_WINS;
+		}
+		else{
+			return CH_GAME_BLACK_WINS;
+		}
 	}
 }
 
@@ -412,7 +418,29 @@ CHGame* chGameCopy(CHGame* src){
 
 }
 
+CH_GAME_MESSAGE chGameUndoPrevMove(CHGame* src){
+	if (src == NULL){
+		return CH_GAME_INVALID_ARGUMENT;
+	}
 
+	if (spArrayListIsEmpty(src->list) || src->list == NULL || src->list->actualSize < 1){
+		return CH_GAME_NO_HISTORY;
+	}
+
+	src->gameBoard[src->list->elements->to_row][src->list->elements->to_col] = src->list->elements->piece_eaten;
+	src->gameBoard[src->list->elements->from_row][src->list->elements->from_col] = src->list->elements->current_piece;
+
+	if(src->currentTurn == CH_GAME_BLACK_PLAYER_SYMBOL){ /* set the currentPlayer turn */
+		src->currentTurn = CH_GAME_WHITE_PLAYER_SYMBOL;
+	}
+	else{
+		src->currentTurn = CH_GAME_BLACK_PLAYER_SYMBOL;
+	}
+
+	spArrayListRemoveFirst(src->list); /* remove the first argument */
+
+	return CH_GAME_SUCCESS;
+}
 
 
 
