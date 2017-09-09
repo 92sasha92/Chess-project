@@ -356,7 +356,7 @@ CH_GAME_MESSAGE chIsCheckmateOrTie(CHGame* src){
 	char curC;
 	CHMovesList *list;
 	if(src == NULL)
-		CH_GAME_INVALID_ARGUMENT;
+		return CH_GAME_INVALID_ARGUMENT;
 	findKing(src->gameBoard,src->currentTurn,&kRow,&kCol);
 	for(i = 0;i < CH_GAME_N_ROWS;i++){
 		for(j = 0;j < CH_GAME_N_COLUMNS;j++){
