@@ -119,29 +119,29 @@ SP_ARRAY_LIST_MESSAGE spArrayListRemoveLast(SPArrayList* src){
 	return spArrayListRemoveAt(src, src->actualSize-1);
 }
 
-
-CHMoveNode spArrayListGetAt(SPArrayList* src, int index){
-	if(src == NULL || index >= src->actualSize || index < 0){
-		return NULL;
-	}
-	return src->elements[index];
-}
+//
+//CHMoveNode spArrayListGetAt(SPArrayList* src, int index){
+//	if(src == NULL || index >= src->actualSize || index < 0){
+//		return NULL;
+//	}
+//	return src->elements[index];
+//}
 
 
 CHMoveNode spArrayListGetFirst(SPArrayList* src){
-	if(src == NULL || src->actualSize == 0){
-		return NULL;
-	}
+//	if(src == NULL || src->actualSize == 0){
+//		return NULL;
+//	}
 	return src->elements[0];
 }
 
-
-CHMoveNode spArrayListGetLast(SPArrayList* src){
-	if(src == NULL || src->actualSize == 0){
-		return NULL;
-	}
-	return src->elements[src->actualSize-1];
-}
+//
+//CHMoveNode spArrayListGetLast(SPArrayList* src){
+//	if(src == NULL || src->actualSize == 0){
+//		return NULL;
+//	}
+//	return src->elements[src->actualSize-1];
+//}
 
 
 int spArrayListMaxCapacity(SPArrayList* src){

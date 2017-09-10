@@ -70,7 +70,8 @@ int rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer){
         printf("there is no game to check alphabeta function\n");
         return NULL;
     }
-    int score = 0, i, j;
+    CH_GAME_MESSAGE mes;
+    int score = 0, i, j, new_score = 0;
     int winner = chIsCheckmateOrTie(src);
     if ((depth == 0) || (winner != CH_GAME_NO_WIN_OR_TIE)){
         return get_board_score(maximizer, src);
@@ -87,7 +88,16 @@ int rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer){
 
                 if ((cur_piece_moves_list->isValid)){
                     for (;cur_piece_moves_list != NULL ; cur_piece_moves_list = cur_piece_moves_list->next){
-                        score = MAX(score, rec_alphabeta((CHGame*)chGameSetMove(src, i, j, cur_piece_moves_list->row,cur_piece_moves_list->col), depth - 1, a, b, !maximizer));
+                        mes = chGameSetMove(src, i, j, cur_piece_moves_list->row,cur_piece_moves_list->col);
+                        if (mes != CH_GAME_SUCCESS){
+                            printf("problem in chGameSetMove\n");
+                        }
+                        new_score = rec_alphabeta(src, depth - 1, a, b, !maximizer);
+                        mes = chGameUndoPrevMove(src);
+                        if (mes != CH_GAME_SUCCESS){
+                            printf("problem in chGameUndoPrevMove\n");
+                        }
+                        score = MAX(score, new_score);
                         a = MAX(a, score);
                         if (b <= a){
                             break;
@@ -111,7 +121,16 @@ int rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer){
 
                 if ((cur_piece_moves_list->isValid)){
                     for (;cur_piece_moves_list != NULL ; cur_piece_moves_list = cur_piece_moves_list->next){
-                        score = MIN(score, rec_alphabeta((CHGame*)chGameSetMove(src, i, j, cur_piece_moves_list->row,cur_piece_moves_list->col), depth - 1, a, b, !maximizer));
+                        mes = chGameSetMove(src, i, j, cur_piece_moves_list->row,cur_piece_moves_list->col);
+                        if (mes != CH_GAME_SUCCESS){
+                            printf("problem in chGameSetMove\n");
+                        }
+                        new_score = rec_alphabeta(src, depth - 1, a, b, !maximizer);
+                        mes = chGameUndoPrevMove(src);
+                        if (mes != CH_GAME_SUCCESS){
+                            printf("problem in chGameUndoPrevMove\n");
+                        }
+                        score = MIN(score, new_score);
                         b = MIN(b, score);
                         if (b <= a){
                             break;
@@ -130,6 +149,7 @@ CHMoveNode* alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* best_mo
         printf("there is no game to check alphabeta function\n");
         return NULL;
     }
+    CH_GAME_MESSAGE mes;
     int score = 0, new_score, i, j, a = INT32_MAX, b = INT32_MAX ;
     int winner = chIsCheckmateOrTie(src);
     if ((depth == 0) || (winner != CH_GAME_NO_WIN_OR_TIE)){
@@ -148,7 +168,15 @@ CHMoveNode* alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* best_mo
 
                 if ((cur_piece_moves_list->isValid)){
                     for (;cur_piece_moves_list != NULL ; cur_piece_moves_list = cur_piece_moves_list->next){
-                        new_score = rec_alphabeta((CHGame*)chGameSetMove(src, i, j, cur_piece_moves_list->row,cur_piece_moves_list->col), depth - 1, a, b, !maximizer);
+                        mes = chGameSetMove(src, i, j, cur_piece_moves_list->row,cur_piece_moves_list->col);
+                        if (mes != CH_GAME_SUCCESS){
+                            printf("problem in chGameSetMove\n");
+                        }
+                        new_score = rec_alphabeta(src, depth - 1, a, b, !maximizer);
+                        mes = chGameUndoPrevMove(src);
+                        if (mes != CH_GAME_SUCCESS){
+                            printf("problem in chGameUndoPrevMove\n");
+                        }
                         if (score < new_score){
                             score = new_score;
                             set_cur_best_move(src, best_move, i, j, cur_piece_moves_list);
@@ -176,7 +204,15 @@ CHMoveNode* alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* best_mo
 
                 if ((cur_piece_moves_list->isValid)){
                     for (;cur_piece_moves_list != NULL ; cur_piece_moves_list = cur_piece_moves_list->next){
-                        new_score = rec_alphabeta((CHGame*)chGameSetMove(src, i, j, cur_piece_moves_list->row,cur_piece_moves_list->col), depth - 1, a, b, !maximizer);
+                        mes = chGameSetMove(src, i, j, cur_piece_moves_list->row,cur_piece_moves_list->col);
+                        if (mes != CH_GAME_SUCCESS){
+                            printf("problem in chGameSetMove\n");
+                        }
+                        new_score = rec_alphabeta(src, depth - 1, a, b, !maximizer);
+                        mes = chGameUndoPrevMove(src);
+                        if (mes != CH_GAME_SUCCESS){
+                            printf("problem in chGameUndoPrevMove\n");
+                        }
                         if (score > new_score){
                             score = new_score;
                             set_cur_best_move(src, best_move, i, j, cur_piece_moves_list);

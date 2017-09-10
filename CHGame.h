@@ -142,7 +142,7 @@ CH_GAME_MESSAGE chIsCheckmateOrTie(CHGame* src);
  * CH_GAME_INVALID_ARGUMENT - if src is NULL.
  * CH_GAME_SUCCESS - otherwise.
  */
-CH_GAME_MESSAGE isCheck(CHGame* src);
+CH_GAME_MESSAGE isCheck(CHGame* , int);
 
 
 

@@ -30,7 +30,7 @@ bool isThePieceMyColor(char c, int color) {
 void findKing(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color,int *kRow,int *kCol){
 	int i,j;
 	bool isKingFound;
-	for(i = 0;i < CH_GAME_N_ROWS;i++){
+	for(i = 0; i < CH_GAME_N_ROWS;i++){
 		for(j = 0;j < CH_GAME_N_COLUMNS;j++){
 			if((color == CH_GAME_WHITE_PLAYER_SYMBOL && gameBoard[i][j] == CH_WHITE_KING) || (color == CH_GAME_BLACK_PLAYER_SYMBOL && gameBoard[i][j] == CH_BLACK_KING)){
 				*kRow = i;

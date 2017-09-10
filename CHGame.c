@@ -274,12 +274,19 @@ void chPawnPromotion(CHGame* src,int row,int col){
 
 }
 
-CH_GAME_MESSAGE chGameSetMove(CHGame* src, int fRow,int fCol,int toRow,int toCol){
+CH_GAME_MESSAGE chGameSetMove(CHGame* src, int fRow,int fCol,int toRow,int toCol){\
+    if(src == NULL)
+        return CH_GAME_INVALID_ARGUMENT;
 	bool isCorrectCol = false;
 	char c;
 	CHMovesList *list;
-	if(src == NULL)
-		return CH_GAME_INVALID_ARGUMENT;
+    CHMoveNode *node;
+    node->to_col = toCol;
+    node->to_row = toRow;
+    node->from_col = fCol;
+    node->from_row = fRow;
+    node->current_piece = src->gameBoard[fRow][fCol];
+    node->piece_eaten = src->gameBoard[toRow][toCol];
 	c = src->gameBoard[fRow][fCol];
 	if(src->currentTurn == 0)
 		isCorrectCol = isABlackPiece(c);
@@ -300,6 +307,7 @@ CH_GAME_MESSAGE chGameSetMove(CHGame* src, int fRow,int fCol,int toRow,int toCol
 	if((src->gameBoard[toRow][toCol] == CH_BLACK_PAWN && toRow == 0) || (src->gameBoard[toRow][toCol] == CH_WHITE_PAWN && toRow == CH_GAME_N_ROWS - 1)){
 		chPawnPromotion(src,toRow,toCol);
 	}
+    spArrayListAddFirst(src->list, *node);
 	return CH_GAME_SUCCESS;
 }
 
@@ -335,13 +343,15 @@ CH_GAME_MESSAGE chGameSave(CHGame* src,char *path){
 }
 
 
-CH_GAME_MESSAGE isCheck(CHGame* src){
+CH_GAME_MESSAGE isCheck(CHGame* src, int is_computer){
 	int kRow,kCol;
 	if(src == NULL)
 		return CH_GAME_INVALID_ARGUMENT;
 	findKing(src->gameBoard,src->currentTurn,&kRow,&kCol);
 	if(!isMyPieceSafe(src->gameBoard, CH_GAME_EMPTY_ENTRY, 0, 0, 0, 0, src->currentTurn, kRow, kCol,KING_MODE)){
-		if(src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL)
+		if(is_computer)
+			printf("Check!\n");
+		else if(src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL)
 			printf("Check: white King is threatened!\n");
 		else
 			printf("Check: black King is threatened!\n");
@@ -420,10 +430,12 @@ CHGame* chGameCopy(CHGame* src){
 
 CH_GAME_MESSAGE chGameUndoPrevMove(CHGame* src){
 	if (src == NULL){
+        printf("Invalid argument\n");
 		return CH_GAME_INVALID_ARGUMENT;
 	}
 
 	if (spArrayListIsEmpty(src->list) || src->list == NULL || src->list->actualSize < 1){
+        printf("Empty history, move cannot be undo\n");
 		return CH_GAME_NO_HISTORY;
 	}
 
