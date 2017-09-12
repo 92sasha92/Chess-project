@@ -77,6 +77,11 @@ int rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer){
         return get_board_score(maximizer, src);
     }
 
+    if (src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL) {
+        src->currentTurn = CH_GAME_BLACK_PLAYER_SYMBOL;
+    } else {
+        src->currentTurn = CH_GAME_WHITE_PLAYER_SYMBOL;
+    }
     if(src->currentTurn == maximizer){
         score = INT32_MIN;
         for (i = 0; i < CH_GAME_N_ROWS; i++) {
@@ -157,21 +162,19 @@ CHMoveNode* alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* best_mo
         return NULL;
     }
 
-    if(src->currentTurn == maximizer){
-        score = INT32_MIN;
-        for (i = 0; i < CH_GAME_N_ROWS; i++) {
-            for (j = 0; j < CH_GAME_N_COLUMNS; j++) {
-                CHMovesList* cur_piece_moves_list = createMoveList(src->gameBoard,src->gameBoard[i][j], i, j, src->userColor);
-                if (cur_piece_moves_list == NULL){
-                    return NULL;
-                }
+//    if(src->currentTurn == maximizer){
+    score = INT32_MIN;
+    for (i = 0; i < CH_GAME_N_ROWS; i++) {
+        for (j = 0; j < CH_GAME_N_COLUMNS; j++) {
+            CHMovesList* cur_piece_moves_list = createMoveList(src->gameBoard,src->gameBoard[i][j], i, j, src->userColor);
+            if (cur_piece_moves_list == NULL){
+                return NULL;
+            }
 
-                if ((cur_piece_moves_list->isValid)){
-                    for (;cur_piece_moves_list != NULL ; cur_piece_moves_list = cur_piece_moves_list->next){
-                        mes = chGameSetMove(src, i, j, cur_piece_moves_list->row,cur_piece_moves_list->col);
-                        if (mes != CH_GAME_SUCCESS){
-                            printf("problem in chGameSetMove\n");
-                        }
+            if ((cur_piece_moves_list->isValid)){
+                for (;cur_piece_moves_list != NULL ; cur_piece_moves_list = cur_piece_moves_list->next){
+                    mes = chGameSetMove(src, i, j, cur_piece_moves_list->row,cur_piece_moves_list->col);
+                    if (mes == CH_GAME_SUCCESS){
                         new_score = rec_alphabeta(src, depth - 1, a, b, !maximizer);
                         mes = chGameUndoPrevMove(src);
                         if (mes != CH_GAME_SUCCESS){
@@ -186,46 +189,47 @@ CHMoveNode* alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* best_mo
                             break;
                         }
                     }
-                    destroyMoveList(cur_piece_moves_list);
-                    return best_move;
                 }
+                destroyMoveList(cur_piece_moves_list);
+                return best_move;
             }
         }
     }
+//    }
 
-    else{
-        score = INT32_MAX;
-        for (i = 0; i < CH_GAME_N_ROWS; i++) {
-            for (j = 0; j < CH_GAME_N_COLUMNS; j++) {
-                CHMovesList* cur_piece_moves_list = createMoveList(src->gameBoard,src->gameBoard[i][j], i, j, src->userColor);
-                if (cur_piece_moves_list == NULL){
-                    return NULL;
-                }
-
-                if ((cur_piece_moves_list->isValid)){
-                    for (;cur_piece_moves_list != NULL ; cur_piece_moves_list = cur_piece_moves_list->next){
-                        mes = chGameSetMove(src, i, j, cur_piece_moves_list->row,cur_piece_moves_list->col);
-                        if (mes != CH_GAME_SUCCESS){
-                            printf("problem in chGameSetMove\n");
-                        }
-                        new_score = rec_alphabeta(src, depth - 1, a, b, !maximizer);
-                        mes = chGameUndoPrevMove(src);
-                        if (mes != CH_GAME_SUCCESS){
-                            printf("problem in chGameUndoPrevMove\n");
-                        }
-                        if (score > new_score){
-                            score = new_score;
-                            set_cur_best_move(src, best_move, i, j, cur_piece_moves_list);
-                        }
-                        b = MIN(b, score);
-                        if (b <= a){
-                            break;
-                        }
-                    }
-                    destroyMoveList(cur_piece_moves_list);
-                    return best_move;
-                }
-            }
-        }
-    }
+//    else{
+//        score = INT32_MAX;
+//        for (i = 0; i < CH_GAME_N_ROWS; i++) {
+//            for (j = 0; j < CH_GAME_N_COLUMNS; j++) {
+//                CHMovesList* cur_piece_moves_list = createMoveList(src->gameBoard,src->gameBoard[i][j], i, j, src->userColor);
+//                if (cur_piece_moves_list == NULL){
+//                    return NULL;
+//                }
+//
+//                if ((cur_piece_moves_list->isValid)){
+//                    for (;cur_piece_moves_list != NULL ; cur_piece_moves_list = cur_piece_moves_list->next){
+//                        mes = chGameSetMove(src, i, j, cur_piece_moves_list->row,cur_piece_moves_list->col);
+//                        if (mes != CH_GAME_SUCCESS){
+//                            printf("problem in chGameSetMove\n");
+//                        }
+//                        new_score = rec_alphabeta(src, depth - 1, a, b, !maximizer);
+//                        mes = chGameUndoPrevMove(src);
+//                        if (mes != CH_GAME_SUCCESS){
+//                            printf("problem in chGameUndoPrevMove\n");
+//                        }
+//                        if (score > new_score){
+//                            score = new_score;
+//                            set_cur_best_move(src, best_move, i, j, cur_piece_moves_list);
+//                        }
+//                        b = MIN(b, score);
+//                        if (b <= a){
+//                            break;
+//                        }
+//                    }
+//                    destroyMoveList(cur_piece_moves_list);
+//                    return best_move;
+//                }
+//            }
+//        }
+//    }
 }
