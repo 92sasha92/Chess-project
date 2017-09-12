@@ -8,7 +8,8 @@
 
 #include "CHGame.h"
 #include "SPBufferset.h"
-
+#include "SPSimpleMainWindow.h"
+#include "gameBoard.h"
 void defaultBoard(CHGame *src){
 	int i,j;
 	for (i = 0; i < CH_GAME_N_ROWS; i++) {
@@ -144,10 +145,11 @@ int cmpfunc(const void * a, const void * b) {
 	return ((CHNodeForSort*)a)->row - ((CHNodeForSort*) b)->row;
 }
 
-void printMoves(CHGame* src,CHMovesList *list,char c,int fRow,int fCol){
+void printMoves(CHGame* src,CHMovesList *list,char c,int fRow,int fCol,Widget *widget){
 	CHMovesList *node = list;
 	int numOfMoves = 0;
     int i = 0;
+    int isRed = 0;
 	while(node != NULL){
 		node = node->next;
 		numOfMoves++;
@@ -162,20 +164,33 @@ void printMoves(CHGame* src,CHMovesList *list,char c,int fRow,int fCol){
 	}
 	qsort(arr,numOfMoves, sizeof(CHNodeForSort), cmpfunc);
 	for(i = 0;i < numOfMoves;i++){
+		isRed = 0;
 		printf("<%d,%c>",arr[i].row + 1,arr[i].col + 65);
+		if(GUI_ACTIVE){
+			setGlowCell(widget,arr[i].row,arr[i].col,CELL_GLOW_COLOR_BLUE);
+		}
 		if(/*src->gameMode == 1 && */src->difficulty < 3){
 			if(!isMyPieceSafe(src->gameBoard,c,fRow,fCol,arr[i].row,arr[i].col,src->currentTurn,arr[i].row,arr[i].col,REGULAR_PIECE_MODE)){
 				printf("*");
+				if(GUI_ACTIVE){
+					setGlowCell(widget,arr[i].row,arr[i].col,CELL_GLOW_COLOR_RED);
+					isRed = 1;
+				}
 			}
-			if(!isThePieceMyColor(src->gameBoard[arr[i].row][arr[i].col],src->currentTurn) && src->gameBoard[arr[i].row][arr[i].col] != CH_GAME_EMPTY_ENTRY)
+			if(!isThePieceMyColor(src->gameBoard[arr[i].row][arr[i].col],src->currentTurn) && src->gameBoard[arr[i].row][arr[i].col] != CH_GAME_EMPTY_ENTRY){
 				printf("^");
+				if(GUI_ACTIVE && !isRed){
+					setGlowCell(widget,arr[i].row,arr[i].col,CELL_GLOW_COLOR_GREEN);
+				}
+			}
+
 		}
 		printf("\n");
 	}
 	free(arr);
 }
 
-CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol){
+CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol,Widget *widget){
 	bool isCorrectCol = false;
 	char c;
 	CHMovesList *list;
@@ -197,7 +212,7 @@ CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol){
 		destroyMoveList(list);
 		return CH_GAME_NO_MOVES;
 	}
-	printMoves(src,list,c,fRow,fCol);
+	printMoves(src,list,c,fRow,fCol,widget);
 	destroyMoveList(list);
 	return CH_GAME_SUCCESS;
 }

@@ -11,7 +11,7 @@
 #include "SPArrayList.h"
 #include "CHMoves.h"
 
-
+#include "Widget.h"
 
 typedef struct ch_nodeForSort{
 	int row;
@@ -99,7 +99,7 @@ void chGameDestroy(CHGame* src);
  * CH_GAME_NO_MOVES - if there isn't any moves for this piece
  * CH_GAME_SUCCESS - otherwise
  */
-CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol);
+CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol,Widget *widget);
 
 /**
  * Sets the next move in a given game by specifying the position of the piece and where to move it.

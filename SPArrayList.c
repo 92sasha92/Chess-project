@@ -9,7 +9,7 @@ SPArrayList* spArrayListCreate(int maxSize){
 	}
 	list->maxSize = maxSize;
 	list->actualSize = 0;
-	list->elements = (int *)malloc(sizeof(CHMoveNode)*list->maxSize);
+	list->elements = (CHMoveNode *)malloc(sizeof(CHMoveNode)*list->maxSize);
 	if(!(list->elements)){
 		return NULL;
 	}
@@ -27,7 +27,7 @@ SPArrayList* spArrayListCopy(SPArrayList* src){
 	}
 	copyList->actualSize = src->actualSize;
 	copyList->maxSize = src->maxSize;
-	copyList->elements = (int *)malloc(sizeof(CHMoveNode)*src->maxSize);
+	copyList->elements = (CHMoveNode *)malloc(sizeof(CHMoveNode)*src->maxSize);
 	if(!(copyList->elements)){
 		return NULL;
 	}
@@ -122,7 +122,7 @@ SP_ARRAY_LIST_MESSAGE spArrayListRemoveLast(SPArrayList* src){
 
 CHMoveNode spArrayListGetAt(SPArrayList* src, int index){
 	if(src == NULL || index >= src->actualSize || index < 0){
-		return NULL;
+
 	}
 	return src->elements[index];
 }
@@ -130,7 +130,7 @@ CHMoveNode spArrayListGetAt(SPArrayList* src, int index){
 
 CHMoveNode spArrayListGetFirst(SPArrayList* src){
 	if(src == NULL || src->actualSize == 0){
-		return NULL;
+
 	}
 	return src->elements[0];
 }
@@ -138,7 +138,7 @@ CHMoveNode spArrayListGetFirst(SPArrayList* src){
 
 CHMoveNode spArrayListGetLast(SPArrayList* src){
 	if(src == NULL || src->actualSize == 0){
-		return NULL;
+
 	}
 	return src->elements[src->actualSize-1];
 }
