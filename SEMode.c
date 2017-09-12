@@ -5,6 +5,8 @@
  *      Author: sasha
  */
 #include "SEMode.h"
+
+
 int gameMode = 1;
 int gameDifficulty = 2;
 int userColor = 1;
@@ -171,70 +173,116 @@ CHGame* startSettingsMode(){
 	SECommand command;
 	CHGame* src;
 	printf("Specify game setting or type 'start' to begin a game with the current setting:\n" );
-	while(true){
-		fgets(strCommand,MAX_LINE_SIZE,stdin);
-		command = seParserPraseLine(strCommand);
-		if(command.cmd == SE_GAME_MODE){
-			if(command.validArg)
-				setGameMode(command.arg);
-			else
-				printf("ERROR: invalid argument\n");
-		}
-		else if(command.cmd == SE_DIFFICULTY){
-			if(gameMode == 1){
-				if(command.validArg)
-					setDifficulty(command.arg);
-				else
-					printf("Wrong difficulty level. The value should be between 1 to 5\n");
-			}
-			else{
-				printf("ERROR: invalid Command\n");
-			}
-		}
-		else if(command.cmd == SE_USER_COLOR){
-			if(gameMode == 1){
-				if(command.validArg)
-					setUserColor(command.arg);
-//				else
-//					printf("ERROR: invalid argument\n");
-			}
-			else{
-				printf("ERROR: invalid Command\n");
-			}
-		}
-		else if(command.cmd == SE_LOAD){
-			if(command.validArg){
-				src = (CHGame*) malloc(sizeof(CHGame)); /* allocate place in memory */
-				if (!src){
-					printf("Error: malloc has failed\n");
-					return NULL;
-				}
-				if(!load(command.path,src)){
-					setDefault();
-					free(src);/////////////////////////change to function
-				}
-				else{
-					return src;
-				}
-			}
-			else
-				printf("ERROR: invalid argument\n");
-		}
-		else if(command.cmd == SE_DEFAULT){
-			setDefault();
-		}
-		else if(command.cmd == SE_PRINT_SETTINGS){
-			printSettings();
-		}
-		else if(command.cmd == SE_QUIT){
-			printf("Exiting...\n");
+	if(GUI_ACTIVE){
+		if (SDL_Init(SDL_INIT_VIDEO) < 0) { //SDL2 INIT
+			printf("ERROR: unable to init SDL: %s\n", SDL_GetError());
 			return NULL;
 		}
-		else if(command.cmd == SE_START){
-			break;
+		SPWindow* window = createSimpleStartWindow();
+		if (window == NULL ) {
+			SDL_Quit();
+			return NULL;
 		}
-		else{
-			printf("ERROR: invalid Command\n");
+		SDL_Event event;
+		int flag = 1;
+		while (1) {
+			SDL_WaitEvent(&event);
+			if(event.type == SDL_QUIT){
+				destroyWindow(window);
+				SDL_Quit();
+				exit(0);
+			}else if(event.type == SDL_USEREVENT && event.user.code == 3){
+				destroyWindow(window);
+				flag = 1;
+				window = createSimpleModeWindow();
+				SDL_WaitEvent(&event);
+			}else if(event.type == SDL_USEREVENT && event.user.code == 4){
+				destroyWindow(window);
+				flag = 1;
+				window = createSimpleWindow();
+				SDL_WaitEvent(&event);
+			}else if(event.type == SDL_USEREVENT && event.user.code == EVENT_UPDATE_TO_ONE_PLAYER){
+				setGameMode(1);
+			}else if(event.type == SDL_USEREVENT && event.user.code == EVENT_UPDATE_TO_TWO_PLAYERS){
+				setGameMode(2);
+			}else if(event.type == SDL_USEREVENT && event.user.code == EVENT_START_GAME){
+				destroyWindow(window);
+				flag = 1;
+				break;
+			}
+			window->handleEventWindow(window,&event);
+			if(flag == 1){
+				window->drawWindow(window);
+				flag = 0;
+			}
+		}
+	}
+	else{
+		while(true){
+			fgets(strCommand,MAX_LINE_SIZE,stdin);
+			command = seParserPraseLine(strCommand);
+			if(command.cmd == SE_GAME_MODE){
+				if(command.validArg)
+					setGameMode(command.arg);
+				else
+					printf("ERROR: invalid argument\n");
+			}
+			else if(command.cmd == SE_DIFFICULTY){
+				if(gameMode == 1){
+					if(command.validArg)
+						setDifficulty(command.arg);
+					else
+						printf("Wrong difficulty level. The value should be between 1 to 5\n");
+				}
+				else{
+					printf("ERROR: invalid Command\n");
+				}
+			}
+			else if(command.cmd == SE_USER_COLOR){
+				if(gameMode == 1){
+					if(command.validArg)
+						setUserColor(command.arg);
+	//				else
+	//					printf("ERROR: invalid argument\n");
+				}
+				else{
+					printf("ERROR: invalid Command\n");
+				}
+			}
+			else if(command.cmd == SE_LOAD){
+				if(command.validArg){
+					src = (CHGame*) malloc(sizeof(CHGame)); /* allocate place in memory */
+					if (!src){
+						printf("Error: malloc has failed\n");
+						return NULL;
+					}
+					if(!load(command.path,src)){
+						setDefault();
+						free(src);/////////////////////////change to function
+					}
+					else{
+						return src;
+					}
+				}
+				else
+					printf("ERROR: invalid argument\n");
+			}
+			else if(command.cmd == SE_DEFAULT){
+				setDefault();
+			}
+			else if(command.cmd == SE_PRINT_SETTINGS){
+				printSettings();
+			}
+			else if(command.cmd == SE_QUIT){
+				printf("Exiting...\n");
+				return NULL;
+			}
+			else if(command.cmd == SE_START){
+				break;
+			}
+			else{
+				printf("ERROR: invalid Command\n");
+			}
 		}
 	}
 	src = chGameCreate(gameMode,userColor,gameDifficulty,currentTurn);

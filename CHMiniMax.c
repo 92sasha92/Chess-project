@@ -1,8 +1,17 @@
+/*
+ * CHMiniMax.c
+ *
+ *  Created on: Sep 12, 2017
+ *      Author: sasha
+ */
+
+
 //
 // Created by Guy Druker on 09/09/2017.
 //
 
 #include "CHMiniMax.h"
+
 
 int get_piece_score(char piece, int maximizer, CHGame* src){
     int piece_score = 0;
