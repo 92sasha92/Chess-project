@@ -21,6 +21,7 @@ int main(int argc, char** argv){
 	GameBoard* castData;
 	BoardCell* cellData;
 	BoardCell* prevCellData;
+	Widget *widget = NULL;
 	CHGame *game = startSettingsMode();
 	if(!game)
 		return 0;
@@ -171,7 +172,10 @@ int main(int argc, char** argv){
 							cellData = (BoardCell*)castData->gameBoard[command.fRow][command.fColomn]->data;
 							setNoGlowCells(((SPSimpleWindow *) window->data)->widgets[6]);
 						}
-						CH_GAME_MESSAGE mes = chGameShowMoves(game, command.fRow,command.fColomn,((SPSimpleWindow *) window->data)->widgets[6]);
+						if(GUI_ACTIVE){
+							widget = ((SPSimpleWindow *) window->data)->widgets[6];
+						}
+						CH_GAME_MESSAGE mes = chGameShowMoves(game, command.fRow,command.fColomn,widget);
 						if (mes == CH_GAME_INVALID_COLOR) {
 							printf("The specified position does not contain your piece\n");
 							if(GUI_ACTIVE){
@@ -208,12 +212,13 @@ int main(int argc, char** argv){
 			}
 			else{
 			}
-		window->handleEventWindow(window, &event);
-		if (flag == 1) {
-			window->drawWindow(window);
-			flag = 0;
-		}
+			if(GUI_ACTIVE){
+				window->handleEventWindow(window, &event);
+				if (flag == 1) {
+					window->drawWindow(window);
+					flag = 0;
+				}
+			}
 	}
-//	}
 	return 0;
 }

@@ -28,7 +28,7 @@ Widget* createGameBoard(SDL_Renderer* windowRender, SDL_Rect* location,
 	SDL_Rect loc = { .x = startX, .y = startY, .h = 77, .w = 77 };
 	char* imageBlack = "blackSquare.bmp";
 	char* imageWhite = "whiteSquare.bmp";
-	int isWhite = 0;
+	int isWhite = 1;
 	int isProblemInMemory = 0;
 	for(i = 7;i >=0;i--){
 		loc.x = startX;
