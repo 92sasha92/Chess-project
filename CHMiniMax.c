@@ -12,6 +12,7 @@
 
 #include "CHMiniMax.h"
 
+
 int get_piece_score(char piece, int maximizer, CHGame* src){
     int piece_score = 0;
     switch (piece) {
