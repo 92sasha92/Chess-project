@@ -19,9 +19,9 @@
 #define QUEEN_SCORE 9
 #define KING_SCORE 100
 
-#define WIN_SCORE 1000
-#define LOOSE_SCORE -1000
-#define TIE_SCORE -999
+#define WIN_SCORE INT32_MAX
+#define LOOSE_SCORE INT32_MIN
+#define TIE_SCORE -1000
 
 /** return the the score of that specific piece.
  * @param piece - a specific piece name

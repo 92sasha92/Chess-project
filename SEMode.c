@@ -93,7 +93,7 @@ int load(char *path,CHGame *src){
 	char buf[20];
 	FILE *fp = fopen(path,"r");
 	if(fp == NULL){
-		printf("Error: File doesn’t exist or cannot be opened\n");
+		printf("Error: File doesnï¿½t exist or cannot be opened\n");
 		return 0;
 	}
 	fscanf(fp, "%*[^\n]");

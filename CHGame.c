@@ -7,6 +7,7 @@
 
 
 #include "CHGame.h"
+#include "CHMiniMax.h"
 #include "SPBufferset.h"
 
 void defaultBoard(CHGame *src){
@@ -205,73 +206,140 @@ CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol){
 
 
 void chPawnPromotion(CHGame* src,int row,int col){
-	char str[MAX_LINE_LENGTH];
-	bool isNotValid = true;
-	char delimiter[8] = " \t\r\n";
-	char strCopy[MAX_LINE_LENGTH];
-	char *cur;
-	while(isNotValid){
-		printf("Pawn promotion- please replace the pawn by queen, rook, knight, bishop or pawn:\n");
-		fgets(str,MAX_LINE_LENGTH,stdin);
-		strcpy(strCopy,str);
-		cur = strtok(strCopy, delimiter);
-		if(strcmp(cur, "pawn") == 0){
-			if(strtok(NULL, delimiter) == NULL){
-				isNotValid = false;
+	int best_score = INT32_MIN, cur_score;
+	char best_piece = ' ';
+	if ((src->gameMode == 1) && (src->currentTurn != src->userColor)) {
+		if (src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL) {
+			src->gameBoard[row][col] = CH_WHITE_QUEEN;
+			cur_score = get_board_score(src->currentTurn, src);
+			if (cur_score > best_score) {
+				best_score = cur_score;
+				best_piece = CH_WHITE_QUEEN;
 			}
-			else
-				printf("Invalid Type\n");
+			src->gameBoard[row][col] = CH_WHITE_ROOK;
+			cur_score = get_board_score(src->currentTurn, src);
+			if (cur_score > best_score) {
+				best_score = cur_score;
+				best_piece = CH_WHITE_ROOK;
+			}
+			src->gameBoard[row][col] = CH_WHITE_BISHOP;
+			cur_score = get_board_score(src->currentTurn, src);
+			if (cur_score > best_score) {
+				best_score = cur_score;
+				best_piece = CH_WHITE_BISHOP;
+			}
+			src->gameBoard[row][col] = CH_WHITE_KNIGHT;
+			cur_score = get_board_score(src->currentTurn, src);
+			if (cur_score > best_score) {
+				best_score = cur_score;
+				best_piece = CH_WHITE_KNIGHT;
+			}
+			src->gameBoard[row][col] = CH_WHITE_PAWN;
+			cur_score = get_board_score(src->currentTurn, src);
+			if (cur_score > best_score) {
+				best_piece = CH_WHITE_PAWN;
+			}
+			src->gameBoard[row][col] = best_piece;
+		} else {
+			src->gameBoard[row][col] = CH_BLACK_QUEEN;
+			cur_score = get_board_score(src->currentTurn, src);
+			if (cur_score > best_score) {
+				best_score = cur_score;
+				best_piece = CH_BLACK_QUEEN;
+			}
+			src->gameBoard[row][col] = CH_BLACK_ROOK;
+			cur_score = get_board_score(src->currentTurn, src);
+			if (cur_score > best_score) {
+				best_score = cur_score;
+				best_piece = CH_BLACK_ROOK;
+			}
+			src->gameBoard[row][col] = CH_BLACK_BISHOP;
+			cur_score = get_board_score(src->currentTurn, src);
+			if (cur_score > best_score) {
+				best_score = cur_score;
+				best_piece = CH_BLACK_BISHOP;
+			}
+			src->gameBoard[row][col] = CH_BLACK_KNIGHT;
+			cur_score = get_board_score(src->currentTurn, src);
+			if (cur_score > best_score) {
+				best_score = cur_score;
+				best_piece = CH_BLACK_KNIGHT;
+			}
+			src->gameBoard[row][col] = CH_BLACK_PAWN;
+			cur_score = get_board_score(src->currentTurn, src);
+			if (cur_score > best_score) {
+				best_piece = CH_BLACK_PAWN;
+			}
+			src->gameBoard[row][col] = best_piece;
 		}
-		else if(strcmp(cur, "queen") == 0){
-			if(strtok(NULL, delimiter) == NULL){
-				if(src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL)
-					src->gameBoard[row][col] = CH_WHITE_QUEEN;
+	}else {
+		char str[MAX_LINE_LENGTH];
+		bool isNotValid = true;
+		char delimiter[8] = " \t\r\n";
+		char strCopy[MAX_LINE_LENGTH];
+		char *cur;
+		while(isNotValid){
+			printf("Pawn promotion- please replace the pawn by queen, rook, knight, bishop or pawn:\n");
+			fgets(str,MAX_LINE_LENGTH,stdin);
+			strcpy(strCopy,str);
+			cur = strtok(strCopy, delimiter);
+			if(strcmp(cur, "pawn") == 0){
+				if(strtok(NULL, delimiter) == NULL){
+					isNotValid = false;
+				}
 				else
-					src->gameBoard[row][col] = CH_BLACK_QUEEN;
-				isNotValid = false;
+					printf("Invalid Type\n");
 			}
-			else
-				printf("Invalid Type\n");
-		}
-		else if(strcmp(cur, "rook") == 0){
-			if(strtok(NULL, delimiter) == NULL){
-				if(src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL)
-					src->gameBoard[row][col] = CH_WHITE_ROOK;
+			else if(strcmp(cur, "queen") == 0){
+				if(strtok(NULL, delimiter) == NULL){
+					if(src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL)
+						src->gameBoard[row][col] = CH_WHITE_QUEEN;
+					else
+						src->gameBoard[row][col] = CH_BLACK_QUEEN;
+					isNotValid = false;
+				}
 				else
-					src->gameBoard[row][col] = CH_BLACK_ROOK;
-				isNotValid = false;
+					printf("Invalid Type\n");
 			}
-			else
-				printf("Invalid Type\n");
+			else if(strcmp(cur, "rook") == 0){
+				if(strtok(NULL, delimiter) == NULL){
+					if(src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL)
+						src->gameBoard[row][col] = CH_WHITE_ROOK;
+					else
+						src->gameBoard[row][col] = CH_BLACK_ROOK;
+					isNotValid = false;
+				}
+				else
+					printf("Invalid Type\n");
 
-		}
-		else if(strcmp(cur, "knight") == 0){
-			if(strtok(NULL, delimiter) == NULL){
-				if(src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL)
-					src->gameBoard[row][col] = CH_WHITE_KNIGHT;
-				else
-					src->gameBoard[row][col] = CH_BLACK_KNIGHT;
-				isNotValid = false;
 			}
-			else
-				printf("Invalid Type\n");
-		}
-		else if(strcmp(cur, "bishop") == 0){
-			if(strtok(NULL, delimiter) == NULL){
-				if(src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL)
-					src->gameBoard[row][col] = CH_WHITE_BISHOP;
+			else if(strcmp(cur, "knight") == 0){
+				if(strtok(NULL, delimiter) == NULL){
+					if(src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL)
+						src->gameBoard[row][col] = CH_WHITE_KNIGHT;
+					else
+						src->gameBoard[row][col] = CH_BLACK_KNIGHT;
+					isNotValid = false;
+				}
 				else
-					src->gameBoard[row][col] = CH_BLACK_BISHOP;
-				isNotValid = false;
+					printf("Invalid Type\n");
 			}
-			else
+			else if(strcmp(cur, "bishop") == 0){
+				if(strtok(NULL, delimiter) == NULL){
+					if(src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL)
+						src->gameBoard[row][col] = CH_WHITE_BISHOP;
+					else
+						src->gameBoard[row][col] = CH_BLACK_BISHOP;
+					isNotValid = false;
+				}
+				else
+					printf("Invalid Type\n");
+			}
+			else{
 				printf("Invalid Type\n");
-		}
-		else{
-			printf("Invalid Type\n");
+			}
 		}
 	}
-
 }
 
 CH_GAME_MESSAGE chGameSetMove(CHGame* src, int fRow,int fCol,int toRow,int toCol){\
@@ -280,7 +348,7 @@ CH_GAME_MESSAGE chGameSetMove(CHGame* src, int fRow,int fCol,int toRow,int toCol
 	bool isCorrectCol = false;
 	char c;
 	CHMovesList *list;
-    CHMoveNode *node;
+    CHMoveNode *node = (CHMoveNode *) malloc(sizeof(CHMoveNode));
     node->to_col = toCol;
     node->to_row = toRow;
     node->from_col = fCol;
@@ -292,14 +360,17 @@ CH_GAME_MESSAGE chGameSetMove(CHGame* src, int fRow,int fCol,int toRow,int toCol
 		isCorrectCol = isABlackPiece(c);
 	else
 		isCorrectCol = isAWhitePiece(c);
-	if(!isCorrectCol)
+	if(!isCorrectCol){
+		free(node);
 		return CH_GAME_INVALID_COLOR;
+	}
 	list = createMoveList(src->gameBoard,c,fRow,fCol,src->currentTurn);
 	if(isValidMove(list,toRow,toCol)){
 		src->gameBoard[toRow][toCol] = src->gameBoard[fRow][fCol];
 		src->gameBoard[fRow][fCol] = CH_GAME_EMPTY_ENTRY;
 	}
 	else{
+		free(node);
 		destroyMoveList(list);
 		return CH_GAME_INVALID_MOVE;
 	}

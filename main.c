@@ -12,6 +12,55 @@
 
 #define REC_DEPTH 3
 
+char getColumn(int num){
+    switch (num){
+        case 0:
+            return 'A';
+        case 1:
+            return 'B';
+        case 2:
+            return 'C';
+        case 3:
+            return 'D';
+        case 4:
+            return 'E';
+        case 5:
+            return 'F';
+        case 6:
+            return 'G';
+        case 7:
+            return 'H';
+    }
+}
+
+char *getPieceName(char piece){
+    switch (piece){
+        case 'm':
+        case 'M':
+            return "Pawn";
+        case 'r':
+        case 'R':
+            return "Rook";
+        case 'n':
+        case 'N':
+            return "Night";
+        case 'b':
+        case 'B':
+            return "Bishop";
+        case 'q':
+        case 'Q':
+            return "Queen";
+        case 'k':
+        case 'K':
+            return "King";
+    }
+}
+
+char *getPlayerName(int player){
+    if (player == 0)
+        return "Black";
+    return "White";
+}
 
 void change_turn(CHGame* game,  bool *isTurnChanged){
     if (game->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL) {
@@ -137,25 +186,24 @@ int main() {
                 if (game->gameMode == 2) {
                     printf("Undo command not available in 2 players mode\n");
                 } else {
-                    //need to write the name of the piece and not the character!!!!!!!!!!!!!!!!
                     *best_move = spArrayListGetFirst(game->list);
                     CH_GAME_MESSAGE mes = chGameUndoPrevMove(game);
                     if (mes == CH_GAME_SUCCESS) {
-                        printf("Undo move for player %d : <%d,%c> -> <%d,%c>\n",
-                               game->userColor,
+                        printf("Undo move for player %s : <%d,%c> -> <%d,%c>\n",
+                               getPlayerName(game->userColor),
                                best_move->from_row,
-                               best_move->from_row,
+                               getColumn(best_move->from_col),
                                best_move->to_row,
-                               best_move->to_col);
+                               getColumn(best_move->to_col));
                         *best_move = spArrayListGetFirst(game->list);
                         CH_GAME_MESSAGE mes = chGameUndoPrevMove(game);
                         if (mes == CH_GAME_SUCCESS) {
-                            printf("Undo move for player %d : <%d,%c> -> <%d,%c>\n",
-                                   !game->userColor,
+                            printf("Undo move for player %s : <%d,%c> -> <%d,%c>\n",
+                                   getPlayerName(!game->userColor),
                                    best_move->from_row,
-                                   best_move->from_row,
+                                   getColumn(best_move->from_col),
                                    best_move->to_row,
-                                   best_move->to_col);
+                                   getColumn(best_move->to_col));
                         }
                     }
                 }
@@ -167,13 +215,13 @@ int main() {
             if (end_of_move(game, best_move, &isTurnChanged) == -1) {
                 return -1;
             }
-            //need to write the name of the piece and not the character!!!!!!!!!!!!!!!!
-            printf("Computer: move %c at <%d,%c> to <%d,%d>\n",
-                   best_move->current_piece,
-                   best_move->from_row,
-                   best_move->from_col,
-                   best_move->to_row,
-                   best_move->to_col);
+            printf("Computer: move %s at <%d,%c> to <%d,%c>\n",
+                   getPieceName(best_move->current_piece),
+                   best_move->from_row + 1,
+                   getColumn(best_move->from_col),
+                   best_move->to_row + 1,
+                   getColumn(best_move->to_col));
+            isTurnChanged = true;
         }
     }
     return 0;
