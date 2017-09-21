@@ -1,16 +1,8 @@
-/*
- * main.c
- *
- *  Created on: Aug 30, 2017
- *      Author: sasha
- */
-
 #include "SEMode.h"
 #include "CHGame.h"
 #include "CHParser.h"
 #include "CHMiniMax.h"
 
-#define REC_DEPTH 4
 
 char getColumn(int num){
     switch (num){
@@ -30,6 +22,8 @@ char getColumn(int num){
             return 'G';
         case 7:
             return 'H';
+        default :
+            return '\0';
     }
 }
 
@@ -53,6 +47,8 @@ char *getPieceName(char piece){
         case 'k':
         case 'K':
             return "King";
+        default:
+            return "";
     }
 }
 
@@ -215,7 +211,7 @@ int main() {
                 }
             }
         }else {
-            best_move = alphabeta(chGameCopy(game), game->difficulty, game->currentTurn, best_move); ////////insted of REC_DEPTH should be game->difficulty////////
+            best_move = alphabeta(chGameCopy(game), game->difficulty, game->currentTurn, best_move);
             chGameSetMove(game, best_move->from_row,
                           best_move->from_col, best_move->to_row, best_move->to_col, true);
             if (end_of_move(game, best_move, &isTurnChanged) == -1) {

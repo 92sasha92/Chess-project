@@ -19,7 +19,7 @@
 #define QUEEN_SCORE 9
 #define KING_SCORE 100
 
-#define WIN_SCORE 1000000
+#define WIN_SCORE INT32_MAX
 #define LOOSE_SCORE INT32_MIN
 #define TIE_SCORE -1000
 

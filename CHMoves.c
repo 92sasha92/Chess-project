@@ -489,8 +489,8 @@ CHMovesList *bishopMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 					return NULL ;
 				if(curC != CH_GAME_EMPTY_ENTRY)
 					break;
-			} else
-				break;
+			} else if(isThePieceMyColor(curC, color))
+                break;
 			if (i == 0) {
 				curRow++;
 				curCol++;

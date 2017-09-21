@@ -69,6 +69,7 @@ BestMove *rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer){
     CH_GAME_MESSAGE mes;
     BestMove best, score, new_score;
     CHMovesList* cur_piece_moves_list;
+    CHMovesList* node;
     int i, j;
     int winner = chIsCheckmateOrTie(src);
     if ((depth == 0) || (winner != CH_GAME_NO_WIN_OR_TIE)){
@@ -82,13 +83,14 @@ BestMove *rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer){
         for (i = 0; i < CH_GAME_N_ROWS; i++) {
             for (j = 0; j < CH_GAME_N_COLUMNS; j++) {
                 cur_piece_moves_list = createMoveList(src->gameBoard,src->gameBoard[i][j], i, j, src->currentTurn);
+                node = cur_piece_moves_list;
                 if (cur_piece_moves_list == NULL){
                     return NULL;
                 }
 
-                if ((cur_piece_moves_list->isValid)){
-                    while (cur_piece_moves_list != NULL){
-                        mes = chGameSetMove(src, i, j, cur_piece_moves_list->row, cur_piece_moves_list->col, true);
+                if ((node->isValid)){
+                    while (node != NULL){
+                        mes = chGameSetMove(src, i, j, node->row, node->col, true);
                         if (mes == CH_GAME_SUCCESS){
                             if (src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL) {
                                 src->currentTurn = CH_GAME_BLACK_PLAYER_SYMBOL;
@@ -108,9 +110,10 @@ BestMove *rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer){
                                 printf("problem occurred when trying to undo move\n ");
                             }
                         }
-                        cur_piece_moves_list = cur_piece_moves_list->next;
+                        node = node->next;
                     }
                 }
+                destroyMoveList(cur_piece_moves_list);
             }
         }
     }
@@ -120,13 +123,14 @@ BestMove *rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer){
         for (i = 0; i < CH_GAME_N_ROWS; i++) {
             for (j = 0; j < CH_GAME_N_COLUMNS; j++) {
                 cur_piece_moves_list = createMoveList(src->gameBoard, src->gameBoard[i][j], i, j, src->currentTurn);
+                node = cur_piece_moves_list;
                 if (cur_piece_moves_list == NULL){
                     return NULL;
                 }
 
-                if ((cur_piece_moves_list->isValid)){
-                    while (cur_piece_moves_list != NULL){
-                        mes = chGameSetMove(src, i, j, cur_piece_moves_list->row,cur_piece_moves_list->col, true);
+                if ((node->isValid)){
+                    while (node != NULL){
+                        mes = chGameSetMove(src, i, j, node->row,node->col, true);
                         if (mes == CH_GAME_SUCCESS){
                             if (src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL) {
                                 src->currentTurn = CH_GAME_BLACK_PLAYER_SYMBOL;
@@ -146,13 +150,13 @@ BestMove *rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer){
                                 printf("problem occurred when trying to undo move\n");
                             }
                         }
-                        cur_piece_moves_list = cur_piece_moves_list->next;
+                        node = node->next;
                     }
                 }
+                destroyMoveList(cur_piece_moves_list);
             }
         }
     }
-    destroyMoveList(cur_piece_moves_list);
     return &score;
 }
 
@@ -165,6 +169,7 @@ CHMoveNode* alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* best_mo
     src->list = spArrayListCreate(depth);
     CH_GAME_MESSAGE mes;
     CHMovesList* cur_piece_moves_list = NULL;
+    CHMovesList* node = NULL;
     BestMove score, new_score;
     int i, j, a = INT32_MIN, b = INT32_MAX ;
     int winner = chIsCheckmateOrTie(src);
@@ -172,86 +177,44 @@ CHMoveNode* alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* best_mo
         printf("cant check for best move\n");
         return NULL;
     }
+    score.best_score = INT32_MIN;
+    score.best_depth = -1;
+    for (i = 0; i < CH_GAME_N_ROWS; i++) {
+        for (j = 0; j < CH_GAME_N_COLUMNS; j++) {
+            cur_piece_moves_list = createMoveList(src->gameBoard,src->gameBoard[i][j], i, j, src->currentTurn);
+            node = cur_piece_moves_list;
+            if (cur_piece_moves_list == NULL){
+                return NULL;
+            }
 
-    if(src->currentTurn == maximizer){
-        score.best_score = INT32_MIN;
-        score.best_depth = -1;
-        for (i = 0; i < CH_GAME_N_ROWS; i++) {
-            for (j = 0; j < CH_GAME_N_COLUMNS; j++) {
-                cur_piece_moves_list = createMoveList(src->gameBoard,src->gameBoard[i][j], i, j, src->currentTurn);
-                if (cur_piece_moves_list == NULL){
-                    return NULL;
-                }
-
-                if ((cur_piece_moves_list->isValid)){
-                    while (cur_piece_moves_list != NULL) {
-                        mes = chGameSetMove(src, i, j, cur_piece_moves_list->row,cur_piece_moves_list->col, true);
-                        if (mes == CH_GAME_SUCCESS){
-                            if (src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL) {
-                                src->currentTurn = CH_GAME_BLACK_PLAYER_SYMBOL;
-                            } else {
-                                src->currentTurn = CH_GAME_WHITE_PLAYER_SYMBOL;
-                            }
-                            new_score = *rec_alphabeta(src, depth - 1, a, b, maximizer);
-                            mes = chGameUndoPrevMove(src);
-                            if (mes == CH_GAME_SUCCESS){
-                                if ((score.best_score < new_score.best_score) || ((score.best_score == new_score.best_score) && (score.best_depth < new_score.best_depth))){
-                                    score = new_score;
-                                    set_cur_best_move(src, best_move, i, j, cur_piece_moves_list);
-                                }
-                                a = MAX(a, score.best_score);
-                                if (b <= a)
-                                    break;
-                            } else {
-                                printf("problem occurred when trying to undo move\n ");
-                            }
+            if ((cur_piece_moves_list->isValid)){
+                while (node != NULL) {
+                    mes = chGameSetMove(src, i, j, node->row,node->col, true);
+                    if (mes == CH_GAME_SUCCESS){
+                        if (src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL) {
+                            src->currentTurn = CH_GAME_BLACK_PLAYER_SYMBOL;
+                        } else {
+                            src->currentTurn = CH_GAME_WHITE_PLAYER_SYMBOL;
                         }
-                        cur_piece_moves_list = cur_piece_moves_list->next;
+                        new_score = *rec_alphabeta(src, depth - 1, a, b, maximizer);
+                        mes = chGameUndoPrevMove(src);
+                        if (mes == CH_GAME_SUCCESS){
+                            if ((score.best_score < new_score.best_score) || ((score.best_score == new_score.best_score) && (score.best_depth < new_score.best_depth))){
+                                score = new_score;
+                                set_cur_best_move(src, best_move, i, j, node);
+                            }
+                            a = MAX(a, score.best_score);
+                            if (b <= a)
+                                break;
+                        } else {
+                            printf("problem occurred when trying to undo move\n ");
+                        }
                     }
+                    node = node->next;
                 }
             }
+            destroyMoveList(cur_piece_moves_list);
         }
     }
-
-    else{
-        printf("hii");
-//        score = INT32_MAX;
-//        for (i = 0; i < CH_GAME_N_ROWS; i++) {
-//            for (j = 0; j < CH_GAME_N_COLUMNS; j++) {
-//                CHMovesList* cur_piece_moves_list = createMoveList(src->gameBoard,src->gameBoard[i][j], i, j, src->currentTurn);
-//                if (cur_piece_moves_list == NULL){
-//                    return NULL;
-//                }
-//
-//                if ((cur_piece_moves_list->isValid)){
-//                    while (cur_piece_moves_list != NULL){
-//                        mes = chGameSetMove(src, i, j, cur_piece_moves_list->row,cur_piece_moves_list->col, true);
-//                        if (mes == CH_GAME_SUCCESS){
-//                            if (src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL) {
-//                                src->currentTurn = CH_GAME_BLACK_PLAYER_SYMBOL;
-//                            } else {
-//                                src->currentTurn = CH_GAME_WHITE_PLAYER_SYMBOL;
-//                            }
-//                            new_score = rec_alphabeta(src, depth - 1, a, b, maximizer);
-//                            mes = chGameUndoPrevMove(src);
-//                            if (mes == CH_GAME_SUCCESS){
-//                                if (score >= new_score){
-//                                    score = new_score;
-//                                    set_cur_best_move(src, best_move, i, j, cur_piece_moves_list);
-//                                }
-//                                b = MIN(b, score);
-//                                if (b < a)
-//                                    break;
-//                            } else {
-//                                printf("problem occurred when trying to undo move\n ");
-//                            }
-//                        }
-//                        cur_piece_moves_list = cur_piece_moves_list->next;
-//                    }
-//                }
-//            }
-//        }
-    }
-    destroyMoveList(cur_piece_moves_list);
     return best_move;
 }

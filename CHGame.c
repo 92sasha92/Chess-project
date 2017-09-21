@@ -433,7 +433,8 @@ CH_GAME_MESSAGE isCheck(CHGame* src, int is_computer){
 
 
 CH_GAME_MESSAGE chIsCheckmateOrTie(CHGame* src){
-	int i,j,kRow,kCol;
+	int i, j, kRow = 0, kCol = 0;
+
 	char curC;
 	CHMovesList *list;
 	if(src == NULL)
