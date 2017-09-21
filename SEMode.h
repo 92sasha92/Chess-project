@@ -15,6 +15,7 @@
 #include "SPBufferset.h"
 
 
+
 #define MAX_LINE_SIZE 1024
 CHGame* startSettingsMode();
 

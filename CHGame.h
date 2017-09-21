@@ -12,7 +12,6 @@
 #include "CHMoves.h"
 
 
-
 typedef struct ch_nodeForSort{
 	int row;
 	int col;
@@ -115,7 +114,7 @@ CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol);
  * CH_GAME_INVALID_MOVE - If the move is illegal for the piece in the position <x,y>.
  * CH_GAME_SUCCESS - otherwise
  */
-CH_GAME_MESSAGE chGameSetMove(CHGame* src, int fRow,int fCol,int toRow,int toCol);
+CH_GAME_MESSAGE chGameSetMove(CHGame* src, int fRow,int fCol,int toRow,int toCol, bool is_alphaBeta_func);
 
 
 /**

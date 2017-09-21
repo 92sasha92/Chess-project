@@ -10,7 +10,7 @@
 #include "CHParser.h"
 #include "CHMiniMax.h"
 
-#define REC_DEPTH 3
+#define REC_DEPTH 4
 
 char getColumn(int num){
     switch (num){
@@ -43,7 +43,7 @@ char *getPieceName(char piece){
             return "Rook";
         case 'n':
         case 'N':
-            return "Night";
+            return "Knight";
         case 'b':
         case 'B':
             return "Bishop";
@@ -141,7 +141,7 @@ int main() {
             if (command.cmd == CH_MOVE) {
                 if (command.validArg) {
                     CH_GAME_MESSAGE mes = chGameSetMove(game, command.fRow,
-                                                        command.fColomn, command.toRow, command.toColomn);
+                                                        command.fColomn, command.toRow, command.toColomn, false);
                     if (mes == CH_GAME_INVALID_COLOR) {
                         printf("The specified position does not contain your piece\n");
                     } else if (mes == CH_GAME_INVALID_MOVE) {
@@ -156,8 +156,7 @@ int main() {
                 }
             } else if (command.cmd == CH_GET_MOVES) {
                 if (command.validArg) {
-                    CH_GAME_MESSAGE mes = chGameShowMoves(game, command.fRow,
-                                                          command.fColomn);
+                    CH_GAME_MESSAGE mes = chGameShowMoves(game, command.fRow, command.fColomn);
                     if (mes == CH_GAME_INVALID_COLOR) {
                         printf("The specified position does not contain your piece\n");
                     } else if (mes == CH_GAME_INVALID_MOVE) {
@@ -177,6 +176,7 @@ int main() {
                     return -1;
                 }
                 printf("Restarting...\n");
+                isTurnChanged = true;
             } else if (command.cmd == CH_QUIT) {
                 chGameDestroy(game);
                 free(best_move);
@@ -186,32 +186,38 @@ int main() {
                 if (game->gameMode == 2) {
                     printf("Undo command not available in 2 players mode\n");
                 } else {
-                    *best_move = spArrayListGetFirst(game->list);
-                    CH_GAME_MESSAGE mes = chGameUndoPrevMove(game);
-                    if (mes == CH_GAME_SUCCESS) {
-                        printf("Undo move for player %s : <%d,%c> -> <%d,%c>\n",
-                               getPlayerName(game->userColor),
-                               best_move->from_row,
-                               getColumn(best_move->from_col),
-                               best_move->to_row,
-                               getColumn(best_move->to_col));
+                    if (game->list->actualSize >= 2){
                         *best_move = spArrayListGetFirst(game->list);
                         CH_GAME_MESSAGE mes = chGameUndoPrevMove(game);
                         if (mes == CH_GAME_SUCCESS) {
                             printf("Undo move for player %s : <%d,%c> -> <%d,%c>\n",
-                                   getPlayerName(!game->userColor),
-                                   best_move->from_row,
-                                   getColumn(best_move->from_col),
-                                   best_move->to_row,
-                                   getColumn(best_move->to_col));
+                                   getPlayerName(game->userColor),
+                                   (best_move->to_row + 1),
+                                   getColumn(best_move->to_col),
+                                   (best_move->from_row + 1),
+                                   getColumn(best_move->from_col));
+                            *best_move = spArrayListGetFirst(game->list);
+                            CH_GAME_MESSAGE mes = chGameUndoPrevMove(game);
+                            if (mes == CH_GAME_SUCCESS) {
+                                printf("Undo move for player %s : <%d,%c> -> <%d,%c>\n",
+                                       getPlayerName(!game->userColor),
+                                       (best_move->to_row + 1),
+                                       getColumn(best_move->to_col),
+                                       (best_move->from_row + 1),
+                                       getColumn(best_move->from_col));
+                            }
                         }
+                        isTurnChanged = true;
+                    } else {
+                        printf("Empty history, move cannot be undone\n");
+                        isTurnChanged = false;
                     }
                 }
             }
         }else {
-            best_move = alphabeta(chGameCopy(game), REC_DEPTH, game->currentTurn, best_move);
+            best_move = alphabeta(chGameCopy(game), game->difficulty, game->currentTurn, best_move); ////////insted of REC_DEPTH should be game->difficulty////////
             chGameSetMove(game, best_move->from_row,
-                          best_move->from_col, best_move->to_row, best_move->to_col);
+                          best_move->from_col, best_move->to_row, best_move->to_col, true);
             if (end_of_move(game, best_move, &isTurnChanged) == -1) {
                 return -1;
             }
@@ -226,4 +232,3 @@ int main() {
     }
     return 0;
 }
-

@@ -19,9 +19,14 @@
 #define QUEEN_SCORE 9
 #define KING_SCORE 100
 
-#define WIN_SCORE INT32_MAX
+#define WIN_SCORE 1000000
 #define LOOSE_SCORE INT32_MIN
 #define TIE_SCORE -1000
+
+typedef struct Move {
+  int best_score;
+  int best_depth;
+} BestMove;
 
 /** return the the score of that specific piece.
  * @param piece - a specific piece name
@@ -30,7 +35,7 @@
  * @return
  * the piece score in accordance to the maximizer.
  */
-int get_piece_score(char piece, int maximizer, CHGame* src);
+int get_piece_score(char piece, CHGame* src, int maximizer);
 
 /** return the the score of the board.
  * @param maximizer - the player hwo call the function.
@@ -60,7 +65,7 @@ CHMoveNode* set_cur_best_move(CHGame* src, CHMoveNode* best_move, int i, int j, 
  * @return
  * the optimal score for this sub tree in respect to the minimum or maximum level.
  */
-int rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer);
+BestMove *rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer);
 
 /** compute the best option to move.
  * @param src - the game struct.

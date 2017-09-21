@@ -15,7 +15,7 @@ int currentTurn = 1;
 
 void setGameMode(int modeNum){
 	if (modeNum != 1 &&  modeNum != 2){
-		printf("Wrong game mode\n");
+		printf("Wrong difficulty level. The value should be between 1 to 5\n");
 	}
 	else{
 		gameMode = modeNum;
@@ -93,7 +93,7 @@ int load(char *path,CHGame *src){
 	char buf[20];
 	FILE *fp = fopen(path,"r");
 	if(fp == NULL){
-		printf("Error: File doesn�t exist or cannot be opened\n");
+		printf("Error: File doesn’t exist or cannot be opened\n");
 		return 0;
 	}
 	fscanf(fp, "%*[^\n]");
@@ -105,7 +105,7 @@ int load(char *path,CHGame *src){
 	if(strcmp(buf,"<current_turn>") != 0)
 		return exitload(fp);
 	fscanf(fp, "%d",&currentTurn);
-    fscanf(fp,"%15s",buf);
+	fscanf(fp,"%15s",buf);
 	if(strcmp(buf,"</current_turn>") != 0)
 		return exitload(fp);
 	fscanf(fp, "%*[^\n]");
@@ -113,7 +113,7 @@ int load(char *path,CHGame *src){
 	if(strcmp(buf,"<game_mode>") != 0)
 		return exitload(fp);
 	fscanf(fp, "%d",&gameMode);
-    fscanf(fp,"%12s",buf);
+	fscanf(fp,"%12s",buf);
 	if(strcmp(buf,"</game_mode>") != 0)
 		return exitload(fp);
 	fscanf(fp, "%*[^\n]");
@@ -122,7 +122,7 @@ int load(char *path,CHGame *src){
 		if(strcmp(buf,"<difficulty>") != 0)
 			return exitload(fp);
 		fscanf(fp, "%d",&gameDifficulty);
-	    fscanf(fp,"%13s",buf);
+		fscanf(fp,"%13s",buf);
 		if(strcmp(buf,"</difficulty>") != 0)
 			return exitload(fp);
 		fscanf(fp, "%*[^\n]");
@@ -130,7 +130,7 @@ int load(char *path,CHGame *src){
 		if(strcmp(buf,"<user_color>") != 0)
 			return exitload(fp);
 		fscanf(fp, "%d",&userColor);
-	    fscanf(fp,"%13s",buf);
+		fscanf(fp,"%13s",buf);
 		if(strcmp(buf,"</user_color>") != 0)
 			return exitload(fp);
 		fscanf(fp, "%*[^\n]");
@@ -240,8 +240,3 @@ CHGame* startSettingsMode(){
 	src = chGameCreate(gameMode,userColor,gameDifficulty,currentTurn);
 	return src;
 }
-
-
-
-
-

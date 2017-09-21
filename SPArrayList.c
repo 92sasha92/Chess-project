@@ -9,7 +9,7 @@ SPArrayList* spArrayListCreate(int maxSize){
 	}
 	list->maxSize = maxSize;
 	list->actualSize = 0;
-	list->elements = (int *)malloc(sizeof(CHMoveNode)*list->maxSize);
+	list->elements = (CHMoveNode *)malloc(sizeof(CHMoveNode)*list->maxSize);
 	if(!(list->elements)){
 		return NULL;
 	}
@@ -27,7 +27,7 @@ SPArrayList* spArrayListCopy(SPArrayList* src){
 	}
 	copyList->actualSize = src->actualSize;
 	copyList->maxSize = src->maxSize;
-	copyList->elements = (int *)malloc(sizeof(CHMoveNode)*src->maxSize);
+	copyList->elements = (CHMoveNode *)malloc(sizeof(CHMoveNode)*src->maxSize);
 	if(!(copyList->elements)){
 		return NULL;
 	}
@@ -62,15 +62,17 @@ SP_ARRAY_LIST_MESSAGE spArrayListAddAt(SPArrayList* src, CHMoveNode elem, int in
 	if(src == NULL || index < 0 || index > src->actualSize){
 		return SP_ARRAY_LIST_INVALID_ARGUMENT;
 	}
-	else if(src->actualSize == src->maxSize){
-		return SP_ARRAY_LIST_FULL;
-	}
+//	else if(src->actualSize == src->maxSize){
+//		return SP_ARRAY_LIST_FULL;
+//	}
 	else{
-		for(int i = src->actualSize;i > index;i--){
+		for(int i = src->actualSize ; i > index; i--){
 			src->elements[i] = src->elements[i-1];
 		}
 		src->elements[index] = elem;
-		src->actualSize +=1;
+		if (src->actualSize != src->maxSize){
+			src->actualSize +=1;
+		}
 		return SP_ARRAY_LIST_SUCCESS;
 	}
 }
@@ -97,7 +99,7 @@ SP_ARRAY_LIST_MESSAGE spArrayListRemoveAt(SPArrayList* src, int index){
 		return SP_ARRAY_LIST_EMPTY;
 	}
 	else{
-		for(int i = index;i < src->actualSize - 1;i++){
+		for(int i = index; i < src->actualSize - 1; i++){
 			src->elements[i] = src->elements[i+1];
 		}
 		src->actualSize -=1;

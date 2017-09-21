@@ -146,34 +146,34 @@ int cmpfunc(const void * a, const void * b) {
 }
 
 void printMoves(CHGame* src,CHMovesList *list,char c,int fRow,int fCol){
-	CHMovesList *node = list;
-	int numOfMoves = 0;
+    CHMovesList *node = list;
+    int numOfMoves = 0;
     int i = 0;
-	while(node != NULL){
-		node = node->next;
-		numOfMoves++;
-	}
-	node = list;
-	CHNodeForSort *arr = (CHNodeForSort *)malloc(sizeof(CHNodeForSort)*numOfMoves);
-	while(node != NULL){
-		arr[i].row = node->row;
-		arr[i].col = node->col;
-		node = node->next;
-		i++;
-	}
-	qsort(arr,numOfMoves, sizeof(CHNodeForSort), cmpfunc);
-	for(i = 0;i < numOfMoves;i++){
-		printf("<%d,%c>",arr[i].row + 1,arr[i].col + 65);
-		if(/*src->gameMode == 1 && */src->difficulty < 3){
-			if(!isMyPieceSafe(src->gameBoard,c,fRow,fCol,arr[i].row,arr[i].col,src->currentTurn,arr[i].row,arr[i].col,REGULAR_PIECE_MODE)){
-				printf("*");
-			}
-			if(!isThePieceMyColor(src->gameBoard[arr[i].row][arr[i].col],src->currentTurn) && src->gameBoard[arr[i].row][arr[i].col] != CH_GAME_EMPTY_ENTRY)
-				printf("^");
-		}
-		printf("\n");
-	}
-	free(arr);
+    while(node != NULL){
+        node = node->next;
+        numOfMoves++;
+    }
+    node = list;
+    CHNodeForSort *arr = (CHNodeForSort *)malloc(sizeof(CHNodeForSort)*numOfMoves);
+    while(node != NULL){
+        arr[i].row = node->row;
+        arr[i].col = node->col;
+        node = node->next;
+        i++;
+    }
+    qsort(arr,numOfMoves, sizeof(CHNodeForSort), cmpfunc);
+    for(i = 0;i < numOfMoves;i++){
+        printf("<%d,%c>",arr[i].row + 1,arr[i].col + 65);
+        if(/*src->gameMode == 1 && */src->difficulty < 3){
+            if(!isMyPieceSafe(src->gameBoard,c,fRow,fCol,arr[i].row,arr[i].col,src->currentTurn,arr[i].row,arr[i].col,REGULAR_PIECE_MODE)){
+                printf("*");
+            }
+            if(!isThePieceMyColor(src->gameBoard[arr[i].row][arr[i].col],src->currentTurn) && src->gameBoard[arr[i].row][arr[i].col] != CH_GAME_EMPTY_ENTRY)
+                printf("^");
+        }
+        printf("\n");
+    }
+    free(arr);
 }
 
 CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol){
@@ -205,10 +205,10 @@ CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol){
 
 
 
-void chPawnPromotion(CHGame* src,int row,int col){
+void chPawnPromotion(CHGame* src,int row,int col, bool is_alphaBeta_func){
 	int best_score = INT32_MIN, cur_score;
 	char best_piece = ' ';
-	if ((src->gameMode == 1) && (src->currentTurn != src->userColor)) {
+	if (((src->gameMode == 1) && (src->currentTurn != src->userColor)) || (is_alphaBeta_func)) {
 		if (src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL) {
 			src->gameBoard[row][col] = CH_WHITE_QUEEN;
 			cur_score = get_board_score(src->currentTurn, src);
@@ -342,7 +342,7 @@ void chPawnPromotion(CHGame* src,int row,int col){
 	}
 }
 
-CH_GAME_MESSAGE chGameSetMove(CHGame* src, int fRow,int fCol,int toRow,int toCol){\
+CH_GAME_MESSAGE chGameSetMove(CHGame* src, int fRow,int fCol,int toRow,int toCol, bool is_alphaBeta_func){\
     if(src == NULL)
         return CH_GAME_INVALID_ARGUMENT;
 	bool isCorrectCol = false;
@@ -375,8 +375,8 @@ CH_GAME_MESSAGE chGameSetMove(CHGame* src, int fRow,int fCol,int toRow,int toCol
 		return CH_GAME_INVALID_MOVE;
 	}
 	destroyMoveList(list);
-	if((src->gameBoard[toRow][toCol] == CH_BLACK_PAWN && toRow == 0) || (src->gameBoard[toRow][toCol] == CH_WHITE_PAWN && toRow == CH_GAME_N_ROWS - 1)){
-		chPawnPromotion(src,toRow,toCol);
+	if(((src->gameBoard[toRow][toCol] == CH_BLACK_PAWN) && (toRow == 0)) || ((src->gameBoard[toRow][toCol] == CH_WHITE_PAWN) && (toRow == CH_GAME_N_ROWS - 1))){
+		chPawnPromotion(src,toRow,toCol,is_alphaBeta_func);
 	}
     spArrayListAddFirst(src->list, *node);
 	return CH_GAME_SUCCESS;
@@ -505,13 +505,13 @@ CH_GAME_MESSAGE chGameUndoPrevMove(CHGame* src){
 		return CH_GAME_INVALID_ARGUMENT;
 	}
 
-	if (spArrayListIsEmpty(src->list) || src->list == NULL || src->list->actualSize < 1){
+	if (src->list == NULL || spArrayListIsEmpty(src->list) ||  src->list->actualSize < 1){
         printf("Empty history, move cannot be undo\n");
 		return CH_GAME_NO_HISTORY;
 	}
 
-	src->gameBoard[src->list->elements->to_row][src->list->elements->to_col] = src->list->elements->piece_eaten;
-	src->gameBoard[src->list->elements->from_row][src->list->elements->from_col] = src->list->elements->current_piece;
+	src->gameBoard[src->list->elements[0].to_row][src->list->elements[0].to_col] = src->list->elements[0].piece_eaten;
+	src->gameBoard[src->list->elements[0].from_row][src->list->elements[0].from_col] = src->list->elements[0].current_piece;
 
 	if(src->currentTurn == CH_GAME_BLACK_PLAYER_SYMBOL){ /* set the currentPlayer turn */
 		src->currentTurn = CH_GAME_WHITE_PLAYER_SYMBOL;

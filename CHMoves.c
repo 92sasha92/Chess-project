@@ -343,10 +343,10 @@ bool isMyPieceSafe(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, in
 
 CHMovesList *pawnMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 		char c, int row, int col, CHMovesList *list, int color,int kRow,int kCol) {
-	char curC;
+	char curC,curCMinus;
 	int curRow = row;
 	int curCol = col;
-	int i;
+	int i,curRowMinus1;
 	if (color == CH_GAME_BLACK_PLAYER_SYMBOL)
 		curRow = row - 1;
 	else
@@ -370,13 +370,19 @@ CHMovesList *pawnMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 		}
 	}
 	curCol = col;
+
 	if((color == CH_GAME_BLACK_PLAYER_SYMBOL && row == 6) || (color == CH_GAME_WHITE_PLAYER_SYMBOL && row == 1)){
-		if(color == CH_GAME_BLACK_PLAYER_SYMBOL)
+		if(color == CH_GAME_BLACK_PLAYER_SYMBOL){
 			curRow = row - 2;
-		else
+			curRowMinus1 = row - 1;
+		}
+		else{
 			curRow = row + 2;
+			curRowMinus1 = row + 1;
+		}
 		curC = gameBoard[curRow][curCol];
-		if (!isThePieceMyColor(curC, color) && isMyPieceSafe(gameBoard,c,row,col,curRow,curCol,color, kRow, kCol,KING_MODE)) {
+		curCMinus = gameBoard[curRowMinus1][curCol];
+		if ( curCMinus == CH_GAME_EMPTY_ENTRY && curC == CH_GAME_EMPTY_ENTRY && isMyPieceSafe(gameBoard,c,row,col,curRow,curCol,color, kRow, kCol,KING_MODE)) {
 			list = insertFirst(list, curRow, curCol);
 			if (list == NULL )
 				return NULL ;
