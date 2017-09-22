@@ -114,7 +114,7 @@ CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol);
  * CH_GAME_INVALID_MOVE - If the move is illegal for the piece in the position <x,y>.
  * CH_GAME_SUCCESS - otherwise
  */
-CH_GAME_MESSAGE chGameSetMove(CHGame* src, int fRow,int fCol,int toRow,int toCol, bool is_alphaBeta_func);
+CH_GAME_MESSAGE chGameSetMove(CHGame* src, char peice, int fRow,int fCol,int toRow,int toCol, bool is_alphaBeta_func);
 
 
 /**
@@ -183,5 +183,7 @@ CHGame* chGameCopy(CHGame* src);
  *                                 board is removed and the current player is changed
  */
 CH_GAME_MESSAGE chGameUndoPrevMove(CHGame* src);
+
+void chPawnPromotion(CHGame* src,int row,int col, bool is_alphaBeta_func);
 
 #endif /* CHGAME_H_ */

@@ -33,6 +33,7 @@
 #define MAX_LINE_LENGTH 1024
 #define KING_MODE 0
 #define REGULAR_PIECE_MODE 1
+#define CH_ERROR_MOVE_DEPTH -2
 
 
 typedef struct ch_list{

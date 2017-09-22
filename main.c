@@ -113,6 +113,7 @@ int main() {
     SP_BUFF_SET();
     char strCommand[MAX_LINE_SIZE];
     CHCommand command;
+    CH_GAME_MESSAGE mes;
     bool isTurnChanged = true;
     CHMoveNode *best_move = (CHMoveNode *) malloc(sizeof(CHMoveNode));
     if (!best_move) {
@@ -136,7 +137,7 @@ int main() {
             isTurnChanged = false;
             if (command.cmd == CH_MOVE) {
                 if (command.validArg) {
-                    CH_GAME_MESSAGE mes = chGameSetMove(game, command.fRow,
+                    CH_GAME_MESSAGE mes = chGameSetMove(game, game->gameBoard[command.fRow][command.fColomn], command.fRow,
                                                         command.fColomn, command.toRow, command.toColomn, false);
                     if (mes == CH_GAME_INVALID_COLOR) {
                         printf("The specified position does not contain your piece\n");
@@ -184,7 +185,7 @@ int main() {
                 } else {
                     if (game->list->actualSize >= 2){
                         *best_move = spArrayListGetFirst(game->list);
-                        CH_GAME_MESSAGE mes = chGameUndoPrevMove(game);
+                        mes = chGameUndoPrevMove(game);
                         if (mes == CH_GAME_SUCCESS) {
                             printf("Undo move for player %s : <%d,%c> -> <%d,%c>\n",
                                    getPlayerName(game->userColor),
@@ -211,8 +212,13 @@ int main() {
                 }
             }
         }else {
-            best_move = alphabeta(chGameCopy(game), game->difficulty, game->currentTurn, best_move);
-            chGameSetMove(game, best_move->from_row,
+            mes = alphabeta(chGameCopy(game), game->difficulty, game->currentTurn, best_move);
+            if (mes != CH_GAME_SUCCESS) {
+                chGameDestroy(game);
+                free(best_move);
+                return -1;
+            }
+            chGameSetMove(game, best_move->current_piece, best_move->from_row,
                           best_move->from_col, best_move->to_row, best_move->to_col, true);
             if (end_of_move(game, best_move, &isTurnChanged) == -1) {
                 return -1;
