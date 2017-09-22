@@ -29,7 +29,7 @@ bool isThePieceMyColor(char c, int color) {
 
 void findKing(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color,int *kRow,int *kCol){
 	int i,j;
-	bool isKingFound;
+	bool isKingFound = false;
 	for(i = 0; i < CH_GAME_N_ROWS;i++){
 		for(j = 0;j < CH_GAME_N_COLUMNS;j++){
 			if((color == CH_GAME_WHITE_PLAYER_SYMBOL && gameBoard[i][j] == CH_WHITE_KING) || (color == CH_GAME_BLACK_PLAYER_SYMBOL && gameBoard[i][j] == CH_BLACK_KING)){
@@ -416,7 +416,7 @@ CHMovesList *rookMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 					return NULL ;
 				if(curC != CH_GAME_EMPTY_ENTRY)
 					break;
-			} else if(isThePieceMyColor(curC, color))
+			} else if(curC != CH_GAME_EMPTY_ENTRY)
 				break;
 			if (i == 0)
 				curRow++;
@@ -489,7 +489,7 @@ CHMovesList *bishopMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 					return NULL ;
 				if(curC != CH_GAME_EMPTY_ENTRY)
 					break;
-			} else if(isThePieceMyColor(curC, color))
+			} else if(curC != CH_GAME_EMPTY_ENTRY)
                 break;
 			if (i == 0) {
 				curRow++;

@@ -8,6 +8,7 @@
 
 #include "CHGame.h"
 #include "CHMiniMax.h"
+#include "CHMoves.h"
 #include "SPBufferset.h"
 
 void defaultBoard(CHGame *src){
@@ -60,7 +61,7 @@ int chGameCreateMode1(CHGame* src,int difficulty,int userColor){
 		if(difficulty < 1 || 4 < difficulty)
 			return 0;
 		src->difficulty = difficulty;
-		src->list = spArrayListCreate(3); /* every undo move include computer and user moves */
+		src->list = spArrayListCreate(6); /* every undo move include computer and user moves */
 		if (!(src->list)) {
 			spArrayListDestroy(src->list);
 			free(src);
