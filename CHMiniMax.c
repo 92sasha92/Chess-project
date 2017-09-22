@@ -102,6 +102,7 @@ BestMove rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer){
                             }
 
                             if (new_score.best_depth == CH_ERROR_MOVE_DEPTH){
+                                destroyMoveList(cur_piece_moves_list);
                                 return error_move;
                             }
                             mes = chGameUndoPrevMove(src);
@@ -149,6 +150,7 @@ BestMove rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer){
                             }
 
                             if (new_score.best_depth == CH_ERROR_MOVE_DEPTH){
+                                destroyMoveList(cur_piece_moves_list);
                                 return error_move;
                             }
                             mes = chGameUndoPrevMove(src);
@@ -242,11 +244,14 @@ BestMove pawn_promotion_rec_alphabeta(CHGame* src, int depth , int a, int b, int
 
 CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* best_move ){
     if(src == NULL){
-        printf("there is no game to check alphabeta function\n");
         return CH_GAME_INVALID_ARGUMENT;
     }
     spArrayListDestroy(src->list);
     src->list = spArrayListCreate(depth);
+    if (!(src->list)) {
+        chGameDestroy(src);
+        return CH_GAME_MEMORY_PROBLEM;
+    }
     CH_GAME_MESSAGE mes;
     CHMovesList* cur_piece_moves_list = NULL;
     CHMovesList* node = NULL;
@@ -254,7 +259,7 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
     int i, j, a = INT32_MIN, b = INT32_MAX ;
     int winner = chIsCheckmateOrTie(src);
     if ((depth == 0) || (winner != CH_GAME_NO_WIN_OR_TIE)){
-        printf("cant check for best move\n");
+        chGameDestroy(src);
         return CH_GAME_INVALID_ARGUMENT;
     }
     score.best_score = INT32_MIN;
@@ -264,6 +269,7 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
             cur_piece_moves_list = createMoveList(src->gameBoard,src->gameBoard[i][j], i, j, src->currentTurn);
             node = cur_piece_moves_list;
             if (cur_piece_moves_list == NULL){
+                chGameDestroy(src);
                 return CH_GAME_MEMORY_PROBLEM;
             }
 
@@ -283,6 +289,8 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
                         }
 
                         if (new_score.best_depth == CH_ERROR_MOVE_DEPTH){
+                            chGameDestroy(src);
+                            destroyMoveList(cur_piece_moves_list);
                             return CH_GAME_MEMORY_PROBLEM;
                         }
                         mes = chGameUndoPrevMove(src);
@@ -304,5 +312,6 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
             destroyMoveList(cur_piece_moves_list);
         }
     }
+    chGameDestroy(src);
     return CH_GAME_SUCCESS;
 }

@@ -63,7 +63,6 @@ int chGameCreateMode1(CHGame* src,int difficulty,int userColor){
 		src->difficulty = difficulty;
 		src->list = spArrayListCreate(6); /* every undo move include computer and user moves */
 		if (!(src->list)) {
-			spArrayListDestroy(src->list);
 			free(src);
 			printf("Error: malloc has failed\n");
 			return 0;
