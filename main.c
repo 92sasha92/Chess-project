@@ -1,5 +1,4 @@
 #include "SEMode.h"
-#include "CHGame.h"
 #include "CHParser.h"
 #include "CHMiniMax.h"
 
@@ -31,31 +30,31 @@ char *getPieceName(char piece){
     switch (piece){
         case 'm':
         case 'M':
-            return "Pawn";
+            return "pawn";
         case 'r':
         case 'R':
-            return "Rook";
+            return "rook";
         case 'n':
         case 'N':
-            return "Knight";
+            return "knight";
         case 'b':
         case 'B':
-            return "Bishop";
+            return "bishop";
         case 'q':
         case 'Q':
-            return "Queen";
+            return "queen";
         case 'k':
         case 'K':
-            return "King";
+            return "king";
         default:
             return "";
     }
 }
 
 char *getPlayerName(int player){
-    if (player == 0)
-        return "Black";
-    return "White";
+    if (player != 0)
+        return "black";
+    return "white";
 }
 
 void change_turn(CHGame* game,  bool *isTurnChanged){
@@ -77,7 +76,6 @@ int end_of_move(CHGame* game, CHMoveNode* best_move, bool *isTurnChanged){
         return -1;
     }
     else if (winner != CH_GAME_NO_WIN_OR_TIE) {
-        chGamePrintBoard(game);
         if (winner == CH_GAME_WHITE_WINS)
             printf("Checkmate! white player wins the game\n");
         else if (winner == CH_GAME_BLACK_WINS)
@@ -87,10 +85,9 @@ int end_of_move(CHGame* game, CHMoveNode* best_move, bool *isTurnChanged){
         }
         chGameDestroy(game);
         free (best_move);
-        printf("Exiting...\n");
         return -1;
     } else {
-        if((game->gameMode == 1) && (game->currentTurn != game->userColor)){
+        if((game->gameMode == 1) && (game->currentTurn == game->userColor)){
             if (isCheck(game, 1) == CH_GAME_INVALID_ARGUMENT) {
                 chGameDestroy(game);
                 free(best_move);
@@ -212,7 +209,9 @@ int main() {
                 }
             }
         }else {
-            mes = alphabeta(chGameCopy(game), game->difficulty, game->currentTurn, best_move);
+            CHGame *copyGame= chGameCopy(game);
+            mes = alphabeta(copyGame, game->difficulty, game->currentTurn, best_move);
+            chGameDestroy(copyGame);
             if (mes != CH_GAME_SUCCESS) {
                 chGameDestroy(game);
                 free(best_move);
@@ -220,15 +219,16 @@ int main() {
             }
             chGameSetMove(game, best_move->current_piece, best_move->from_row,
                           best_move->from_col, best_move->to_row, best_move->to_col, true);
-            if (end_of_move(game, best_move, &isTurnChanged) == -1) {
-                return -1;
-            }
+
             printf("Computer: move %s at <%d,%c> to <%d,%c>\n",
                    getPieceName(best_move->current_piece),
                    best_move->from_row + 1,
                    getColumn(best_move->from_col),
                    best_move->to_row + 1,
                    getColumn(best_move->to_col));
+            if (end_of_move(game, best_move, &isTurnChanged) == -1) {
+                return -1;
+            }
             isTurnChanged = true;
         }
     }

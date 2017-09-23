@@ -29,6 +29,7 @@ SPArrayList* spArrayListCopy(SPArrayList* src){
 	copyList->maxSize = src->maxSize;
 	copyList->elements = (CHMoveNode *)malloc(sizeof(CHMoveNode)*src->maxSize);
 	if(!(copyList->elements)){
+        free(copyList);
 		return NULL;
 	}
 	for(int i = 0;i < src->actualSize;i++){

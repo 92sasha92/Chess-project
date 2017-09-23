@@ -1,10 +1,3 @@
-/*
- * CHMoves.c
- *
- *  Created on: Aug 29, 2017
- *      Author: sasha
- */
-
 #include "CHMoves.h"
 
 bool isABlackPiece(char c) {

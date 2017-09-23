@@ -1,10 +1,3 @@
-/*
- * SettingsParser.c
- *
- *  Created on: Aug 26, 2017
- *      Author: sasha
- */
-
 #include "SEParser.h"
 
 bool seParserIsInt(const char* str) {

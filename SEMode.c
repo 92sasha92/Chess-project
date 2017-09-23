@@ -1,9 +1,3 @@
-/*
- * SettingsMode.c
- *
- *  Created on: Aug 26, 2017
- *      Author: sasha
- */
 #include "SEMode.h"
 int gameMode = 1;
 int gameDifficulty = 2;

@@ -1,10 +1,3 @@
-/*
- * CHGame.h
- *
- *  Created on: Aug 25, 2017
- *      Author: sasha
- */
-
 #ifndef CHGAME_H_
 #define CHGAME_H_
 

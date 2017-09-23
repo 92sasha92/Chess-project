@@ -1,17 +1,9 @@
-/*
- * CHParser.c
- *
- *  Created on: Aug 29, 2017
- *      Author: sasha
- */
-
-
 #include "CHParser.h"
 
 
 CHCommand parseMove(char * cur,char delimiter[8]){
 	int i;
-	char x,y;
+	char x,y,z;
 	CHCommand command;
 	command.cmd = CH_INVALID_LINE;
 	command.validArg = false;
@@ -24,6 +16,12 @@ CHCommand parseMove(char * cur,char delimiter[8]){
 			x = cur[0];
 			cur++;
 			if(x > '0' && x < '9' ){
+                z = cur[0];
+                while(z >= '0' && z <= '9' ){
+                    cur++;
+                    z = cur[0];
+                    command.validArg = false;
+                }
 				if(cur[0] != ',')
 					return command;
 				cur++;
@@ -51,7 +49,9 @@ CHCommand parseMove(char * cur,char delimiter[8]){
 				command.validArg = false;
 			if(i == 0 &&(cur = strtok(NULL,delimiter)) == NULL)
 				return command;
-		}
+		} else{
+            return command;
+        }
 		if(i == 0){
 			if(strcmp(cur, "to") != 0)
 				return command;
@@ -121,7 +121,7 @@ CHCommand chParserPraseLine(const char* str) {
 		command.cmd = CH_QUIT;
 	}
 	if(strtok(NULL, delimiter) != NULL){
-		command.cmd = SE_INVALID_LINE;
+		command.cmd = CH_INVALID_LINE;
 		command.validArg = false;
 	}
 	return command;

@@ -1,7 +1,3 @@
-//
-// Created by Guy Druker on 09/09/2017.
-//
-
 #ifndef CHESS_PROJECT_CHMINIMAX_H
 #define CHESS_PROJECT_CHMINIMAX_H
 
@@ -21,7 +17,7 @@
 
 #define WIN_SCORE INT32_MAX
 #define LOOSE_SCORE INT32_MIN
-#define TIE_SCORE -1000
+#define TIE_SCORE 0
 
 typedef struct Move {
   int best_score;

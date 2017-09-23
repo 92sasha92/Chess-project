@@ -1,10 +1,3 @@
-/*
- * SEParser.h
- *
- *  Created on: Aug 26, 2017
- *      Author: sasha
- */
-
 #ifndef SEPARSER_H_
 #define SEPARSER_H_
 

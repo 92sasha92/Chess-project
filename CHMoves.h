@@ -1,10 +1,3 @@
-/*
- * CHMoves.h
- *
- *  Created on: Aug 29, 2017
- *      Author: sasha
- */
-
 #ifndef CHMOVES_H_
 #define CHMOVES_H_
 
