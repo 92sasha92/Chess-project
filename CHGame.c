@@ -363,7 +363,7 @@ CH_GAME_MESSAGE chGameSetMove(CHGame* src, char peice, int fRow,int fCol,int toR
 	else
 		isCorrectCol = isAWhitePiece(c);
 	if(!isCorrectCol){
-		free(node);
+        free(node);
 		return CH_GAME_INVALID_COLOR;
 	}
 	list = createMoveList(src->gameBoard,c,fRow,fCol,src->currentTurn);
@@ -372,7 +372,7 @@ CH_GAME_MESSAGE chGameSetMove(CHGame* src, char peice, int fRow,int fCol,int toR
 		src->gameBoard[fRow][fCol] = CH_GAME_EMPTY_ENTRY;
 	}
 	else{
-		free(node);
+        free(node);
 		destroyMoveList(list);
 		return CH_GAME_INVALID_MOVE;
 	}
@@ -381,6 +381,7 @@ CH_GAME_MESSAGE chGameSetMove(CHGame* src, char peice, int fRow,int fCol,int toR
 		chPawnPromotion(src,toRow,toCol,is_alphaBeta_func);
 	}
     spArrayListAddFirst(src->list, *node);
+    free(node);
 	return CH_GAME_SUCCESS;
 }
 

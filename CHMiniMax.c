@@ -110,7 +110,7 @@ BestMove rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer){
                                 if ((score.best_score < new_score.best_score) || ((score.best_score == new_score.best_score) && (score.best_depth < new_score.best_depth))){
                                     score =  new_score;
                                     a = MAX(a, score.best_score);
-                                    if (b <= a)
+                                    if (b < a)
                                         break;
                                 }
                             } else {
@@ -158,7 +158,7 @@ BestMove rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer){
                                 if ((score.best_score > new_score.best_score) || ((score.best_score == new_score.best_score) && (score.best_depth < new_score.best_depth))){
                                     score = new_score;
                                     b = MIN(b, score.best_score);
-                                    if (b <= a)
+                                    if (b < a)
                                         break;
                                 }
                             } else {
@@ -300,7 +300,7 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
                                 set_cur_best_move(score.peice, best_move, i, j, node);
                             }
                             a = MAX(a, score.best_score);
-                            if (b <= a)
+                            if (b < a)
                                 break;
                         } else {
                             printf("problem occurred when trying to undo move\n ");

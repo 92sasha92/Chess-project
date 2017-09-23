@@ -59,6 +59,7 @@ SP_ARRAY_LIST_MESSAGE spArrayListClear(SPArrayList* src){
 
 
 SP_ARRAY_LIST_MESSAGE spArrayListAddAt(SPArrayList* src, CHMoveNode elem, int index){
+	int i;
 	if(src == NULL || index < 0 || index > src->actualSize){
 		return SP_ARRAY_LIST_INVALID_ARGUMENT;
 	}
@@ -66,12 +67,19 @@ SP_ARRAY_LIST_MESSAGE spArrayListAddAt(SPArrayList* src, CHMoveNode elem, int in
 //		return SP_ARRAY_LIST_FULL;
 //	}
 	else{
-		for(int i = src->actualSize ; i > index; i--){
+		if (src->actualSize == src->maxSize) {
+			i = src->actualSize - 1;
+		} else {
+			i = src->actualSize;
+		}
+
+		for(; i > index; i--){
 			src->elements[i] = src->elements[i-1];
 		}
+
 		src->elements[index] = elem;
-		if (src->actualSize != src->maxSize){
-			src->actualSize +=1;
+		if (src->actualSize < src->maxSize){
+			src->actualSize += 1;
 		}
 		return SP_ARRAY_LIST_SUCCESS;
 	}
@@ -102,7 +110,7 @@ SP_ARRAY_LIST_MESSAGE spArrayListRemoveAt(SPArrayList* src, int index){
 		for(int i = index; i < src->actualSize - 1; i++){
 			src->elements[i] = src->elements[i+1];
 		}
-		src->actualSize -=1;
+		src->actualSize -= 1;
 		return SP_ARRAY_LIST_SUCCESS;
 	}
 }
