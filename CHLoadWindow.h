@@ -10,6 +10,9 @@
 
 
 void pressSlotChange(SPWindow* src,int slot);
+
+int getSlotPressed(SPWindow* src);
+void pressSlotChange(SPWindow* src,int slot);
 SPWindow* createLoadWindow();
 
 #endif /* CHLOADWINDOW_H_ */

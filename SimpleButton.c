@@ -40,12 +40,12 @@ Widget* createSimpleButton(SDL_Renderer* windowRender, SDL_Rect* location,
 	SDL_Surface* loadingSurface2; //We use the surface as a temp var;
 	if(type == CH_BTN_BLACK_COLOR || type == CH_BTN_WHITE_COLOR){
 		if(type == CH_BTN_BLACK_COLOR ){
-			loadingSurface2 = SDL_LoadBMP("./kingBlackGlowBtn.bmp");
+			loadingSurface2 = SDL_LoadBMP("./images/kingBlackGlowBtn.bmp");
 		}else{
-			loadingSurface2 = SDL_LoadBMP("./kingWhiteGlowBtn.bmp");
+			loadingSurface2 = SDL_LoadBMP("./images/kingWhiteGlowBtn.bmp");
 		}
 	}else{
-		loadingSurface2 = SDL_LoadBMP("./btnGlow.bmp");
+		loadingSurface2 = SDL_LoadBMP("./images/btnGlow.bmp");
 	}
 	SDL_Texture* glowTexture = SDL_CreateTextureFromSurface(windowRender,loadingSurface2);
 	SDL_Surface* loadingSurface3;

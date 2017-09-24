@@ -80,6 +80,8 @@ CHGame* startSettingsMode(){
 	CHGame* src;
 	SPWindow* window;
 	SPSimpleWindow *simpleWindow;
+	int slot = 0;
+	int erCheck = 0;
 	printf("Specify game setting or type 'start' to begin a game with the current setting:\n" );
 	if(GUI_ACTIVE){
 		if (SDL_Init(SDL_INIT_VIDEO) < 0) { //SDL2 INIT
@@ -108,8 +110,43 @@ CHGame* startSettingsMode(){
 					pressModeChange(window,gameMode);
 					SDL_WaitEvent(&event);
 				}else if(event.user.code == EVENT_LOAD_WINDOW){
-					destroyWindow(window);
-					window = createLoadWindow();
+					if(simpleWindow->type == CH_WINDOW_START){
+						destroyWindow(window);
+						window = createLoadWindow();
+					}else if(simpleWindow->type == CH_WINDOW_LOAD){
+						slot = getSlotPressed(window);
+						destroyWindow(window);
+						if(slot > 0){
+							src = (CHGame*) malloc(sizeof(CHGame)); /* allocate place in memory */
+							if (!src){
+								printf("Error: malloc has failed\n");
+								return NULL;
+							}
+							switch (slot) {
+							case 1:
+								erCheck = load("./gameSlot1.txt",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
+								break;
+							case 2:
+								erCheck = load("./gameSlot2.txt",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
+								break;
+							case 3:
+								erCheck = load("./gameSlot3.txt",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
+								break;
+							case 4:
+								erCheck = load("./gameSlot4.txt",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
+								break;
+							case 5:
+								erCheck = load("./gameSlot5.txt",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
+								break;
+							}
+							if(erCheck == -1){
+								setDefault();
+								free(src);
+							}else{
+								return src;
+							}
+						}
+					}
 					simpleWindow =(SPSimpleWindow *)window->data;
 					SDL_WaitEvent(&event);
 				}else if(event.user.code == EVENT_UPDATE_TO_ONE_PLAYER){

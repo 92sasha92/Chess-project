@@ -21,16 +21,16 @@ Widget** createSimpleWindowWidgets(SDL_Renderer* renderer,CHGame *game) {
 	SDL_Rect exitR = { .x = 75, .y = startBtnPosY+ 90*5, .h = 80, .w = 296  };
 	SDL_Rect boardR = { .x = startX + 51, .y = startY - 25, .h = 667, .w = 668 };
 	if(game->gameMode == 2){
-		widgets[0] = createSimpleButton(renderer, &undoR, "./undoBtnGray.bmp",NULL,CH_BTN_UNDO,0,BTN_NOT_ACTIVE);
+		widgets[0] = createSimpleButton(renderer, &undoR, "./images/undoBtnGray.bmp",NULL,CH_BTN_UNDO,0,BTN_NOT_ACTIVE);
 	}else{
-		widgets[0] = createSimpleButton(renderer, &undoR, "./undoBtnGray.bmp","./undoBtn.bmp",CH_BTN_UNDO,0,BTN_NOT_ACTIVE);
+		widgets[0] = createSimpleButton(renderer, &undoR, "./images/undoBtnGray.bmp","./images/undoBtn.bmp",CH_BTN_UNDO,0,BTN_NOT_ACTIVE);
 	}
-	widgets[1] = createSimpleButton(renderer, &saveR, "./saveBtn.bmp",NULL,CH_BTN_SAVE,0,BTN_ACTIVE);
-	widgets[2] = createSimpleButton(renderer, &loadR, "./loadBtn.bmp",NULL,CH_BTN_LOAD,0,BTN_ACTIVE);
-	widgets[3] = createSimpleButton(renderer, &restartR, "./restartBtn.bmp",NULL,CH_BTN_RESTART,0,BTN_ACTIVE);
-	widgets[4] = createSimpleButton(renderer, &mainMenuR, "./mainMenuBtn.bmp",NULL,CH_BTN_MAIN_MENU,0,BTN_ACTIVE);
-	widgets[5] = createSimpleButton(renderer, &exitR, "./exitBtn.bmp",NULL,CH_BTN_EXIT,0,BTN_ACTIVE);
-	widgets[6] = createGameBoard(renderer, &boardR, "./board.bmp",game);
+	widgets[1] = createSimpleButton(renderer, &saveR, "./images/saveBtn.bmp",NULL,CH_BTN_SAVE,0,BTN_ACTIVE);
+	widgets[2] = createSimpleButton(renderer, &loadR, "./images/loadBtn.bmp",NULL,CH_BTN_LOAD,0,BTN_ACTIVE);
+	widgets[3] = createSimpleButton(renderer, &restartR, "./images/restartBtn.bmp",NULL,CH_BTN_RESTART,0,BTN_ACTIVE);
+	widgets[4] = createSimpleButton(renderer, &mainMenuR, "./images/mainMenuBtn.bmp",NULL,CH_BTN_MAIN_MENU,0,BTN_ACTIVE);
+	widgets[5] = createSimpleButton(renderer, &exitR, "./images/exitBtn.bmp",NULL,CH_BTN_EXIT,0,BTN_ACTIVE);
+	widgets[6] = createGameBoard(renderer, &boardR, "./images/board.bmp",game);
 	if (widgets[0] == NULL || widgets[1] == NULL || widgets[2] == NULL || widgets[3] == NULL || widgets[4] == NULL || widgets[5] == NULL || widgets[6] == NULL) {
 		destroyWidget(widgets[0]); //NULL SAFE
 		destroyWidget(widgets[1]); //NULL SAFE
@@ -55,7 +55,7 @@ SPWindow* createSimpleWindow(CHGame *game) {
 			SDL_WINDOWPOS_CENTERED, 1130, 730, SDL_WINDOW_OPENGL);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,
 			SDL_RENDERER_ACCELERATED);
-	SDL_Surface* loadingSurface = SDL_LoadBMP("background.bmp");
+	SDL_Surface* loadingSurface = SDL_LoadBMP("./images/background.bmp");
 	SDL_Texture* windowTexture = SDL_CreateTextureFromSurface(renderer,loadingSurface);
 	Widget** widgets = createSimpleWindowWidgets(renderer,game);
 	if (res == NULL || data == NULL || window == NULL || renderer == NULL

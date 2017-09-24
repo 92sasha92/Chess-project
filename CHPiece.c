@@ -37,29 +37,29 @@ Widget* createCHPiece(SDL_Renderer* windowRender, SDL_Rect* location,
 	CHPiece* data = (CHPiece*) malloc(sizeof(CHPiece));
 	SDL_Texture* gameBoardTexture;
 	if (c == CH_WHITE_PAWN) {
-		gameBoardTexture = createTexturePiece(windowRender,"./pawnWhite.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./images/pawnWhite.bmp");
 	} else if (c == CH_BLACK_PAWN) {
-		gameBoardTexture = createTexturePiece(windowRender,"./pawnBlack.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./images/pawnBlack.bmp");
 	} else if (c == CH_WHITE_ROOK) {
-		gameBoardTexture = createTexturePiece(windowRender,"./rookWhite.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./images/rookWhite.bmp");
 	} else if (c == CH_BLACK_ROOK) {
-		gameBoardTexture = createTexturePiece(windowRender,"./rookBlack.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./images/rookBlack.bmp");
 	} else if (c == CH_WHITE_KNIGHT) {
-		gameBoardTexture = createTexturePiece(windowRender,"./knightWhite.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./images/knightWhite.bmp");
 	} else if (c == CH_BLACK_KNIGHT) {
-		gameBoardTexture = createTexturePiece(windowRender,"./knightBlack.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./images/knightBlack.bmp");
 	} else if (c == CH_WHITE_BISHOP) {
-		gameBoardTexture = createTexturePiece(windowRender,"./bishopWhite.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./images/bishopWhite.bmp");
 	} else if (c == CH_BLACK_BISHOP) {
-		gameBoardTexture = createTexturePiece(windowRender,"./bishopBlack.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./images/bishopBlack.bmp");
 	} else if (c == CH_WHITE_QUEEN) {
-		gameBoardTexture = createTexturePiece(windowRender,"./queenWhite.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./images/queenWhite.bmp");
 	} else if (c == CH_BLACK_QUEEN) {
-		gameBoardTexture = createTexturePiece(windowRender,"./queenBlack.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./images/queenBlack.bmp");
 	} else if (c == CH_WHITE_KING) {
-		gameBoardTexture = createTexturePiece(windowRender,"./kingWhite.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./images/kingWhite.bmp");
 	} else if (c == CH_BLACK_KING) {
-		gameBoardTexture = createTexturePiece(windowRender,"./kingBlack.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./images/kingBlack.bmp");
 	}
 
 	if (res == NULL || data == NULL || gameBoardTexture == NULL) {

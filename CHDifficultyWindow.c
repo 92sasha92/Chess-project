@@ -49,12 +49,12 @@ Widget** createSimpleDifficultyWindowWidgets(SDL_Renderer* renderer) {
 	SDL_Rect moderateR = { .x = 404, .y = 170, .h = 80, .w = 296  };
 	SDL_Rect hardR = { .x = 404, .y = 250, .h = 80, .w = 296  };
 
-	widgets[0] = createSimpleButton(renderer, &noobR, "./noobBtn.bmp",NULL,CH_BTN_EASY,0,BTN_ACTIVE);
-	widgets[1] = createSimpleButton(renderer, &easyR, "./easyBtn.bmp",NULL,CH_BTN_NOOB,1,BTN_ACTIVE);
-	widgets[2] = createSimpleButton(renderer, &moderateR, "./moderateBtn.bmp",NULL,CH_BTN_MODERATE,0,BTN_ACTIVE);
-	widgets[3] = createSimpleButton(renderer, &hardR, "./hardBtn.bmp",NULL,CH_BTN_HARD,0,BTN_ACTIVE);
-	widgets[4] = createSimpleButton(renderer, &backR, "./backBtn.bmp",NULL,CH_BTN_BACK,0,BTN_ACTIVE);
-	widgets[5] = createSimpleButton(renderer, &nextR, "./nextBtn.bmp",NULL,CH_BTN_NEXT,0,BTN_ACTIVE);
+	widgets[0] = createSimpleButton(renderer, &noobR, "./images/noobBtn.bmp",NULL,CH_BTN_EASY,0,BTN_ACTIVE);
+	widgets[1] = createSimpleButton(renderer, &easyR, "./images/easyBtn.bmp",NULL,CH_BTN_NOOB,1,BTN_ACTIVE);
+	widgets[2] = createSimpleButton(renderer, &moderateR, "./images/moderateBtn.bmp",NULL,CH_BTN_MODERATE,0,BTN_ACTIVE);
+	widgets[3] = createSimpleButton(renderer, &hardR, "./images/hardBtn.bmp",NULL,CH_BTN_HARD,0,BTN_ACTIVE);
+	widgets[4] = createSimpleButton(renderer, &backR, "./images/backBtn.bmp",NULL,CH_BTN_BACK,0,BTN_ACTIVE);
+	widgets[5] = createSimpleButton(renderer, &nextR, "./images/nextBtn.bmp",NULL,CH_BTN_NEXT,0,BTN_ACTIVE);
 	if (widgets[0] == NULL || widgets[1] == NULL || widgets[2] == NULL || widgets[3] == NULL || widgets[4] == NULL || widgets[5] == NULL) {
 		for(i = 0;i < numOfWidgets;i++){
 			destroyWidget(widgets[i]);
@@ -74,7 +74,7 @@ SPWindow* createSimpleDifficultyWindow() {
 			SDL_WINDOWPOS_CENTERED, 800, 500, SDL_WINDOW_OPENGL);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,
 			SDL_RENDERER_ACCELERATED);
-	SDL_Surface* loadingSurface = SDL_LoadBMP("./background.bmp");
+	SDL_Surface* loadingSurface = SDL_LoadBMP("./images/background.bmp");
 	SDL_Texture* windowTexture = SDL_CreateTextureFromSurface(renderer,loadingSurface);
 	Widget** widgets = createSimpleDifficultyWindowWidgets(renderer);
 	if (res == NULL || data == NULL || window == NULL || renderer == NULL

@@ -10,7 +10,21 @@
 #include "SimpleButton.h"
 #include "CHLoadWindow.h"
 
-
+int getSlotPressed(SPWindow* src){
+	int i;
+	if (src == NULL ) {
+		return 0;
+	}
+	SPSimpleWindow * castData = (SPSimpleWindow *) src->data;
+	SimpleButton* castBtnData;
+	for(i = 2;i < castData->numOfWidgets;i++){
+		castBtnData = (SimpleButton*) castData->widgets[i]->data;
+		if(castBtnData->isPressed == 1){
+			return (i -1);
+		}
+	}
+	return 0;
+}
 
 void pressSlotChange(SPWindow* src,int slot){
 	int i;
@@ -42,24 +56,24 @@ Widget** createLoadWindowWidgets(SDL_Renderer* renderer,int numOfWidgets) {
 	SDL_Rect slotR = { .x = 252, .y = 10, .h = 80, .w = 296 };
 	SDL_Rect backR = { .x = 50, .y = 415, .h = 80, .w = 296 };
 	SDL_Rect loadR = { .x = 454, .y = 415, .h = 80, .w = 296  };
-	widgets[0] = createSimpleButton(renderer, &backR, "./backBtn.bmp",NULL,CH_BTN_BACK,0,BTN_ACTIVE);
-	widgets[1] = createSimpleButton(renderer, &loadR, "./loadGrayBtn.bmp","./loadBtn.bmp",CH_BTN_LOAD,0,BTN_NOT_ACTIVE);
+	widgets[0] = createSimpleButton(renderer, &backR, "./images/backBtn.bmp",NULL,CH_BTN_BACK,0,BTN_ACTIVE);
+	widgets[1] = createSimpleButton(renderer, &loadR, "./images/loadGrayBtn.bmp","./images/loadBtn.bmp",CH_BTN_LOAD,0,BTN_NOT_ACTIVE);
 	for(i = 2;i < numOfWidgets;i++){
 		switch(i){
 			case 2:
-				widgets[i] = createSimpleButton(renderer, &slotR, "./gameSlot1.bmp",NULL,CH_BTN_GAME_SLOT1,0,BTN_ACTIVE);
+				widgets[i] = createSimpleButton(renderer, &slotR, "./images/gameSlot1.bmp",NULL,CH_BTN_GAME_SLOT1,0,BTN_ACTIVE);
 				break;
 			case 3:
-				widgets[i] = createSimpleButton(renderer, &slotR, "./gameSlot2.bmp",NULL,CH_BTN_GAME_SLOT2,0,BTN_ACTIVE);
+				widgets[i] = createSimpleButton(renderer, &slotR, "./images/gameSlot2.bmp",NULL,CH_BTN_GAME_SLOT2,0,BTN_ACTIVE);
 				break;
 			case 4:
-				widgets[i] = createSimpleButton(renderer, &slotR, "./gameSlot3.bmp",NULL,CH_BTN_GAME_SLOT3,0,BTN_ACTIVE);
+				widgets[i] = createSimpleButton(renderer, &slotR, "./images/gameSlot3.bmp",NULL,CH_BTN_GAME_SLOT3,0,BTN_ACTIVE);
 				break;
 			case 5:
-				widgets[i] = createSimpleButton(renderer, &slotR, "./gameSlot4.bmp",NULL,CH_BTN_GAME_SLOT4,0,BTN_ACTIVE);
+				widgets[i] = createSimpleButton(renderer, &slotR, "./images/gameSlot4.bmp",NULL,CH_BTN_GAME_SLOT4,0,BTN_ACTIVE);
 				break;
 			case 6:
-				widgets[i] = createSimpleButton(renderer, &slotR, "./gameSlot5.bmp",NULL,CH_BTN_GAME_SLOT5,0,BTN_ACTIVE);
+				widgets[i] = createSimpleButton(renderer, &slotR, "./images/gameSlot5.bmp",NULL,CH_BTN_GAME_SLOT5,0,BTN_ACTIVE);
 				break;
 		}
 		slotR.y += 80;
@@ -83,7 +97,7 @@ SPWindow* createLoadWindow() {
 	SDL_Window* window = SDL_CreateWindow("Tests", SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED, 800, 500, SDL_WINDOW_OPENGL);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,SDL_RENDERER_ACCELERATED);
-	SDL_Surface* loadingSurface = SDL_LoadBMP("./background.bmp");
+	SDL_Surface* loadingSurface = SDL_LoadBMP("./images/background.bmp");
 	SDL_Texture* windowTexture = SDL_CreateTextureFromSurface(renderer,loadingSurface);
 	int numOfWidgets = 0;
 	FILE *fp = fopen("readMeForLoad.txt","r");

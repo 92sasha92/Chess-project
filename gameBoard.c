@@ -26,8 +26,8 @@ Widget* createGameBoard(SDL_Renderer* windowRender, SDL_Rect* location,
 
 	SDL_SetTextureBlendMode(gameBoardTexture, SDL_BLENDMODE_BLEND);
 	SDL_Rect loc = { .x = startX, .y = startY, .h = 77, .w = 77 };
-	char* imageBlack = "blackSquare.bmp";
-	char* imageWhite = "whiteSquare.bmp";
+	char* imageBlack = "./images/blackSquare.bmp";
+	char* imageWhite = "./images/whiteSquare.bmp";
 	int isWhite = 1;
 	int isProblemInMemory = 0;
 	for(i = 7;i >=0;i--){

@@ -46,10 +46,10 @@ Widget** createSimpleColorWindowWidgets(SDL_Renderer* renderer) {
 	SDL_Rect nextR = { .x = 454, .y = 400, .h = 80, .w = 296  };
 	SDL_Rect kingWhiteR = { .x = 100, .y = 100, .h = 280, .w = 286  };
 	SDL_Rect kingBlackR = { .x = 400, .y = 100, .h = 280, .w = 286  };
-	widgets[0] = createSimpleButton(renderer, &kingBlackR, "./kingBlackBtn.bmp",NULL,CH_BTN_BLACK_COLOR,0,BTN_ACTIVE);
-	widgets[1] = createSimpleButton(renderer, &kingWhiteR, "./kingWhiteBtn.bmp",NULL,CH_BTN_WHITE_COLOR,1,BTN_ACTIVE);
-	widgets[2] = createSimpleButton(renderer, &backR, "./backBtn.bmp",NULL,CH_BTN_BACK,0,BTN_ACTIVE);
-	widgets[3] = createSimpleButton(renderer, &nextR, "./nextBtn.bmp",NULL,CH_BTN_NEXT,0,BTN_ACTIVE);
+	widgets[0] = createSimpleButton(renderer, &kingBlackR, "./images/kingBlackBtn.bmp",NULL,CH_BTN_BLACK_COLOR,0,BTN_ACTIVE);
+	widgets[1] = createSimpleButton(renderer, &kingWhiteR, "./images/kingWhiteBtn.bmp",NULL,CH_BTN_WHITE_COLOR,1,BTN_ACTIVE);
+	widgets[2] = createSimpleButton(renderer, &backR, "./images/backBtn.bmp",NULL,CH_BTN_BACK,0,BTN_ACTIVE);
+	widgets[3] = createSimpleButton(renderer, &nextR, "./images/nextBtn.bmp",NULL,CH_BTN_NEXT,0,BTN_ACTIVE);
 	if (widgets[0] == NULL || widgets[1] == NULL || widgets[2] == NULL || widgets[3] == NULL) {
 		for(i = 0;i < numOfWidgets;i++){
 			destroyWidget(widgets[i]);
@@ -69,7 +69,7 @@ SPWindow* createSimpleColorWindow(int color) {
 			SDL_WINDOWPOS_CENTERED, 800, 500, SDL_WINDOW_OPENGL);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,
 			SDL_RENDERER_ACCELERATED);
-	SDL_Surface* loadingSurface = SDL_LoadBMP("./background.bmp");
+	SDL_Surface* loadingSurface = SDL_LoadBMP("./images/background.bmp");
 	SDL_Texture* windowTexture = SDL_CreateTextureFromSurface(renderer,loadingSurface);
 	Widget** widgets = createSimpleColorWindowWidgets(renderer);
 	if (res == NULL || data == NULL || window == NULL || renderer == NULL
