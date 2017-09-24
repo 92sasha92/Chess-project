@@ -10,7 +10,6 @@
 
 #include "SPArrayList.h"
 #include "CHMoves.h"
-
 #include "Widget.h"
 
 typedef struct ch_nodeForSort{
@@ -115,7 +114,7 @@ CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol,Widget *widget);
  * CH_GAME_INVALID_MOVE - If the move is illegal for the piece in the position <x,y>.
  * CH_GAME_SUCCESS - otherwise
  */
-CH_GAME_MESSAGE chGameSetMove(CHGame* src, int fRow,int fCol,int toRow,int toCol);
+CH_GAME_MESSAGE chGameSetMove(CHGame* src,  char peice,int fRow,int fCol,int toRow,int toCol, bool is_alphaBeta_func);
 
 
 /**
@@ -142,21 +141,8 @@ CH_GAME_MESSAGE chIsCheckmateOrTie(CHGame* src);
  * CH_GAME_INVALID_ARGUMENT - if src is NULL.
  * CH_GAME_SUCCESS - otherwise.
  */
-CH_GAME_MESSAGE isCheck(CHGame* src);
+CH_GAME_MESSAGE isCheck(CHGame* src,int is_computer);
 
-
-
-/**
- * Save the current game state to the specified file.
- *
- * @param src - The target game.
- * @param path - represent the file relative or full path.
- * @return
- * CH_GAME_INVALID_ARGUMENT - If src is NULL.
- * CH_GAME_FILE_PROBLEM - If the file cannot be created or modified.
- * CH_GAME_SUCCESS - otherwise.
- */
-CH_GAME_MESSAGE chGameSave(CHGame* src,char *path);
 
 /**
  * Creates a copy of a given game.

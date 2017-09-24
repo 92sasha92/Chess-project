@@ -155,22 +155,24 @@ void handleBoardCellEvent(Widget* src, SDL_Event* event){
 			user_event.type = SDL_USEREVENT;
 			user_event.user.code = EVENT_MOVE;
 			SDL_PushEvent(&user_event);
-				//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Title",
-						//"We did it", NULL );
 		}
 	}else if(event->type == SDL_MOUSEBUTTONDOWN && event->button.button == SDL_BUTTON_LEFT ) {
 		SDL_Point point;
 		point.x = event->button.x;
 		point.y = event->button.y;
 		if (SDL_PointInRect(&point, castData->location)) {
-			castData->isChosenByUser = 1;
-			isDragged = 1;
-			user_event.type = SDL_USEREVENT;
-			user_event.user.code = EVENT_BEGIN_DRAG;
-			SDL_PushEvent(&user_event);
+			if(castData->piece != NULL){
+				castData->isChosenByUser = 1;
+				isDragged = 1;
+				user_event.type = SDL_USEREVENT;
+				user_event.user.code = EVENT_BEGIN_DRAG;
+				SDL_PushEvent(&user_event);
+			}
 				//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Title",
 						//"We did it", NULL );
 		}
+	}else if(event->type == SDL_USEREVENT && event->user.code == EVENT_DRAGGED_NOT_ON_BOARD){
+		isDragged = 0;
 	}
 	if(castData->piece != NULL){
 		castData->piece->handleEvent(castData->piece,event);

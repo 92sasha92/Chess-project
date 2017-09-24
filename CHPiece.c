@@ -101,12 +101,10 @@ void handleCHPieceEvent(Widget* src, SDL_Event* event){
 		SDL_Point point;
 		point.x = event->button.x;
 		point.y = event->button.y;
-		if (SDL_PointInRect(&point, castData->location) && castData->isDragged) {
+		if (castData->isDragged) {
 			    castData->location->x = point.x - castData->deltaX;
 			    castData->location->y = point.y - castData->deltaY;
 			    drawCHPieceDrag(src);
-				//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Title",
-						//"We did it", NULL );
 		}
 	} else if(event->type == SDL_MOUSEBUTTONDOWN && event->button.button == SDL_BUTTON_LEFT) {
 		SDL_Point point;

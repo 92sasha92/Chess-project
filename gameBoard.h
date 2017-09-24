@@ -32,4 +32,6 @@ void handleGameBoardEvent(Widget* src, SDL_Event* event);
 
 void drawGameBoard(Widget* src);
 
+void nulifeDrag(Widget* src);
+
 #endif /* GAMEBOARD_H_ */

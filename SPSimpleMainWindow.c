@@ -23,7 +23,7 @@ Widget** createSimpleWindowWidgets(SDL_Renderer* renderer,CHGame *game) {
 	if(game->gameMode == 2){
 		widgets[0] = createSimpleButton(renderer, &undoR, "./undoBtnGray.bmp",NULL,CH_BTN_UNDO,0,BTN_NOT_ACTIVE);
 	}else{
-		widgets[0] = createSimpleButton(renderer, &undoR, "./undoBtn.bmp",NULL,CH_BTN_UNDO,0,BTN_ACTIVE);
+		widgets[0] = createSimpleButton(renderer, &undoR, "./undoBtnGray.bmp","./undoBtn.bmp",CH_BTN_UNDO,0,BTN_NOT_ACTIVE);
 	}
 	widgets[1] = createSimpleButton(renderer, &saveR, "./saveBtn.bmp",NULL,CH_BTN_SAVE,0,BTN_ACTIVE);
 	widgets[2] = createSimpleButton(renderer, &loadR, "./loadBtn.bmp",NULL,CH_BTN_LOAD,0,BTN_ACTIVE);
@@ -35,10 +35,15 @@ Widget** createSimpleWindowWidgets(SDL_Renderer* renderer,CHGame *game) {
 		destroyWidget(widgets[0]); //NULL SAFE
 		destroyWidget(widgets[1]); //NULL SAFE
 		destroyWidget(widgets[2]);
+		destroyWidget(widgets[3]);
+		destroyWidget(widgets[4]);
+		destroyWidget(widgets[5]);
+		destroyWidget(widgets[6]);
 		free(widgets);
 		return NULL ;
 	}
 	return widgets;
+
 }
 SPWindow* createSimpleWindow(CHGame *game) {
 	if(game == NULL){
@@ -55,6 +60,8 @@ SPWindow* createSimpleWindow(CHGame *game) {
 	Widget** widgets = createSimpleWindowWidgets(renderer,game);
 	if (res == NULL || data == NULL || window == NULL || renderer == NULL
 			|| widgets == NULL || windowTexture == NULL) {
+		SDL_FreeSurface(loadingSurface);
+		SDL_DestroyTexture(windowTexture);
 		free(res);
 		free(data);
 		free(widgets);
@@ -86,6 +93,7 @@ void destroySimpleWindow(SPWindow* src) {
 		destroyWidget(data->widgets[i]);//
 	}
 	free(data->widgets);
+	SDL_DestroyTexture(data->windowTexture);
 	SDL_DestroyRenderer(data->windowRenderer);
 	SDL_DestroyWindow(data->window);
 	free(data);
@@ -96,11 +104,8 @@ void drawSimpleWindow(SPWindow* src) {
 		return;
 	}
 	SPSimpleWindow* data = (SPSimpleWindow*) src->data;
-	//Draw window
-	//SDL_SetRenderDrawColor(data->windowRenderer, 255, 255, 255, 255);
 	SDL_RenderClear(data->windowRenderer);
-	SDL_RenderCopy(data->windowRenderer, data->windowTexture, NULL,
-			NULL);
+	SDL_RenderCopy(data->windowRenderer, data->windowTexture, NULL,NULL);
 	int i = 0;
 	for (; i < data->numOfWidgets; i++) {
 		(data->widgets[i])->drawWidget(data->widgets[i]);

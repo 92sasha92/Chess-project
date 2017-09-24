@@ -96,10 +96,32 @@ void destroyGameBoard(Widget* src){
 
 void handleGameBoardEvent(Widget* src, SDL_Event* event){
 	int i,j;
+	int static isDragged = 0;
 	if(src == NULL || event==NULL){
 		return;
 	}
 	GameBoard* castData = (GameBoard*) src->data;
+	SDL_Event user_event;
+	if (event->type == SDL_MOUSEBUTTONDOWN && event->button.button == SDL_BUTTON_LEFT) {
+		SDL_Point point;
+		point.x = event->button.x;
+		point.y = event->button.y;
+		if (SDL_PointInRect(&point, castData->location)) {
+			isDragged = 1;
+		}
+	}
+	if (event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT && isDragged == 1) {
+		SDL_Point point;
+		point.x = event->button.x;
+		point.y = event->button.y;
+		isDragged = 0;
+		if (!SDL_PointInRect(&point, castData->location)) {
+			user_event.type = SDL_USEREVENT;
+			user_event.user.code = EVENT_DRAGGED_NOT_ON_BOARD;
+			SDL_PushEvent(&user_event);
+		}
+	}
+
 	for(i = 0;i < 8;i++){
 		for(j = 0;j < 8;j++){
 			castData->gameBoard[i][j]->handleEvent(castData->gameBoard[i][j],event);
@@ -143,3 +165,23 @@ void drawGameBoard(Widget* src){
 			castData->location);
 
 }
+
+void nulifeDrag(Widget* src){
+	if (src == NULL ) {
+		return;
+	}
+	int i,j;
+	GameBoard* castData = (GameBoard*) src->data;
+	BoardCell* cellData;
+	for (i = 0; i < 8; i++) {
+		for (j = 0; j < 8; j++) {
+			cellData = (BoardCell*) castData->gameBoard[i][j]->data;
+			cellData->isChosenByUser = 0;
+			if(cellData->piece != NULL){
+				((CHPiece* )cellData->piece->data)->isDragged = 0;
+			}
+		}
+	}
+}
+
+
