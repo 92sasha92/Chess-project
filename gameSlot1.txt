@@ -12,4 +12,4 @@
   <row_2>mmm__mmm</row_2>
   <row_1>r___k__r</row_1>
  </board> 
-</game> 
+</game>

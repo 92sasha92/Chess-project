@@ -19,8 +19,9 @@
 #include "CHModeWindow.h"
 #include "SPSimpleMainWindow.h"
 #include "SimpleButton.h"
-
-
+#include "CHDifficultyWindow.h"
+#include "CHColorWindow.h"
+#include "CHLoadWindow.h"
 #define MAX_LINE_SIZE 1024
 CHGame* startSettingsMode();
 

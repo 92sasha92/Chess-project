@@ -22,13 +22,13 @@ Widget* createBoardCell(SDL_Renderer* windowRender, SDL_Rect* location,
 	BoardCell* data = (BoardCell*) malloc(sizeof(BoardCell));
 	SDL_Surface* loadingSurface = SDL_LoadBMP(image); //We use the surface as a temp var;
 	SDL_Texture* gameBoardTexture = SDL_CreateTextureFromSurface(windowRender,loadingSurface);
-	SDL_Surface* glowSurface = SDL_LoadBMP("./pieceGlow.bmp");
+	SDL_Surface* glowSurface = SDL_LoadBMP("./images/pieceGlow.bmp");
 	SDL_Texture* glowTexture = SDL_CreateTextureFromSurface(windowRender,glowSurface);
-	SDL_Surface* glowBlueSurface = SDL_LoadBMP("./cellBlueGlow.bmp");
+	SDL_Surface* glowBlueSurface = SDL_LoadBMP("./images/cellBlueGlow.bmp");
 	SDL_Texture* glowBlueTexture = SDL_CreateTextureFromSurface(windowRender,glowBlueSurface);
-	SDL_Surface* glowRedSurface = SDL_LoadBMP("./cellRedGlow.bmp");
+	SDL_Surface* glowRedSurface = SDL_LoadBMP("./images/cellRedGlow.bmp");
 	SDL_Texture* glowRedTexture = SDL_CreateTextureFromSurface(windowRender,glowRedSurface);
-	SDL_Surface* glowGreenSurface = SDL_LoadBMP("./cellGreenGlow.bmp");
+	SDL_Surface* glowGreenSurface = SDL_LoadBMP("./images/cellGreenGlow.bmp");
 	SDL_Texture* glowGreenTexture = SDL_CreateTextureFromSurface(windowRender,glowGreenSurface);
 	if (res == NULL || data == NULL || loadingSurface == NULL
 			|| gameBoardTexture == NULL || glowBlueSurface == NULL
@@ -155,22 +155,24 @@ void handleBoardCellEvent(Widget* src, SDL_Event* event){
 			user_event.type = SDL_USEREVENT;
 			user_event.user.code = EVENT_MOVE;
 			SDL_PushEvent(&user_event);
-				//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Title",
-						//"We did it", NULL );
 		}
 	}else if(event->type == SDL_MOUSEBUTTONDOWN && event->button.button == SDL_BUTTON_LEFT ) {
 		SDL_Point point;
 		point.x = event->button.x;
 		point.y = event->button.y;
 		if (SDL_PointInRect(&point, castData->location)) {
-			castData->isChosenByUser = 1;
-			isDragged = 1;
-			user_event.type = SDL_USEREVENT;
-			user_event.user.code = EVENT_BEGIN_DRAG;
-			SDL_PushEvent(&user_event);
+			if(castData->piece != NULL){
+				castData->isChosenByUser = 1;
+				isDragged = 1;
+				user_event.type = SDL_USEREVENT;
+				user_event.user.code = EVENT_BEGIN_DRAG;
+				SDL_PushEvent(&user_event);
+			}
 				//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Title",
 						//"We did it", NULL );
 		}
+	}else if(event->type == SDL_USEREVENT && event->user.code == EVENT_DRAGGED_NOT_ON_BOARD){
+		isDragged = 0;
 	}
 	if(castData->piece != NULL){
 		castData->piece->handleEvent(castData->piece,event);

@@ -19,9 +19,15 @@
 #define QUEEN_SCORE 9
 #define KING_SCORE 100
 
-#define WIN_SCORE 1000
-#define LOOSE_SCORE -1000
-#define TIE_SCORE -999
+#define WIN_SCORE INT32_MAX
+#define LOOSE_SCORE INT32_MIN
+#define TIE_SCORE -1000
+
+typedef struct Move {
+  int best_score;
+  int best_depth;
+  char peice;
+} BestMove;
 
 /** return the the score of that specific piece.
  * @param piece - a specific piece name
@@ -30,7 +36,7 @@
  * @return
  * the piece score in accordance to the maximizer.
  */
-int get_piece_score(char piece, int maximizer, CHGame* src);
+int get_piece_score(char piece, CHGame* src, int maximizer);
 
 /** return the the score of the board.
  * @param maximizer - the player hwo call the function.
@@ -49,7 +55,7 @@ int get_board_score(int maximizer, CHGame* src);
  * @return
  * updated best_move struct.
  */
-CHMoveNode* set_cur_best_move(CHGame* src, CHMoveNode* best_move, int i, int j, CHMovesList* cur_piece_moves_list);
+CHMoveNode* set_cur_best_move(char peice, CHMoveNode* best_move, int i, int j, CHMovesList* cur_piece_moves_list);
 
 /** recursive function to compute the best option to move, use from depth 2.
  * @param src - the game struct.
@@ -60,7 +66,7 @@ CHMoveNode* set_cur_best_move(CHGame* src, CHMoveNode* best_move, int i, int j, 
  * @return
  * the optimal score for this sub tree in respect to the minimum or maximum level.
  */
-int rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer);
+BestMove rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer);
 
 /** compute the best option to move.
  * @param src - the game struct.
@@ -70,7 +76,8 @@ int rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer);
  * @return
  * struct of the the optimal piece to move and where to move it. (the data will set in the best_move struct)
  */
-CHMoveNode* alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* best_move );
+CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* best_move );
+
+BestMove pawn_promotion_rec_alphabeta(CHGame* src, int depth , int a, int b, int maximizer , int toRow, int toCol);
 
 #endif //CHESS_PROJECT_CHMINIMAX_H
-

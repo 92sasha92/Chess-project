@@ -5,7 +5,7 @@
 
 
 
-void updateTextureBtn(Widget* src){
+void updateTextureBtn(Widget* src,int active){
 	if (src == NULL ) {
 		return;
 	}
@@ -16,6 +16,7 @@ void updateTextureBtn(Widget* src){
 		castData->buttonTexture = castData->secondTexture;
 		castData->secondTexture = tempTexture;
 	}
+	castData->isActive = active;
 }
 
 SDL_FORCE_INLINE SDL_bool PointInRect(const SDL_Point *p, const SDL_Rect *r)
@@ -36,9 +37,17 @@ Widget* createSimpleButton(SDL_Renderer* windowRender, SDL_Rect* location,
 	SDL_Surface* loadingSurface = SDL_LoadBMP(image); //We use the surface as a temp var;
 	SDL_Texture* buttonTexture = SDL_CreateTextureFromSurface(windowRender,
 			loadingSurface);
-	SDL_Surface* loadingSurface2 = SDL_LoadBMP("./btnGlow.bmp"); //We use the surface as a temp var;
-	SDL_Texture* glowTexture = SDL_CreateTextureFromSurface(windowRender,
-			loadingSurface2);
+	SDL_Surface* loadingSurface2; //We use the surface as a temp var;
+	if(type == CH_BTN_BLACK_COLOR || type == CH_BTN_WHITE_COLOR){
+		if(type == CH_BTN_BLACK_COLOR ){
+			loadingSurface2 = SDL_LoadBMP("./images/kingBlackGlowBtn.bmp");
+		}else{
+			loadingSurface2 = SDL_LoadBMP("./images/kingWhiteGlowBtn.bmp");
+		}
+	}else{
+		loadingSurface2 = SDL_LoadBMP("./images/btnGlow.bmp");
+	}
+	SDL_Texture* glowTexture = SDL_CreateTextureFromSurface(windowRender,loadingSurface2);
 	SDL_Surface* loadingSurface3;
 	SDL_Texture* button2Texture;
 	if(image2 != NULL){
@@ -86,6 +95,9 @@ void destroySimpleButton(Widget* src) {
 	}
 	SimpleButton* castData = (SimpleButton*) src->data;
 	free(castData->location);
+	if(castData->isSecondTextureValid){
+		SDL_DestroyTexture(castData->secondTexture);
+	}
 	SDL_DestroyTexture(castData->buttonTexture);
 	SDL_DestroyTexture(castData->glowTexture);
 	free(castData);
@@ -115,41 +127,97 @@ void handleSimpleButtonEvent(Widget* src, SDL_Event* event) {
 		if (PointInRect(&point, castData->location)) {
 			if (castData->isActive == BTN_ACTIVE) {
 				castData->isPressed = 1;
-				drawSimpleGlow(src);
 				switch (castData->type) {
 				case CH_BTN_EXIT:
 					user_event.type = SDL_QUIT;
-					SDL_PushEvent(&user_event);
 					break;
 				case CH_BTN_NEW_GAME:
 					user_event.type = SDL_USEREVENT;
 					user_event.user.code = 3;
-					SDL_PushEvent(&user_event);
 					break;
 				case CH_BTN_MAIN_MENU:
 				case CH_BTN_ONE_PLAYER:
 					user_event.type = SDL_USEREVENT;
 					user_event.user.code = EVENT_UPDATE_TO_ONE_PLAYER;
-					SDL_PushEvent(&user_event);
 					break;
 				case CH_BTN_RESTART:
 				case CH_BTN_SAVE:
 				case CH_BTN_TWO_PLAYERS:
 					user_event.type = SDL_USEREVENT;
 					user_event.user.code = EVENT_UPDATE_TO_TWO_PLAYERS;
-					SDL_PushEvent(&user_event);
 					break;
 				case CH_BTN_UNDO:
+					castData->isPressed = 0;
+					user_event.type = SDL_USEREVENT;
+					user_event.user.code = EVENT_UNDO;
+					break;
 				case CH_BTN_BACK:
+					user_event.type = SDL_USEREVENT;
+					user_event.user.code = EVENT_BACK;
+					break;
 				case CH_BTN_NEXT:
+					user_event.type = SDL_USEREVENT;
+					user_event.user.code = EVENT_NEXT;
+					break;
 				case CH_BTN_START:
 					user_event.type = SDL_USEREVENT;
 					user_event.user.code = EVENT_START_GAME;
-					SDL_PushEvent(&user_event);
 					break;
 				case CH_BTN_LOAD:
+					user_event.type = SDL_USEREVENT;
+					user_event.user.code = EVENT_LOAD_WINDOW;
+					SDL_PushEvent(&user_event);
+					break;
+				case CH_BTN_NOOB:
+					user_event.type = SDL_USEREVENT;
+					user_event.user.code = EVENT_DIFFICULTY_NOOB;
+					break;
+				case CH_BTN_EASY:
+					user_event.type = SDL_USEREVENT;
+					user_event.user.code = EVENT_DIFFICULTY_EASY;
+					break;
+				case CH_BTN_MODERATE:
+					user_event.type = SDL_USEREVENT;
+					user_event.user.code = EVENT_DIFFICULTY_MODERATE;
+					break;
+				case CH_BTN_HARD:
+					user_event.type = SDL_USEREVENT;
+					user_event.user.code = EVENT_DIFFICULTY_HARD;
+					break;
+				case CH_BTN_WHITE_COLOR:
+					user_event.type = SDL_USEREVENT;
+					user_event.user.code = EVENT_SET_COLOR_WHITE;
+					break;
+				case CH_BTN_BLACK_COLOR:
+					user_event.type = SDL_USEREVENT;
+					user_event.user.code = EVENT_SET_COLOR_BLACK;
+					break;
+				case CH_BTN_GAME_SLOT1:
+					user_event.type = SDL_USEREVENT;
+					user_event.user.code = EVENT_SET_SLOT_1;
+					break;
+				case CH_BTN_GAME_SLOT2:
+					user_event.type = SDL_USEREVENT;
+					user_event.user.code = EVENT_SET_SLOT_2;
+					break;
+				case CH_BTN_GAME_SLOT3:
+					user_event.type = SDL_USEREVENT;
+					user_event.user.code = EVENT_SET_SLOT_3;
+					break;
+				case CH_BTN_GAME_SLOT4:
+					user_event.type = SDL_USEREVENT;
+					user_event.user.code = EVENT_SET_SLOT_4;
+					break;
+				case CH_BTN_GAME_SLOT5:
+					user_event.type = SDL_USEREVENT;
+					user_event.user.code = EVENT_SET_SLOT_5;
 					break;
 				}
+				SDL_PushEvent(&user_event);
+				if(castData->isPressed == 1){
+					drawSimpleGlow(src);
+				}
+
 			}
 		}
 	}else if(event->type == SDL_USEREVENT && event->user.code == 1){
@@ -157,7 +225,7 @@ void handleSimpleButtonEvent(Widget* src, SDL_Event* event) {
 			castData->isPressed = 0;
 		if(castData->type == CH_BTN_START){
 			castData->type = CH_BTN_NEXT;
-			updateTextureBtn(src);
+			updateTextureBtn(src,1);
 		}
 		user_event.type = SDL_USEREVENT;
 		user_event.user.code = EVENT_UPDATE_WINDOW;
@@ -167,7 +235,7 @@ void handleSimpleButtonEvent(Widget* src, SDL_Event* event) {
 			castData->isPressed = 0;
 		if(castData->type == CH_BTN_NEXT){
 			castData->type = CH_BTN_START;
-			updateTextureBtn(src);
+			updateTextureBtn(src,1);
 		}
 		user_event.type = SDL_USEREVENT;
 		user_event.user.code = EVENT_UPDATE_WINDOW;

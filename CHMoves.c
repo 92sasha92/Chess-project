@@ -416,7 +416,7 @@ CHMovesList *rookMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 					return NULL ;
 				if(curC != CH_GAME_EMPTY_ENTRY)
 					break;
-			} else if(isThePieceMyColor(curC, color))
+			} else if(curC != CH_GAME_EMPTY_ENTRY)
 				break;
 			if (i == 0)
 				curRow++;
@@ -489,7 +489,7 @@ CHMovesList *bishopMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 					return NULL ;
 				if(curC != CH_GAME_EMPTY_ENTRY)
 					break;
-			} else
+			} else if(curC != CH_GAME_EMPTY_ENTRY)
 				break;
 			if (i == 0) {
 				curRow++;
@@ -550,7 +550,7 @@ CHMovesList *kingMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c
 }
 
 CHMovesList *createMoveList(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],char c, int row, int col, int color) {
-	int kRow,kCol;
+	int kRow = 0,kCol = 0;
 	CHMovesList *list = (CHMovesList *) malloc(sizeof(CHMovesList));
 	if (!list) {
 		printf("Error: malloc has failed\n");

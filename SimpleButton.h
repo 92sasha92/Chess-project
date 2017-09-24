@@ -8,10 +8,28 @@
 #define EVENT_UPDATE_WINDOW 0
 #define EVENT_UPDATE_TO_ONE_PLAYER 1
 #define EVENT_UPDATE_TO_TWO_PLAYERS 2
+#define EVENT_SHOW_GAME_MODE_SCREEN 3
+#define EVENT_LOAD_WINDOW 4
 #define EVENT_START_GAME 5
 #define EVENT_MOVE 6
 #define EVENT_BEGIN_DRAG 7
 #define EVENT_GET_MOVES 8
+#define EVENT_DRAGGED_NOT_ON_BOARD 9
+#define EVENT_NEXT 10
+#define EVENT_DIFFICULTY_NOOB 11
+#define EVENT_DIFFICULTY_EASY 12
+#define EVENT_DIFFICULTY_MODERATE 13
+#define EVENT_DIFFICULTY_HARD 14
+#define EVENT_SET_COLOR_WHITE 15
+#define EVENT_SET_COLOR_BLACK 16
+#define EVENT_UNDO 17
+#define EVENT_BACK 18
+#define EVENT_SET_SLOT_1 21
+#define EVENT_SET_SLOT_2 22
+#define EVENT_SET_SLOT_3 23
+#define EVENT_SET_SLOT_4 24
+#define EVENT_SET_SLOT_5 25
+
 typedef enum _btnType{
 	CH_BTN_EXIT,
 	CH_BTN_NEW_GAME,
@@ -24,7 +42,18 @@ typedef enum _btnType{
 	CH_BTN_UNDO,
 	CH_BTN_BACK,
 	CH_BTN_NEXT,
-	CH_BTN_START
+	CH_BTN_START,
+	CH_BTN_NOOB,
+	CH_BTN_EASY,
+	CH_BTN_MODERATE,
+	CH_BTN_HARD,
+	CH_BTN_WHITE_COLOR,
+	CH_BTN_BLACK_COLOR,
+	CH_BTN_GAME_SLOT1,
+	CH_BTN_GAME_SLOT2,
+	CH_BTN_GAME_SLOT3,
+	CH_BTN_GAME_SLOT4,
+	CH_BTN_GAME_SLOT5
 }BtnType;
 
 
@@ -44,6 +73,9 @@ typedef struct simplebutton_t{
 	int isActive;
 }SimpleButton;
 
+
+
+void updateTextureBtn(Widget* src,int active);
 //You need a create function:
 Widget* createSimpleButton(SDL_Renderer* windowRender, SDL_Rect* location,
 		const char* image,const char* image2,BtnType type,int isPressed,int isActive);
