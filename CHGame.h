@@ -148,7 +148,7 @@ CH_GAME_MESSAGE isCheck(CHGame* src, int is_computer);
  * Creates a copy of a given game.
  * The new copy has the same status as the src game.
  *
- * @param src - the source game which will be copied
+ * @param src - The source game which will be copied
  * @return
  * NULL if either src is NULL or a memory allocation failure occurred.
  * Otherwise, an new copy of the source game is returned.
@@ -170,5 +170,54 @@ CHGame* chGameCopy(CHGame* src);
  *                                 board is removed and the current player is changed
  */
 CH_GAME_MESSAGE chGameUndoPrevMove(CHGame* src);
+
+/**
+ * create the default board of the game.
+ *
+ * @param src - The source game
+ */
+void defaultBoard(CHGame *src);
+
+/**
+ * checks if specific move is valid
+ *
+ * @param list - List of all the optional moves of the peice.
+ * @return
+ * true	- if there is a valid move
+ * false - otherwise
+ */
+bool isValidMove(CHMovesList *list, int toRow, int toCol);
+
+/**
+ * function to compare between nodes in order to sort a list
+ *
+ * @param a - First parameter
+ * @param b - Second parameter
+ * @return
+ * positive number if a > b, and negative otherwise.
+ */
+int cmpfunc(const void * a, const void * b);
+
+/**
+ * prints all the optional moves of specific peice.
+ *
+ * @param src - The source game
+ * @param list - Empty list for the moves
+ * @param c - The piece character
+ * @param fRow - The piece row on the board
+ * @param fCol - The piece column on the board
+ * @param widget - the widget of the piece
+ */
+void printMoves(CHGame* src, CHMovesList *list, char c, int fRow, int fCol, Widget *widget);
+
+/**
+ * make pawn promotion according to the user choice.
+ *
+ * @param src - The source game
+ * @param row - The row of the piece
+ * @param col - The column of the piece
+ * @param is_alphaBeta_func - boolean parameter to identify between the user and the minimax algorithm                              board is removed and the current player is changed
+ */
+void chPawnPromotion(CHGame* src, int row, int col, bool is_alphaBeta_func);
 
 #endif /* CHGAME_H_ */

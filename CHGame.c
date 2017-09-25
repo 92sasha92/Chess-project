@@ -119,7 +119,7 @@ CH_GAME_MESSAGE chGamePrintBoard(CHGame* src){
 }
 
 
-bool isValidMove(CHMovesList *list,int toRow,int toCol) {
+bool isValidMove(CHMovesList *list, int toRow, int toCol) {
 	CHMovesList *node = list;
 	while (node != NULL) {
 		if (node->row == toRow && node ->col == toCol)
@@ -137,7 +137,8 @@ int cmpfunc(const void * a, const void * b) {
 	return ((CHNodeForSort*)a)->row - ((CHNodeForSort*) b)->row;
 }
 
-void printMoves(CHGame* src,CHMovesList *list,char c,int fRow,int fCol,Widget *widget) {
+
+void printMoves(CHGame* src, CHMovesList *list, char c, int fRow, int fCol, Widget *widget) {
 	CHMovesList *node = list;
 	int numOfMoves = 0;
     int i = 0;
@@ -183,7 +184,7 @@ void printMoves(CHGame* src,CHMovesList *list,char c,int fRow,int fCol,Widget *w
 }
 
 
-CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol,Widget *widget) {
+CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow, int fCol, Widget *widget) {
 	bool isCorrectCol = false;
 	char c;
 	CHMovesList *list;
@@ -211,92 +212,24 @@ CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol,Widget *widget) {
 }
 
 
-void chPawnPromotion(CHGame* src,int row, int col, bool is_alphaBeta_func) {
-	int best_score = INT32_MIN, cur_score;
-	char best_piece = ' ';
-	if (((src->gameMode == 1) && (src->currentTurn != src->userColor)) || (is_alphaBeta_func)) {
-		if (src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL) {
-			src->gameBoard[row][col] = CH_WHITE_QUEEN;
-			cur_score = get_board_score(src->currentTurn, src);
-			if (cur_score > best_score) {
-				best_score = cur_score;
-				best_piece = CH_WHITE_QUEEN;
-			}
-			src->gameBoard[row][col] = CH_WHITE_ROOK;
-			cur_score = get_board_score(src->currentTurn, src);
-			if (cur_score > best_score) {
-				best_score = cur_score;
-				best_piece = CH_WHITE_ROOK;
-			}
-			src->gameBoard[row][col] = CH_WHITE_BISHOP;
-			cur_score = get_board_score(src->currentTurn, src);
-			if (cur_score > best_score) {
-				best_score = cur_score;
-				best_piece = CH_WHITE_BISHOP;
-			}
-			src->gameBoard[row][col] = CH_WHITE_KNIGHT;
-			cur_score = get_board_score(src->currentTurn, src);
-			if (cur_score > best_score) {
-				best_score = cur_score;
-				best_piece = CH_WHITE_KNIGHT;
-			}
-			src->gameBoard[row][col] = CH_WHITE_PAWN;
-			cur_score = get_board_score(src->currentTurn, src);
-			if (cur_score > best_score) {
-				best_piece = CH_WHITE_PAWN;
-			}
-			src->gameBoard[row][col] = best_piece;
-		} else {
-			src->gameBoard[row][col] = CH_BLACK_QUEEN;
-			cur_score = get_board_score(src->currentTurn, src);
-			if (cur_score > best_score) {
-				best_score = cur_score;
-				best_piece = CH_BLACK_QUEEN;
-			}
-			src->gameBoard[row][col] = CH_BLACK_ROOK;
-			cur_score = get_board_score(src->currentTurn, src);
-			if (cur_score > best_score) {
-				best_score = cur_score;
-				best_piece = CH_BLACK_ROOK;
-			}
-			src->gameBoard[row][col] = CH_BLACK_BISHOP;
-			cur_score = get_board_score(src->currentTurn, src);
-			if (cur_score > best_score) {
-				best_score = cur_score;
-				best_piece = CH_BLACK_BISHOP;
-			}
-			src->gameBoard[row][col] = CH_BLACK_KNIGHT;
-			cur_score = get_board_score(src->currentTurn, src);
-			if (cur_score > best_score) {
-				best_score = cur_score;
-				best_piece = CH_BLACK_KNIGHT;
-			}
-			src->gameBoard[row][col] = CH_BLACK_PAWN;
-			cur_score = get_board_score(src->currentTurn, src);
-			if (cur_score > best_score) {
-				best_piece = CH_BLACK_PAWN;
-			}
-			src->gameBoard[row][col] = best_piece;
-		}
-	} else {
+void chPawnPromotion(CHGame* src,int row,int col, bool is_alphaBeta_func) {
+	if (!(((src->gameMode == 1) && (src->currentTurn != src->userColor)) || (is_alphaBeta_func))) {
 		char str[MAX_LINE_LENGTH];
 		bool isNotValid = true;
 		char delimiter[8] = " \t\r\n";
 		char strCopy[MAX_LINE_LENGTH];
 		char *cur;
-		while (isNotValid) {
+		while(isNotValid){
 			printf("Pawn promotion- please replace the pawn by queen, rook, knight, bishop or pawn:\n");
 			fgets(str,MAX_LINE_LENGTH,stdin);
 			strcpy(strCopy,str);
 			cur = strtok(strCopy, delimiter);
-			if (strcmp(cur, "pawn") == 0) {
-				if (strtok(NULL, delimiter) == NULL) {
+			if(strcmp(cur, "pawn") == 0) {
+				if(strtok(NULL, delimiter) == NULL) {
 					isNotValid = false;
-				}
-				else
+				} else
 					printf("Invalid Type\n");
-			}
-			else if (strcmp(cur, "queen") == 0) {
+			} else if (strcmp(cur, "queen") == 0) {
 				if (strtok(NULL, delimiter) == NULL) {
 					if (src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL)
 						src->gameBoard[row][col] = CH_WHITE_QUEEN;
@@ -314,8 +247,7 @@ void chPawnPromotion(CHGame* src,int row, int col, bool is_alphaBeta_func) {
 					isNotValid = false;
 				} else
 					printf("Invalid Type\n");
-
-			} else if (strcmp(cur, "knight") == 0) {
+			} else if(strcmp(cur, "knight") == 0) {
 				if (strtok(NULL, delimiter) == NULL) {
 					if (src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL)
 						src->gameBoard[row][col] = CH_WHITE_KNIGHT;
@@ -333,7 +265,7 @@ void chPawnPromotion(CHGame* src,int row, int col, bool is_alphaBeta_func) {
 					isNotValid = false;
 				} else
 					printf("Invalid Type\n");
-			} else {
+			} else{
 				printf("Invalid Type\n");
 			}
 		}

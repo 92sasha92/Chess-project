@@ -32,8 +32,9 @@ typedef struct BoardCell_t {
 	Widget* piece;
 } BoardCell;
 
+
 //You need a create function:
-Widget* createBoardCell(SDL_Renderer* windowRender, SDL_Rect* location,const char* image,char c);
+Widget* createBoardCell(SDL_Renderer* windowRender, SDL_Rect* location, const char* image, char c);
 
 //You need this function in order to destroy all data Associate with a button:
 void destroyBoardCell(Widget* src);
@@ -41,5 +42,7 @@ void destroyBoardCell(Widget* src);
 void handleBoardCellEvent(Widget* src, SDL_Event* event);
 
 void drawBoardCell(Widget* src);
+
+void drawGlowCell(Widget* src);
 
 #endif /* BOARDCELL_H_ */

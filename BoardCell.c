@@ -79,7 +79,6 @@ Widget* createBoardCell(SDL_Renderer* windowRender, SDL_Rect* location,
 	res->handleEvent = handleBoardCellEvent;
 	res->data = data;
 	return res;
-
 }
 
 
