@@ -16,20 +16,21 @@ void drawCHPieceDrag(Widget* src){
 		return;
 	}
 	CHPiece* castData = (CHPiece*) src->data;
-	SDL_RenderCopy(castData->windowRenderer, castData->Texture, NULL,
-			castData->location);
+	SDL_RenderCopy(castData->windowRenderer, castData->Texture, NULL,castData->location);
 	SDL_RenderPresent(castData->windowRenderer);
 }
 SDL_Texture* createTexturePiece(SDL_Renderer* windowRender,const char* image){
 	SDL_Surface* loadingSurface = SDL_LoadBMP(image); //We use the surface as a temp var;
+	if(loadingSurface == NULL){
+		return NULL;
+	}
 	SDL_Texture* gameBoardTexture = SDL_CreateTextureFromSurface(windowRender,loadingSurface);
 	SDL_FreeSurface(loadingSurface);
 	return gameBoardTexture;
 }
 //You need a create function:
-Widget* createCHPiece(SDL_Renderer* windowRender, SDL_Rect* location,
-		char c){
-	if (windowRender == NULL || location == NULL) {
+Widget* createCHPiece(SDL_Renderer* windowRender, SDL_Rect* location,char c){
+	if (windowRender == NULL || location == NULL || c == CH_GAME_EMPTY_ENTRY) {
 		return NULL ;
 	}
 	//Allocate data
@@ -66,6 +67,7 @@ Widget* createCHPiece(SDL_Renderer* windowRender, SDL_Rect* location,
 		free(res);
 		free(data);
 		SDL_DestroyTexture(gameBoardTexture); ////It is safe to pass NULL
+		printf("4/n");
 		return NULL ;
 	}
 	data->Texture = gameBoardTexture;

@@ -114,7 +114,9 @@ int main(int argc, char** argv){
 	GameBoard* castData;
 	BoardCell* cellData;
 	BoardCell* prevCellData;
+	SPSimpleWindow * simpleWindow = NULL;
 	Widget *widget = NULL;
+	CHGame* tmp = NULL;
 	CHGame *game = startSettingsMode();
 	if(!game)
 		return 0;
@@ -124,6 +126,7 @@ int main(int argc, char** argv){
 			SDL_Quit();
 			return NULL;
 		}
+		simpleWindow =(SPSimpleWindow *)window->data;
 	}
 	int flag = 1;
 	while (true) {
@@ -188,6 +191,63 @@ int main(int argc, char** argv){
 				}else if (event.type == SDL_USEREVENT && event.user.code == EVENT_UNDO) {
 					command.cmd = CH_UNDO;
 					command.validArg = true;
+				}else if (event.type == SDL_USEREVENT && event.user.code == EVENT_GO_TO_MAIN_MENU) {
+					command.cmd = CH_RESET;
+					command.validArg = true;
+				}else if (event.type == SDL_USEREVENT && event.user.code == EVENT_RESTART) {
+					tmp = chGameCreate(game->gameMode,game->userColor,game->difficulty,1);
+					if(game->gameMode == 1 && game->list->actualSize != 0){
+						updateTextureBtn(((SPSimpleWindow *) window->data)->widgets[0],0);
+					}
+					chGameDestroy(game);
+					game = tmp;
+					castData = (GameBoard*) (((SPSimpleWindow *) window->data)->widgets[6]->data);
+					for(int i = 0;i < 8;i++){
+						for(int j = 0;j < 8;j++){
+							cellData = (BoardCell*) castData->gameBoard[i][j]->data;
+							if(cellData->piece != NULL){
+								cellData->piece->destroyWidget(cellData->piece);
+							}
+							if(game->gameBoard[i][j] != CH_GAME_EMPTY_ENTRY){
+								cellData->piece = createCHPiece(cellData->windowRenderer,cellData->location,game->gameBoard[i][j]);
+							}else{
+								cellData->piece = NULL;
+							}
+						}
+					}
+					window->drawWindow(window);
+				}else if(event.type == SDL_USEREVENT && event.user.code == EVENT_SAVE) {
+					chGuiSave(game);
+				}else if(event.type == SDL_USEREVENT && event.user.code == EVENT_LOAD_WINDOW) {
+					destroyWindow(window);
+					window = createLoadWindow();
+					simpleWindow =(SPSimpleWindow *)window->data;
+					SDL_WaitEvent(&event);
+				}else if(event.user.code == EVENT_SET_SLOT_1){
+					pressSlotChange(window,1);
+					if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
+						updateTextureBtn(simpleWindow->widgets[1],1);
+					}
+				}else if(event.user.code == EVENT_SET_SLOT_2){
+					pressSlotChange(window,2);
+					if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
+						updateTextureBtn(simpleWindow->widgets[1],1);
+					}
+				}else if(event.user.code == EVENT_SET_SLOT_3){
+					pressSlotChange(window,3);
+					if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
+						updateTextureBtn(simpleWindow->widgets[1],1);
+					}
+				}else if(event.user.code == EVENT_SET_SLOT_4){
+					pressSlotChange(window,4);
+					if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
+						updateTextureBtn(simpleWindow->widgets[1],1);
+					}
+				}else if(event.user.code == EVENT_SET_SLOT_5){
+					pressSlotChange(window,5);
+					if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
+						updateTextureBtn(simpleWindow->widgets[1],1);
+					}
 				}
 			} else {
 				fgets(strCommand, MAX_LINE_SIZE, stdin);
@@ -259,8 +319,7 @@ int main(int argc, char** argv){
 								(GameBoard*) (((SPSimpleWindow *) window->data)->widgets[6]->data);
 						cellData =
 								(BoardCell*) castData->gameBoard[command.fRow][command.fColomn]->data;
-						setNoGlowCells(
-								((SPSimpleWindow *) window->data)->widgets[6]);
+						setNoGlowCells(((SPSimpleWindow *) window->data)->widgets[6]);
 					}
 					if (GUI_ACTIVE) {
 						widget = ((SPSimpleWindow *) window->data)->widgets[6];
@@ -288,12 +347,29 @@ int main(int argc, char** argv){
 					printf("File cannot be created or modified\n");
 			} else if (command.cmd == CH_RESET) {
 				chGameDestroy(game);
+				if (GUI_ACTIVE) {
+					destroyWindow(window);
+				}
 				game = startSettingsMode();
 				if (!game) {
 					free(best_move);
+					if (GUI_ACTIVE) {
+						SDL_Quit();
+					}
 					return -1;
 				}
-				printf("Restarting...\n");
+				if (GUI_ACTIVE) {
+					window = createSimpleWindow(game);
+					if (window == NULL ) {
+						chGameDestroy(game);
+						SDL_Quit();
+						return -1;
+					}
+					SDL_WaitEvent(&event);
+				}
+				if (!(GUI_ACTIVE)) {
+					printf("Restarting...\n");
+				}
 				isTurnChanged = true;
 			} else if (command.cmd == CH_QUIT) {
 				chGameDestroy(game);

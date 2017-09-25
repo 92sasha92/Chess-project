@@ -283,7 +283,7 @@ CHGame* startSettingsMode(){
 						printf("Error: malloc has failed\n");
 						return NULL;
 					}
-					if(!load(command.path,src,&currentTurn,&gameMode,&gameDifficulty,&userColor)){
+					if(load(command.path,src,&currentTurn,&gameMode,&gameDifficulty,&userColor)!= CH_GAME_SUCCESS){
 						setDefault();
 						free(src);/////////////////////////change to function
 					}

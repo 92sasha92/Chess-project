@@ -12,9 +12,8 @@
 #include "CHGame.h"
 
 
-Widget* createGameBoard(SDL_Renderer* windowRender, SDL_Rect* location,
-		const char* image,CHGame *game){
-	if (windowRender == NULL || location == NULL || image == NULL ) {
+Widget* createGameBoard(SDL_Renderer* windowRender, SDL_Rect* location,const char* image,CHGame *game){
+	if (windowRender == NULL || location == NULL || image == NULL || game == NULL) {
 		return NULL ;
 	}
 	//Allocate data
@@ -23,7 +22,6 @@ Widget* createGameBoard(SDL_Renderer* windowRender, SDL_Rect* location,
 	GameBoard* data = (GameBoard*) malloc(sizeof(GameBoard));
 	SDL_Surface* loadingSurface = SDL_LoadBMP(image); //We use the surface as a temp var;
 	SDL_Texture* gameBoardTexture = SDL_CreateTextureFromSurface(windowRender,loadingSurface);
-
 	SDL_SetTextureBlendMode(gameBoardTexture, SDL_BLENDMODE_BLEND);
 	SDL_Rect loc = { .x = startX, .y = startY, .h = 77, .w = 77 };
 	char* imageBlack = "./images/blackSquare.bmp";
@@ -63,6 +61,7 @@ Widget* createGameBoard(SDL_Renderer* windowRender, SDL_Rect* location,
 				destroyBoardCell(data->gameBoard[i][j]);
 			}
 		}
+		printf("2/n");
 		return NULL ;
 	}
 	SDL_FreeSurface(loadingSurface); //Surface is not actually needed after texture is created

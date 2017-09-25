@@ -10,46 +10,46 @@
 #include <stdbool.h>
 #include "CHGame.h"
 
-int readBoard(FILE *fp,CHGame *src){
+CH_GAME_MESSAGE readBoard(FILE *fp,CHGame *src){
 	int i,j;
 	char strMark[10];
 	char buf[10];
 	fscanf(fp,"%7s",buf);
 	if(strcmp(buf,"<board>") != 0)
-		return 0;
+		return CH_GAME_INVALID_ARGUMENT;
 	fscanf(fp, "%*[^\n]");
 	for(i = CH_GAME_N_ROWS - 1;i >= 0;i--){
 		sprintf(strMark,"<row_%d>",i + 1);
 		fscanf(fp,"%7s",buf);
 		if(strcmp(buf,strMark) != 0)
-			return 0;
+			return CH_GAME_INVALID_ARGUMENT;
 		for(j = 0;j < CH_GAME_N_COLUMNS;j++){
 			src->gameBoard[i][j] = fgetc(fp);
 		}
 		fscanf(fp,"%8s",buf);
 		sprintf(strMark,"</row_%d>",i + 1);
 		if(strcmp(buf,strMark) != 0)
-			return 0;
+			return CH_GAME_INVALID_ARGUMENT;
 		fscanf(fp, "%*[^\n]");
 	}
 	fscanf(fp,"%8s",buf);
 	if(strcmp(buf,"</board>") != 0)
-		return 0;
+		return CH_GAME_INVALID_ARGUMENT;
 	fscanf(fp, "%*[^\n]");
-	return 1;
+	return CH_GAME_SUCCESS;
 }
 
-int exitload(FILE *fp){
+CH_GAME_MESSAGE exitload(FILE *fp){
 	fclose(fp);
-	return 0;
+	return CH_GAME_INVALID_ARGUMENT;
 }
 
-int load(char *path,CHGame *src,int *currentTurn,int *gameMode,int *gameDifficulty,int *userColor){
+CH_GAME_MESSAGE load(char *path,CHGame *src,int *currentTurn,int *gameMode,int *gameDifficulty,int *userColor){
 	char buf[20];
 	FILE *fp = fopen(path,"r");
 	if(fp == NULL){
 		printf("Error: File doesn’t exist or cannot be opened\n");
-		return 0;
+		return CH_GAME_FILE_PROBLEM;
 	}
 	fscanf(fp, "%*[^\n]");
 	fscanf(fp,"%6s",buf);
@@ -100,7 +100,7 @@ int load(char *path,CHGame *src,int *currentTurn,int *gameMode,int *gameDifficul
 	src->gameMode = *gameMode;
 	if(!chGameCreateMode1(src,*gameDifficulty,*userColor))
 		return 0;
-	return 1;
+	return CH_GAME_SUCCESS;
 }
 
 CH_GAME_MESSAGE chGameSave(CHGame* src,char *path){
@@ -132,4 +132,77 @@ CH_GAME_MESSAGE chGameSave(CHGame* src,char *path){
 	fclose(fp);
 	return CH_GAME_SUCCESS;
 }
+
+char *slotPath(int slotNum){
+	switch(slotNum){
+	case 1:
+		return "./gameSlot1.txt";
+	case 2:
+		return "./gameSlot2.txt";
+	case 3:
+		return "./gameSlot3.txt";
+	case 4:
+		return "./gameSlot4.txt";
+	case 5:
+		return "./gameSlot5.txt";
+	}
+	return "";
+}
+CH_GAME_MESSAGE chGuiSave(CHGame* src){
+	int i;
+	FILE *fp;
+	CH_GAME_MESSAGE mes;
+	int numOfSaves = 0;
+	int currentTurn = 1;
+	int gameMode = 2;
+	int gameDifficulty = 2;
+	int userColor = 1;
+	if(src == NULL)
+		return CH_GAME_INVALID_ARGUMENT;
+	CHGame* tmp = NULL;
+	fp = fopen("./readMeForLoad.txt","r");
+	if (!fp)
+		return CH_GAME_FILE_PROBLEM;
+	if(fscanf(fp,"%d",&numOfSaves) != 1){
+		fclose(fp);
+		return CH_GAME_FILE_PROBLEM;
+	}
+	fclose(fp);
+	if(numOfSaves == 5){
+		i = numOfSaves;
+	}else{
+		i = numOfSaves + 1;
+		numOfSaves++;
+	}
+	for(;i > 1;i--){
+		tmp = chGameCreate(gameMode,userColor,gameDifficulty,currentTurn);
+		mes = load(slotPath(i - 1),tmp,&currentTurn,&gameMode,&gameDifficulty,&userColor);
+		if(mes != CH_GAME_SUCCESS){
+			chGameDestroy(tmp);
+			return mes;
+		}
+		mes = chGameSave(tmp,slotPath(i));
+		if(mes != CH_GAME_SUCCESS){
+			chGameDestroy(tmp);
+			return mes;
+		}
+		chGameDestroy(tmp);
+	}
+	chGameSave(src,slotPath(i));
+	fp = fopen("./readMeForLoad.txt","w");
+	if (!fp)
+		return CH_GAME_FILE_PROBLEM;
+	fprintf(fp,"%d",numOfSaves);
+	fclose(fp);
+	return CH_GAME_SUCCESS;
+}
+
+
+
+
+
+
+
+
+
 
