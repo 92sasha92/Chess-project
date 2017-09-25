@@ -1,9 +1,3 @@
-/*
- * CHStartWindow.c
- *
- *  Created on: Sep 10, 2017
- *      Author: sasha
- */
 #include <stdlib.h>
 #include <stdio.h>
 #include "SPSimpleMainWindow.h"
@@ -19,9 +13,9 @@ Widget** createSimpleStartWindowWidgets(SDL_Renderer* renderer) {
 	if (widgets == NULL ) {
 		return NULL ;
 	}
-	SDL_Rect newGameR = { .x = 52, .y = startBtnPosY, .h = 80, .w = 296 };
-	SDL_Rect loadR = { .x = 52, .y = startBtnPosY + 90, .h = 80, .w = 296  };
-	SDL_Rect exitR = { .x = 52, .y = startBtnPosY + 90*2, .h = 80, .w = 296  };
+	SDL_Rect newGameR = { .x = 52, .y = startBtnPosY, .h = 80, .w = 296};
+	SDL_Rect loadR = { .x = 52, .y = startBtnPosY + 90, .h = 80, .w = 296};
+	SDL_Rect exitR = { .x = 52, .y = startBtnPosY + 90*2, .h = 80, .w = 296};
 	widgets[0] = createSimpleButton(renderer, &newGameR, "./images/newGameBtn.bmp",NULL,CH_BTN_NEW_GAME,0,BTN_ACTIVE);
 	widgets[1] = createSimpleButton(renderer, &loadR, "./images/loadBtn.bmp",NULL,CH_BTN_LOAD,0,BTN_ACTIVE);
 	widgets[2] = createSimpleButton(renderer, &exitR, "./images/exitBtn.bmp",NULL,CH_BTN_EXIT,0,BTN_ACTIVE);

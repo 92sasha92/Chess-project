@@ -2,12 +2,12 @@
 #include <stdlib.h>
 
 //Helper function
-SDL_Rect* spCopyRect(SDL_Rect* src){
+SDL_Rect* spCopyRect(SDL_Rect* src) {
 	if(src == NULL){
 		return NULL;
 	}
 	SDL_Rect* res = malloc(sizeof(SDL_Rect));
-	if(res==NULL){
+	if (res==NULL) {
 		return NULL;
 	}
 	res->h = src->h;

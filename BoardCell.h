@@ -19,7 +19,7 @@
 #define CELL_GLOW_COLOR_GREEN 3
 #define CELL_GLOW_COLOR_RED 4
 
-typedef struct BoardCell_t{
+typedef struct BoardCell_t {
 	SDL_Texture* regularBoardCellTexture;
 	SDL_Texture* regularGlowTexture;
 	SDL_Texture* blueGlowTexture;
@@ -30,7 +30,7 @@ typedef struct BoardCell_t{
 	SDL_Renderer* windowRenderer;
 	SDL_Rect* location;
 	Widget* piece;
-}BoardCell;
+} BoardCell;
 
 //You need a create function:
 Widget* createBoardCell(SDL_Renderer* windowRender, SDL_Rect* location,const char* image,char c);

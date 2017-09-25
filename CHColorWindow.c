@@ -1,11 +1,3 @@
-/*
- * CHChooseColorWindow.c
- *
- *  Created on: Sep 22, 2017
- *      Author: sasha
- */
-
-
 #include <stdlib.h>
 #include <stdio.h>
 #include "SPSimpleMainWindow.h"
@@ -14,19 +6,18 @@
 #define startBtnPosY 100
 
 
-void pressColorChange(SPWindow* src,int color){
+void pressColorChange(SPWindow* src,int color) {
 	int i;
 	if (src == NULL ) {
 		return;
 	}
 	SPSimpleWindow * castData = (SPSimpleWindow *) src->data;
 	SimpleButton* castBtnData;
-	for(i = 0;i < castData->numOfWidgets;i++){
+	for (i = 0; i < castData->numOfWidgets; i++) {
 		castBtnData = (SimpleButton*) castData->widgets[i]->data;
-		if(i == color){
+		if (i == color) {
 			castBtnData->isPressed = 1;
-		}
-		else{
+		} else {
 			castBtnData->isPressed = 0;
 		}
 	}

@@ -1,17 +1,9 @@
-/*
- * CHPiece.c
- *
- *  Created on: Sep 11, 2017
- *      Author: sasha
- */
-
-
 #include <stdlib.h>
 #include "CHPiece.h"
 #include "SPCommon.h"
 #include "CHMoves.h"
 
-void drawCHPieceDrag(Widget* src){
+void drawCHPieceDrag(Widget* src) {
 	if (src == NULL ) {
 		return;
 	}
@@ -19,17 +11,21 @@ void drawCHPieceDrag(Widget* src){
 	SDL_RenderCopy(castData->windowRenderer, castData->Texture, NULL,castData->location);
 	SDL_RenderPresent(castData->windowRenderer);
 }
-SDL_Texture* createTexturePiece(SDL_Renderer* windowRender,const char* image){
+
+
+SDL_Texture* createTexturePiece(SDL_Renderer* windowRender,const char* image) {
 	SDL_Surface* loadingSurface = SDL_LoadBMP(image); //We use the surface as a temp var;
-	if(loadingSurface == NULL){
+	if (loadingSurface == NULL) {
 		return NULL;
 	}
 	SDL_Texture* gameBoardTexture = SDL_CreateTextureFromSurface(windowRender,loadingSurface);
 	SDL_FreeSurface(loadingSurface);
 	return gameBoardTexture;
 }
+
+
 //You need a create function:
-Widget* createCHPiece(SDL_Renderer* windowRender, SDL_Rect* location,char c){
+Widget* createCHPiece(SDL_Renderer* windowRender, SDL_Rect* location,char c) {
 	if (windowRender == NULL || location == NULL || c == CH_GAME_EMPTY_ENTRY) {
 		return NULL ;
 	}
@@ -62,7 +58,6 @@ Widget* createCHPiece(SDL_Renderer* windowRender, SDL_Rect* location,char c){
 	} else if (c == CH_BLACK_KING) {
 		gameBoardTexture = createTexturePiece(windowRender,"./images/kingBlack.bmp");
 	}
-
 	if (res == NULL || data == NULL || gameBoardTexture == NULL) {
 		free(res);
 		free(data);
@@ -79,11 +74,11 @@ Widget* createCHPiece(SDL_Renderer* windowRender, SDL_Rect* location,char c){
 	res->handleEvent = handleCHPieceEvent;
 	res->data = data;
 	return res;
-
 }
 
+
 //You need this function in order to destroy all data Associate with a button:
-void destroyCHPiece(Widget* src){
+void destroyCHPiece(Widget* src) {
 	if (src == NULL ) {
 		return;
 	}
@@ -94,7 +89,8 @@ void destroyCHPiece(Widget* src){
 	free(src);
 }
 
-void handleCHPieceEvent(Widget* src, SDL_Event* event){
+
+void handleCHPieceEvent(Widget* src, SDL_Event* event) {
 	if (src == NULL || event == NULL ) {
 		return; //Better to return an error value
 	}
@@ -108,11 +104,10 @@ void handleCHPieceEvent(Widget* src, SDL_Event* event){
 			    castData->location->y = point.y - castData->deltaY;
 			    drawCHPieceDrag(src);
 		}
-	} else if(event->type == SDL_MOUSEBUTTONDOWN && event->button.button == SDL_BUTTON_LEFT) {
+	} else if (event->type == SDL_MOUSEBUTTONDOWN && event->button.button == SDL_BUTTON_LEFT) {
 		SDL_Point point;
 		point.x = event->button.x;
 		point.y = event->button.y;
-
 		if (SDL_PointInRect(&point, castData->location)) {
 			castData->isDragged = 1;
 			castData->deltaX = point.x - castData->location->x;
@@ -120,7 +115,7 @@ void handleCHPieceEvent(Widget* src, SDL_Event* event){
 				//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Title",
 						//"We did it", NULL );
 		}
-	} else if(event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT) {
+	} else if (event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT) {
 		SDL_Point point;
 		point.x = event->button.x;
 		point.y = event->button.y;
@@ -129,13 +124,13 @@ void handleCHPieceEvent(Widget* src, SDL_Event* event){
 				//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Title",
 						//"We did it", NULL );
 		}
-	}
-	else{
+	} else {
 		return;
 	}
 }
 
-void drawCHPiece(Widget* src){
+
+void drawCHPiece(Widget* src) {
 	if (src == NULL ) {
 		return;
 	}

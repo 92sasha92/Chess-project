@@ -13,17 +13,17 @@
 #define startY 60
 #define startX 390
 
-typedef struct gameBoard_t{
+typedef struct gameBoard_t {
 	SDL_Texture* gameBoardTexture;
 	SDL_Renderer* windowRenderer;
 	SDL_Rect* location;
 	Widget* gameBoard[8][8];
-}GameBoard;
+} GameBoard;
 
 //You need a create function:
 Widget* createGameBoard(SDL_Renderer* windowRender, SDL_Rect* location,
 		const char* image,CHGame *game);
-void setGlowCell(Widget* src,int i,int j,int color);
+void setGlowCell(Widget* src, int i, int j, int color);
 void setNoGlowCells(Widget* src);
 //You need this function in order to destroy all data Associate with a button:
 void destroyGameBoard(Widget*);

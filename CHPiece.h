@@ -10,14 +10,14 @@
 
 #include "Widget.h"
 
-typedef struct CHPiece_t{
+typedef struct CHPiece_t {
 	SDL_Texture* Texture;
 	SDL_Renderer* windowRenderer;
 	SDL_Rect* location;
 	int isDragged;
 	int deltaX;
 	int deltaY;
-}CHPiece;
+} CHPiece;
 
 //You need a create function:
 Widget* createCHPiece(SDL_Renderer* windowRender, SDL_Rect* location,

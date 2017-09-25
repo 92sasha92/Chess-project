@@ -12,10 +12,10 @@
 #include "CHMoves.h"
 #include "Widget.h"
 
-typedef struct ch_nodeForSort{
+typedef struct ch_nodeForSort {
 	int row;
 	int col;
-}CHNodeForSort;
+} CHNodeForSort;
 
 typedef struct ch_fiar_game_t {
 	char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS];
@@ -59,7 +59,7 @@ CH_GAME_MESSAGE chGamePrintBoard(CHGame* src);
  * userColor is not 0 or 1.
  * 1 - Otherwise.
  */
-int chGameCreateMode1(CHGame* src,int difficulty,int userColor);
+int chGameCreateMode1(CHGame* src, int difficulty, int userColor);
 
 /**
  * Creates a new game with a specified game mode,current Turn,user Color and difficulty(if in 1 player mode).
@@ -77,7 +77,7 @@ int chGameCreateMode1(CHGame* src,int difficulty,int userColor);
  * userColor is not 0 or 1 (if game mode is '1-player').
  * Otherwise, a new game instant is returned.
  */
-CHGame* chGameCreate(int gameMode,int userColor,int difficulty,int currentTurn);
+CHGame* chGameCreate(int gameMode, int userColor, int difficulty, int currentTurn);
 
 /**
  * Frees all memory allocation associated with a given game.
@@ -98,7 +98,7 @@ void chGameDestroy(CHGame* src);
  * CH_GAME_NO_MOVES - if there isn't any moves for this piece
  * CH_GAME_SUCCESS - otherwise
  */
-CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol,Widget *widget);
+CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow, int fCol, Widget *widget);
 
 /**
  * Sets the next move in a given game by specifying the position of the piece and where to move it.
@@ -114,7 +114,7 @@ CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol,Widget *widget);
  * CH_GAME_INVALID_MOVE - If the move is illegal for the piece in the position <x,y>.
  * CH_GAME_SUCCESS - otherwise
  */
-CH_GAME_MESSAGE chGameSetMove(CHGame* src,  char peice,int fRow,int fCol,int toRow,int toCol, bool is_alphaBeta_func);
+CH_GAME_MESSAGE chGameSetMove(CHGame* src,  char peice, int fRow, int fCol, int toRow, int toCol, bool is_alphaBeta_func);
 
 
 /**
@@ -141,7 +141,7 @@ CH_GAME_MESSAGE chIsCheckmateOrTie(CHGame* src);
  * CH_GAME_INVALID_ARGUMENT - if src is NULL.
  * CH_GAME_SUCCESS - otherwise.
  */
-CH_GAME_MESSAGE isCheck(CHGame* src,int is_computer);
+CH_GAME_MESSAGE isCheck(CHGame* src, int is_computer);
 
 
 /**

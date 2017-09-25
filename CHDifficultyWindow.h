@@ -9,6 +9,6 @@
 #define CHDIFFICULTYWINDOW_H_
 
 SPWindow* createSimpleDifficultyWindow();
-void pressDifficultyChange(SPWindow* src,int difficulty);
+void pressDifficultyChange(SPWindow* src, int difficulty);
 
 #endif /* CHDIFFICULTYWINDOW_H_ */

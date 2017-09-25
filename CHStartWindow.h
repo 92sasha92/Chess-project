@@ -10,6 +10,7 @@
 
 #include "SPSimpleMainWindow.h"
 
+
 SPWindow* createSimpleStartWindow();
 
 #endif /* CHSTARTWINDOW_H_ */

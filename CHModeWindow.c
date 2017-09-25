@@ -1,10 +1,3 @@
-/*
- * CHModeWindow.c
- *
- *  Created on: Sep 11, 2017
- *      Author: sasha
- */
-
 #include <stdlib.h>
 #include <stdio.h>
 #include "SPSimpleMainWindow.h"
@@ -12,19 +5,18 @@
 #define startBtnPosY 100
 
 
-void pressModeChange(SPWindow* src,int mode){
+void pressModeChange(SPWindow* src, int mode) {
 	int i;
 	if (src == NULL ) {
 		return;
 	}
 	SPSimpleWindow * castData = (SPSimpleWindow *) src->data;
 	SimpleButton* castBtnData;
-	for(i = 2;i < castData->numOfWidgets;i++){
+	for (i = 2; i < castData->numOfWidgets; i++) {
 		castBtnData = (SimpleButton*) castData->widgets[i]->data;
-		if(i - 1 == mode){
+		if (i - 1 == mode) {
 			castBtnData->isPressed = 1;
-		}
-		else{
+		} else {
 			castBtnData->isPressed = 0;
 		}
 	}

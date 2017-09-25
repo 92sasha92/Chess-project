@@ -10,45 +10,46 @@
 #include "SimpleButton.h"
 #include "CHLoadWindow.h"
 
-int getSlotPressed(SPWindow* src){
+int getSlotPressed(SPWindow* src) {
 	int i;
 	if (src == NULL ) {
 		return 0;
 	}
 	SPSimpleWindow * castData = (SPSimpleWindow *) src->data;
 	SimpleButton* castBtnData;
-	for(i = 2;i < castData->numOfWidgets;i++){
+	for (i = 2; i < castData->numOfWidgets; i++) {
 		castBtnData = (SimpleButton*) castData->widgets[i]->data;
-		if(castBtnData->isPressed == 1){
+		if (castBtnData->isPressed == 1) {
 			return (i -1);
 		}
 	}
 	return 0;
 }
 
-void pressSlotChange(SPWindow* src,int slot){
+
+void pressSlotChange(SPWindow* src,int slot) {
 	int i;
 	if (src == NULL ) {
 		return;
 	}
 	SPSimpleWindow * castData = (SPSimpleWindow *) src->data;
 	SimpleButton* castBtnData;
-	for(i = 2;i < castData->numOfWidgets;i++){
+	for (i = 2; i < castData->numOfWidgets; i++) {
 		castBtnData = (SimpleButton*) castData->widgets[i]->data;
-		if(i - 1 == slot){
+		if (i - 1 == slot) {
 			castBtnData->isPressed = 1;
-		}
-		else{
+		} else {
 			castBtnData->isPressed = 0;
 		}
 	}
 }
 
-Widget** createLoadWindowWidgets(SDL_Renderer* renderer,int numOfWidgets) {
+
+Widget** createLoadWindowWidgets(SDL_Renderer* renderer, int numOfWidgets) {
 	if (renderer == NULL ) {
 		return NULL ;
 	}
-	int i,j;
+	int i, j;
 	Widget** widgets = malloc(sizeof(Widget*) * numOfWidgets);
 	if (widgets == NULL ) {
 		return NULL ;
@@ -58,8 +59,8 @@ Widget** createLoadWindowWidgets(SDL_Renderer* renderer,int numOfWidgets) {
 	SDL_Rect loadR = { .x = 454, .y = 415, .h = 80, .w = 296  };
 	widgets[0] = createSimpleButton(renderer, &backR, "./images/backBtn.bmp",NULL,CH_BTN_BACK,0,BTN_ACTIVE);
 	widgets[1] = createSimpleButton(renderer, &loadR, "./images/loadGrayBtn.bmp","./images/loadBtn.bmp",CH_BTN_LOAD,0,BTN_NOT_ACTIVE);
-	for(i = 2;i < numOfWidgets;i++){
-		switch(i){
+	for (i = 2; i < numOfWidgets; i++) {
+		switch(i) {
 			case 2:
 				widgets[i] = createSimpleButton(renderer, &slotR, "./images/gameSlot1.bmp",NULL,CH_BTN_GAME_SLOT1,0,BTN_ACTIVE);
 				break;
@@ -78,14 +79,13 @@ Widget** createLoadWindowWidgets(SDL_Renderer* renderer,int numOfWidgets) {
 		}
 		slotR.y += 80;
 		if (widgets[i] == NULL) {
-			for(j = 0;j <= i;j++){
+			for(j = 0; j <= i; j++){
 				destroyWidget(widgets[j]);
 			}
 			free(widgets);
 			printf("ERROR:\n");
 			return NULL ;
 		}
-
 	}
 	return widgets;
 }

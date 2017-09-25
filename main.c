@@ -1,10 +1,3 @@
-/*
- * main.c
- *
- *  Created on: Aug 30, 2017
- *      Author: sasha
- */
-
 #include "SEMode.h"
 #include "CHGame.h"
 #include "CHParser.h"
@@ -14,8 +7,8 @@
 #define REC_DEPTH 4
 
 
-char *getPieceName(char piece){
-    switch (piece){
+char *getPieceName(char piece) {
+    switch (piece) {
         case 'm':
         case 'M':
             return "pawn";
@@ -38,13 +31,15 @@ char *getPieceName(char piece){
     return "";
 }
 
-char *getPlayerName(int player){
+
+char *getPlayerName(int player) {
     if (player != 0)
         return "black";
     return "white";
 }
 
-void change_turn(CHGame* game,  bool *isTurnChanged){
+
+void change_turn(CHGame* game,  bool *isTurnChanged) {
     if (game->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL) {
         game->currentTurn = CH_GAME_BLACK_PLAYER_SYMBOL;
     } else {
@@ -53,7 +48,8 @@ void change_turn(CHGame* game,  bool *isTurnChanged){
     *isTurnChanged = true;
 }
 
-int end_of_move(CHGame* game, CHMoveNode* best_move, bool *isTurnChanged){
+
+int end_of_move(CHGame* game, CHMoveNode* best_move, bool *isTurnChanged) {
     int winner;
     change_turn(game, isTurnChanged);
     winner = chIsCheckmateOrTie(game);
@@ -61,8 +57,7 @@ int end_of_move(CHGame* game, CHMoveNode* best_move, bool *isTurnChanged){
         chGameDestroy(game);
         free(best_move);
         return -1;
-    }
-    else if (winner != CH_GAME_NO_WIN_OR_TIE) {
+    } else if (winner != CH_GAME_NO_WIN_OR_TIE) {
         if (winner == CH_GAME_WHITE_WINS)
             printf("Checkmate! white player wins the game\n");
         else if (winner == CH_GAME_BLACK_WINS)
@@ -74,15 +69,14 @@ int end_of_move(CHGame* game, CHMoveNode* best_move, bool *isTurnChanged){
         free (best_move);
         return -1;
     } else {
-        if((game->gameMode == 1) && (game->currentTurn != game->userColor)){
+        if ((game->gameMode == 1) && (game->currentTurn != game->userColor)) {
             if (isCheck(game, 1) == CH_GAME_INVALID_ARGUMENT) {
                 chGameDestroy(game);
                 free(best_move);
                 return -1;
             }
-        }
-        else{
-            if(isCheck(game, 0) == CH_GAME_INVALID_ARGUMENT){
+        } else {
+            if (isCheck(game, 0) == CH_GAME_INVALID_ARGUMENT) {
                 chGameDestroy(game);
                 free (best_move);
                 return -1;
@@ -92,16 +86,19 @@ int end_of_move(CHGame* game, CHMoveNode* best_move, bool *isTurnChanged){
     return 1;
 }
 
-void printTurn(CHGame *src){
+
+void printTurn(CHGame *src) {
 	if (src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL)
 		printf("white player - enter your move:\n");
 	else
 		printf("black player - enter your move:\n");
 }
 
-int main(int argc, char** argv){
+
+int main(int argc, char** argv) {
 	SP_BUFF_SET();
 	CH_GAME_MESSAGE mes;
+    int flag, i, j;
 	char strCommand[MAX_LINE_SIZE];
 	CHMoveNode *best_move = (CHMoveNode *) malloc(sizeof(CHMoveNode));
     if (!best_move)
@@ -118,9 +115,9 @@ int main(int argc, char** argv){
 	Widget *widget = NULL;
 	CHGame* tmp = NULL;
 	CHGame *game = startSettingsMode();
-	if(!game)
+	if (!game)
 		return 0;
-	if(GUI_ACTIVE){
+	if (GUI_ACTIVE) {
 		window = createSimpleWindow(game);
 		if (window == NULL ) {
 			SDL_Quit();
@@ -128,7 +125,7 @@ int main(int argc, char** argv){
 		}
 		simpleWindow =(SPSimpleWindow *)window->data;
 	}
-	int flag = 1;
+	flag = 1;
 	while (true) {
 		command.cmd = CH_INVALID_LINE;
 		if (game->gameMode == 2 || (game->gameMode == 1 && game->currentTurn == game->userColor)) {
@@ -188,64 +185,64 @@ int main(int argc, char** argv){
 							}
 						}
 					}
-				}else if (event.type == SDL_USEREVENT && event.user.code == EVENT_UNDO) {
+				} else if (event.type == SDL_USEREVENT && event.user.code == EVENT_UNDO) {
 					command.cmd = CH_UNDO;
 					command.validArg = true;
-				}else if (event.type == SDL_USEREVENT && event.user.code == EVENT_GO_TO_MAIN_MENU) {
+				} else if (event.type == SDL_USEREVENT && event.user.code == EVENT_GO_TO_MAIN_MENU) {
 					command.cmd = CH_RESET;
 					command.validArg = true;
-				}else if (event.type == SDL_USEREVENT && event.user.code == EVENT_RESTART) {
+				} else if (event.type == SDL_USEREVENT && event.user.code == EVENT_RESTART) {
 					tmp = chGameCreate(game->gameMode,game->userColor,game->difficulty,1);
-					if(game->gameMode == 1 && game->list->actualSize != 0){
+					if ((game->gameMode == 1) && (game->list->actualSize != 0)) {
 						updateTextureBtn(((SPSimpleWindow *) window->data)->widgets[0],0);
 					}
 					chGameDestroy(game);
 					game = tmp;
 					castData = (GameBoard*) (((SPSimpleWindow *) window->data)->widgets[6]->data);
-					for(int i = 0;i < 8;i++){
-						for(int j = 0;j < 8;j++){
+					for(i = 0; i < 8; i++) {
+						for(j = 0; j < 8; j++) {
 							cellData = (BoardCell*) castData->gameBoard[i][j]->data;
-							if(cellData->piece != NULL){
+							if (cellData->piece != NULL) {
 								cellData->piece->destroyWidget(cellData->piece);
 							}
-							if(game->gameBoard[i][j] != CH_GAME_EMPTY_ENTRY){
+							if (game->gameBoard[i][j] != CH_GAME_EMPTY_ENTRY) {
 								cellData->piece = createCHPiece(cellData->windowRenderer,cellData->location,game->gameBoard[i][j]);
-							}else{
+							} else {
 								cellData->piece = NULL;
 							}
 						}
 					}
 					window->drawWindow(window);
-				}else if(event.type == SDL_USEREVENT && event.user.code == EVENT_SAVE) {
+				} else if (event.type == SDL_USEREVENT && event.user.code == EVENT_SAVE) {
 					chGuiSave(game);
-				}else if(event.type == SDL_USEREVENT && event.user.code == EVENT_LOAD_WINDOW) {
+				} else if (event.type == SDL_USEREVENT && event.user.code == EVENT_LOAD_WINDOW) {
 					destroyWindow(window);
 					window = createLoadWindow();
 					simpleWindow =(SPSimpleWindow *)window->data;
 					SDL_WaitEvent(&event);
-				}else if(event.user.code == EVENT_SET_SLOT_1){
+				} else if (event.user.code == EVENT_SET_SLOT_1) {
 					pressSlotChange(window,1);
-					if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
+					if (!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)) {
 						updateTextureBtn(simpleWindow->widgets[1],1);
 					}
-				}else if(event.user.code == EVENT_SET_SLOT_2){
+				} else if (event.user.code == EVENT_SET_SLOT_2) {
 					pressSlotChange(window,2);
-					if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
+					if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)) {
 						updateTextureBtn(simpleWindow->widgets[1],1);
 					}
-				}else if(event.user.code == EVENT_SET_SLOT_3){
+				} else if (event.user.code == EVENT_SET_SLOT_3) {
 					pressSlotChange(window,3);
-					if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
+					if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)) {
 						updateTextureBtn(simpleWindow->widgets[1],1);
 					}
-				}else if(event.user.code == EVENT_SET_SLOT_4){
+				} else if (event.user.code == EVENT_SET_SLOT_4) {
 					pressSlotChange(window,4);
-					if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
+					if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)) {
 						updateTextureBtn(simpleWindow->widgets[1],1);
 					}
-				}else if(event.user.code == EVENT_SET_SLOT_5){
+				} else if (event.user.code == EVENT_SET_SLOT_5) {
 					pressSlotChange(window,5);
-					if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
+					if (!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)) {
 						updateTextureBtn(simpleWindow->widgets[1],1);
 					}
 				}
@@ -379,7 +376,7 @@ int main(int argc, char** argv){
 					SDL_Quit();
 				}
 				return 0;
-			}else if (command.cmd == CH_UNDO) {
+			} else if (command.cmd == CH_UNDO) {
                 if (game->gameMode == 2) {
                     printf("Undo command not available in 2 players mode\n");
                 } else {
@@ -393,7 +390,7 @@ int main(int argc, char** argv){
                                    best_move->to_col + 65,
                                    (best_move->from_row + 1),
                                    best_move->from_col + 65);
-                            if(GUI_ACTIVE){
+                            if (GUI_ACTIVE) {
         						castData = (GameBoard*) (((SPSimpleWindow *) window->data)->widgets[6]->data);
         						cellData = (BoardCell*) castData->gameBoard[best_move->to_row][best_move->to_col]->data;
         						prevCellData = (BoardCell*) castData->gameBoard[best_move->from_row][best_move->from_col]->data;
@@ -415,7 +412,7 @@ int main(int argc, char** argv){
                                        best_move->to_col + 65,
                                        (best_move->from_row + 1),
                                        best_move->from_col + 65);
-                                if(GUI_ACTIVE){
+                                if (GUI_ACTIVE) {
             						castData = (GameBoard*) (((SPSimpleWindow *) window->data)->widgets[6]->data);
             						cellData = (BoardCell*) castData->gameBoard[best_move->to_row][best_move->to_col]->data;
             						prevCellData = (BoardCell*) castData->gameBoard[best_move->from_row][best_move->from_col]->data;
@@ -454,7 +451,7 @@ int main(int argc, char** argv){
 				prevCellData->piece->destroyWidget(prevCellData->piece);
 				prevCellData->piece = NULL;
 				setNoGlowCells(((SPSimpleWindow *) window->data)->widgets[6]);
-				if(game->list->actualSize == 2){
+				if (game->list->actualSize == 2) {
 					updateTextureBtn(((SPSimpleWindow *) window->data)->widgets[0],1);
 				}
 				window->drawWindow(window);

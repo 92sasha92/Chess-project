@@ -1,11 +1,5 @@
-/*
- * CHMoves.c
- *
- *  Created on: Aug 29, 2017
- *      Author: sasha
- */
-
 #include "CHMoves.h"
+
 
 bool isABlackPiece(char c) {
 	if (c == CH_BLACK_ROOK || c == CH_BLACK_KNIGHT || c == CH_BLACK_BISHOP || c == CH_BLACK_KING || c == CH_BLACK_QUEEN || c == CH_BLACK_PAWN)
@@ -13,11 +7,13 @@ bool isABlackPiece(char c) {
 	return false;
 }
 
+
 bool isAWhitePiece(char c) {
 	if (c == CH_WHITE_ROOK || c == CH_WHITE_KNIGHT || c == CH_WHITE_BISHOP || c == CH_WHITE_KING || c == CH_WHITE_QUEEN || c == CH_WHITE_PAWN)
 		return true;
 	return false;
 }
+
 
 bool isThePieceMyColor(char c, int color) {
 	if (color == CH_GAME_WHITE_PLAYER_SYMBOL) {
@@ -27,19 +23,20 @@ bool isThePieceMyColor(char c, int color) {
 	}
 }
 
+
 void findKing(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color,int *kRow,int *kCol){
 	int i,j;
 	bool isKingFound;
-	for(i = 0;i < CH_GAME_N_ROWS;i++){
-		for(j = 0;j < CH_GAME_N_COLUMNS;j++){
-			if((color == CH_GAME_WHITE_PLAYER_SYMBOL && gameBoard[i][j] == CH_WHITE_KING) || (color == CH_GAME_BLACK_PLAYER_SYMBOL && gameBoard[i][j] == CH_BLACK_KING)){
+	for (i = 0; i < CH_GAME_N_ROWS; i++){
+		for (j = 0; j < CH_GAME_N_COLUMNS; j++){
+			if ((color == CH_GAME_WHITE_PLAYER_SYMBOL && gameBoard[i][j] == CH_WHITE_KING) || (color == CH_GAME_BLACK_PLAYER_SYMBOL && gameBoard[i][j] == CH_BLACK_KING)) {
 				*kRow = i;
 				*kCol = j;
 				isKingFound = true;
 				break;
 			}
 		}
-		if(isKingFound)
+		if (isKingFound)
 			break;
 	}
 }

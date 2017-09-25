@@ -1,15 +1,9 @@
-/*
- * SettingsParser.c
- *
- *  Created on: Aug 26, 2017
- *      Author: sasha
- */
-
 #include "SEParser.h"
+
 
 bool seParserIsInt(const char* str) {
 	unsigned int j = 0;
-	if(strlen(str) >= 1 && str[0]=='-'){
+	if(strlen(str) >= 1 && str[0]=='-') {
 		j = 1;
 	}
 	while (j < strlen(str)) {
@@ -20,6 +14,7 @@ bool seParserIsInt(const char* str) {
 	}
 	return true;
 }
+
 
 SECommand seParserPraseLine(const char* str) {
 	int num;
@@ -34,14 +29,12 @@ SECommand seParserPraseLine(const char* str) {
 	if (strcmp(cur, "game_mode") == 0 || strcmp(cur, "difficulty") == 0 || strcmp(cur, "user_color") == 0) {
 		if(strcmp(cur, "game_mode") == 0){
 			command.cmd = SE_GAME_MODE;
-		}
-		else if(strcmp(cur, "difficulty") == 0){
+		} else if (strcmp(cur, "difficulty") == 0) {
 			command.cmd = SE_DIFFICULTY;
-		}
-		else{
+		} else {
 			command.cmd = SE_USER_COLOR;
 		}
-		if((cur = strtok(NULL,delimiter)) != NULL){
+		if ((cur = strtok(NULL,delimiter)) != NULL) {
 			if (seParserIsInt(cur)) {
 				sscanf(cur, "%d",&num);
 				command.arg = num;
@@ -49,7 +42,7 @@ SECommand seParserPraseLine(const char* str) {
 			}
 		}
 	} else if (strcmp(cur, "load") == 0) {
-		if((cur = strtok(NULL,delimiter)) != NULL){
+		if ((cur = strtok(NULL,delimiter)) != NULL) {
 			command.cmd = SE_LOAD;
 			sscanf(cur,"%s",command.path);
 			command.validArg = true;
@@ -63,7 +56,7 @@ SECommand seParserPraseLine(const char* str) {
 	} else if (strcmp(cur, "start") == 0) {
 		command.cmd = SE_START;
 	}
-	if(strtok(NULL, delimiter) != NULL){
+	if(strtok(NULL, delimiter) != NULL) {
 		command.cmd = SE_INVALID_LINE;
 		command.validArg = false;
 	}
