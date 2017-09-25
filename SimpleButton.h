@@ -24,11 +24,14 @@
 #define EVENT_SET_COLOR_BLACK 16
 #define EVENT_UNDO 17
 #define EVENT_BACK 18
+#define EVENT_GO_TO_MAIN_MENU 19
+#define EVENT_RESTART 20
 #define EVENT_SET_SLOT_1 21
 #define EVENT_SET_SLOT_2 22
 #define EVENT_SET_SLOT_3 23
 #define EVENT_SET_SLOT_4 24
 #define EVENT_SET_SLOT_5 25
+#define EVENT_SAVE 26
 
 typedef enum _btnType{
 	CH_BTN_EXIT,

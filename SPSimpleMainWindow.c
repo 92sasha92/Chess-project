@@ -59,7 +59,7 @@ SPWindow* createSimpleWindow(CHGame *game) {
 	SDL_Texture* windowTexture = SDL_CreateTextureFromSurface(renderer,loadingSurface);
 	Widget** widgets = createSimpleWindowWidgets(renderer,game);
 	if (res == NULL || data == NULL || window == NULL || renderer == NULL
-			|| widgets == NULL || windowTexture == NULL) {
+			|| widgets == NULL || loadingSurface == NULL || windowTexture == NULL) {
 		SDL_FreeSurface(loadingSurface);
 		SDL_DestroyTexture(windowTexture);
 		free(res);
@@ -68,6 +68,7 @@ SPWindow* createSimpleWindow(CHGame *game) {
 		//We first destroy the renderer
 		SDL_DestroyRenderer(renderer); //NULL safe
 		SDL_DestroyWindow(window); //NULL safe
+		printf("1/n");
 		return NULL ;
 	}
 	SDL_FreeSurface(loadingSurface);

@@ -8,7 +8,7 @@
 #ifndef SAVE_LOAD_H_
 #define SAVE_LOAD_H_
 
-int load(char *path,CHGame *src,int *currentTurn,int *gameMode,int *gameDifficulty,int *userColor);
+CH_GAME_MESSAGE load(char *path,CHGame *src,int *currentTurn,int *gameMode,int *gameDifficulty,int *userColor);
 /**
  * Save the current game state to the specified file.
  *
@@ -20,5 +20,5 @@ int load(char *path,CHGame *src,int *currentTurn,int *gameMode,int *gameDifficul
  * CH_GAME_SUCCESS - otherwise.
  */
 CH_GAME_MESSAGE chGameSave(CHGame* src,char *path);
-
+CH_GAME_MESSAGE chGuiSave(CHGame* game);
 #endif /* SAVE_LOAD_H_ */

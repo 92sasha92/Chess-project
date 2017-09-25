@@ -47,6 +47,7 @@ Widget* createBoardCell(SDL_Renderer* windowRender, SDL_Rect* location,
 		SDL_DestroyTexture(glowRedTexture);
 		SDL_FreeSurface(glowGreenSurface);
 		SDL_DestroyTexture(glowGreenTexture);
+		printf("3/n");
 		return NULL ;
 	}
 	SDL_FreeSurface(glowSurface);
@@ -62,16 +63,12 @@ Widget* createBoardCell(SDL_Renderer* windowRender, SDL_Rect* location,
         if(data->piece == NULL){
     		free(res);
     		free(data);
-    		SDL_FreeSurface(loadingSurface);
     		SDL_DestroyTexture(gameBoardTexture);
-    		SDL_FreeSurface(glowSurface);
     		SDL_DestroyTexture(glowTexture);
-    		SDL_FreeSurface(glowBlueSurface);
 			SDL_DestroyTexture(glowBlueTexture);
-			SDL_FreeSurface(glowRedSurface);
 			SDL_DestroyTexture(glowRedTexture);
-			SDL_FreeSurface(glowGreenSurface);
 			SDL_DestroyTexture(glowGreenTexture);
+			printf("4/n");
     		return NULL ;
         }
 	}
@@ -112,6 +109,9 @@ void destroyBoardCell(Widget* src){
 	free(castData->location);
 	SDL_DestroyTexture(castData->regularBoardCellTexture);
 	SDL_DestroyTexture(castData->regularGlowTexture);
+	SDL_DestroyTexture(castData->blueGlowTexture);
+	SDL_DestroyTexture(castData->redGlowTexture);
+	SDL_DestroyTexture(castData->greenGlowTexture);
 	free(castData);
 	free(src);
 }
