@@ -3,12 +3,16 @@
 #include "SimpleButton.h"
 #include "gameBoard.h"
 #include "CHGame.h"
+
 //Helper function to create buttons in the simple window;
 #define startBtnPosY 150
+
+
 Widget** createSimpleWindowWidgets(SDL_Renderer* renderer,CHGame *game) {
 	if (renderer == NULL || game == NULL ) {
 		return NULL ;
 	}
+	int i;
 	Widget** widgets = malloc(sizeof(Widget*) * 7);
 	if (widgets == NULL ) {
 		return NULL ;
@@ -20,9 +24,9 @@ Widget** createSimpleWindowWidgets(SDL_Renderer* renderer,CHGame *game) {
 	SDL_Rect mainMenuR = { .x = 75, .y = startBtnPosY+ 90*4, .h = 80, .w = 296  };
 	SDL_Rect exitR = { .x = 75, .y = startBtnPosY+ 90*5, .h = 80, .w = 296  };
 	SDL_Rect boardR = { .x = startX + 51, .y = startY - 25, .h = 667, .w = 668 };
-	if(game->gameMode == 2){
+	if (game->gameMode == 2) {
 		widgets[0] = createSimpleButton(renderer, &undoR, "./images/undoBtnGray.bmp",NULL,CH_BTN_UNDO,0,BTN_NOT_ACTIVE);
-	}else{
+	} else {
 		widgets[0] = createSimpleButton(renderer, &undoR, "./images/undoBtnGray.bmp","./images/undoBtn.bmp",CH_BTN_UNDO,0,BTN_NOT_ACTIVE);
 	}
 	widgets[1] = createSimpleButton(renderer, &saveR, "./images/saveBtn.bmp",NULL,CH_BTN_SAVE,0,BTN_ACTIVE);
@@ -32,21 +36,18 @@ Widget** createSimpleWindowWidgets(SDL_Renderer* renderer,CHGame *game) {
 	widgets[5] = createSimpleButton(renderer, &exitR, "./images/exitBtn.bmp",NULL,CH_BTN_EXIT,0,BTN_ACTIVE);
 	widgets[6] = createGameBoard(renderer, &boardR, "./images/board.bmp",game);
 	if (widgets[0] == NULL || widgets[1] == NULL || widgets[2] == NULL || widgets[3] == NULL || widgets[4] == NULL || widgets[5] == NULL || widgets[6] == NULL) {
-		destroyWidget(widgets[0]); //NULL SAFE
-		destroyWidget(widgets[1]); //NULL SAFE
-		destroyWidget(widgets[2]);
-		destroyWidget(widgets[3]);
-		destroyWidget(widgets[4]);
-		destroyWidget(widgets[5]);
-		destroyWidget(widgets[6]);
+		for(i = 0;i < 7;i++){
+			destroyWidget(widgets[i]);
+		}
 		free(widgets);
 		return NULL ;
 	}
 	return widgets;
-
 }
+
+
 SPWindow* createSimpleWindow(CHGame *game) {
-	if(game == NULL){
+	if (game == NULL) {
 		return NULL ;
 	}
 	SPWindow* res = malloc(sizeof(SPWindow));
@@ -78,12 +79,15 @@ SPWindow* createSimpleWindow(CHGame *game) {
 	data->windowRenderer = renderer;
 	data->widgets = widgets;
 	data->windowTexture = windowTexture;
+	data->type = CH_WINDOW_MAIN;
 	res->data = (void*) data;
 	res->destroyWindow = destroySimpleWindow;
 	res->drawWindow = drawSimpleWindow;
 	res->handleEventWindow = handleEventSimpleWindow;
 	return res;
 }
+
+
 void destroySimpleWindow(SPWindow* src) {
 	if (src == NULL ) {
 		return;
@@ -100,6 +104,8 @@ void destroySimpleWindow(SPWindow* src) {
 	free(data);
 	free(src);
 }
+
+
 void drawSimpleWindow(SPWindow* src) {
 	if (src == NULL ) {
 		return;
@@ -114,16 +120,17 @@ void drawSimpleWindow(SPWindow* src) {
 	SDL_RenderPresent(data->windowRenderer);
 }
 
-void handleEventSimpleWindow(SPWindow* src, SDL_Event* event){
-	if(src == NULL || event==NULL){
+
+void handleEventSimpleWindow(SPWindow* src, SDL_Event* event) {
+	if ((src == NULL) || (event==NULL)) {
 		return;
 	}
 	int i;
 	SPSimpleWindow* data = (SPSimpleWindow*)src->data;
-	if(event->type == SDL_MOUSEMOTION || (event->type == SDL_USEREVENT && event->user.code == EVENT_UPDATE_WINDOW)){
+	if ((event->type == SDL_MOUSEMOTION) || (event->type == SDL_USEREVENT && event->user.code == EVENT_UPDATE_WINDOW)) {
 		drawSimpleWindow(src);
 	}
-	for(i = 0;i<data->numOfWidgets;i++){
+	for (i = 0; i<data->numOfWidgets; i++){
 		data->widgets[i]->handleEvent(data->widgets[i],event);
 	}
 	return;

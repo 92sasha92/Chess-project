@@ -402,17 +402,33 @@ CH_GAME_MESSAGE chGameSetMove(CHGame* src, char peice, int fRow,int fCol,int toR
 
 
 
-CH_GAME_MESSAGE isCheck(CHGame* src,int is_computer){
-	int kRow = 0,kCol = 0;
-	if(src == NULL)
+CH_GAME_MESSAGE isCheck(CHGame* src, int is_computer) {
+	int kRow = 0, kCol = 0;
+	if (src == NULL )
 		return CH_GAME_INVALID_ARGUMENT;
-	findKing(src->gameBoard,src->currentTurn,&kRow,&kCol);
-	if(!isMyPieceSafe(src->gameBoard, CH_GAME_EMPTY_ENTRY, 0, 0, 0, 0, src->currentTurn, kRow, kCol,KING_MODE)){
-		if(src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL)
+	findKing(src->gameBoard, src->currentTurn, &kRow, &kCol);
+	if (!isMyPieceSafe(src->gameBoard, CH_GAME_EMPTY_ENTRY, 0, 0, 0, 0, src->currentTurn, kRow, kCol, KING_MODE)) {
+		if (is_computer){
+			printf("Check!\n");
+            if(GUI_ACTIVE){
+            	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Title","Check!", NULL );
+            	SDL_FlushEvents(SDL_QUIT,SDL_USEREVENT);
+            }
+		}
+		else if (src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL) {
 			printf("Check: white King is threatened!\n");
-		else
-			printf("Check: black King is threatened!\n");
+            if(GUI_ACTIVE){
+            	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Title","Check: white King is threatened!", NULL );
+            	SDL_FlushEvents(SDL_QUIT,SDL_USEREVENT);
 
+            }
+		} else {
+			printf("Check: black King is threatened!\n");
+            if(GUI_ACTIVE){
+            	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Title","Check: black King is threatened!", NULL );
+            	SDL_FlushEvents(SDL_QUIT,SDL_USEREVENT);
+            }
+		}
 	}
 	return CH_GAME_SUCCESS;
 }
@@ -456,7 +472,7 @@ CHGame* chGameCopy(CHGame* src){
 	if (src == NULL){
 		return NULL;
 	}
-	
+
 	CHGame* new_src = (CHGame*) malloc(sizeof(CHGame)); /* allocate place in memory */
 	if (!new_src){
 		chGameDestroy(src);

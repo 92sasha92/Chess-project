@@ -40,14 +40,14 @@
  * spArrayListIsEmpty      - Returns true if the array list contains no elements.
  */
 
-typedef struct ch_move_node{
+typedef struct ch_move_node {
   int from_row;
   int from_col;
   int to_row;
   int to_col;
   char current_piece;
   char piece_eaten;
-}CHMoveNode;
+} CHMoveNode;
 
 
 typedef struct sp_array_list_t {

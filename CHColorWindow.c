@@ -14,19 +14,18 @@
 #define startBtnPosY 100
 
 
-void pressColorChange(SPWindow* src,int color){
+void pressColorChange(SPWindow* src,int color) {
 	int i;
 	if (src == NULL ) {
 		return;
 	}
 	SPSimpleWindow * castData = (SPSimpleWindow *) src->data;
 	SimpleButton* castBtnData;
-	for(i = 0;i < castData->numOfWidgets;i++){
+	for (i = 0; i < castData->numOfWidgets; i++) {
 		castBtnData = (SimpleButton*) castData->widgets[i]->data;
-		if(i == color){
+		if (i == color) {
 			castBtnData->isPressed = 1;
-		}
-		else{
+		} else {
 			castBtnData->isPressed = 0;
 		}
 	}

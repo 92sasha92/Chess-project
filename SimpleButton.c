@@ -5,14 +5,13 @@
 #define btnDelta 9
 
 
-
-void updateTextureBtn(Widget* src,int active){
+void updateTextureBtn(Widget* src,int active) {
 	if (src == NULL ) {
 		return;
 	}
 	SimpleButton* castData = (SimpleButton*) src->data;
 	SDL_Texture* tempTexture;
-	if(castData->isSecondTextureValid){
+	if (castData->isSecondTextureValid) {
 		tempTexture = castData->buttonTexture;
 		castData->buttonTexture = castData->secondTexture;
 		castData->secondTexture = tempTexture;
@@ -20,11 +19,11 @@ void updateTextureBtn(Widget* src,int active){
 	castData->isActive = active;
 }
 
-SDL_FORCE_INLINE SDL_bool PointInRect(const SDL_Point *p, const SDL_Rect *r)
-{
-    return ( (p->x >= r->x + btnDelta) && (p->x < (r->x + r->w - btnDelta)) &&
-             (p->y >= r->y + btnDelta) && (p->y < (r->y + r->h - btnDelta)) ) ? SDL_TRUE : SDL_FALSE;
+SDL_FORCE_INLINE SDL_bool PointInRect(const SDL_Point *p, const SDL_Rect *r) {
+    return ((p->x >= r->x + btnDelta) && (p->x < (r->x + r->w - btnDelta)) &&
+             (p->y >= r->y + btnDelta) && (p->y < (r->y + r->h - btnDelta))) ? SDL_TRUE : SDL_FALSE;
 }
+
 
 //You need a create function:
 Widget* createSimpleButton(SDL_Renderer* windowRender, SDL_Rect* location,
@@ -38,19 +37,19 @@ Widget* createSimpleButton(SDL_Renderer* windowRender, SDL_Rect* location,
 	SDL_Surface* loadingSurface = SDL_LoadBMP(image); //We use the surface as a temp var;
 	SDL_Texture* buttonTexture = SDL_CreateTextureFromSurface(windowRender,loadingSurface);
 	SDL_Surface* loadingGlowSurface; //We use the surface as a temp var;
-	if(type == CH_BTN_BLACK_COLOR || type == CH_BTN_WHITE_COLOR){
-		if(type == CH_BTN_BLACK_COLOR ){
+	if (type == CH_BTN_BLACK_COLOR || type == CH_BTN_WHITE_COLOR) {
+		if (type == CH_BTN_BLACK_COLOR ) {
 			loadingGlowSurface = SDL_LoadBMP("./images/kingBlackGlowBtn.bmp");
-		}else{
+		} else {
 			loadingGlowSurface = SDL_LoadBMP("./images/kingWhiteGlowBtn.bmp");
 		}
-	}else{
+	} else {
 		loadingGlowSurface = SDL_LoadBMP("./images/btnGlow.bmp");
 	}
 	SDL_Texture* glowTexture = SDL_CreateTextureFromSurface(windowRender,loadingGlowSurface);
 	SDL_Surface* loadingSurface2;
 	SDL_Texture* button2Texture;
-	if(image2 != NULL){
+	if (image2 != NULL) {
 		loadingSurface2 = SDL_LoadBMP(image2);
 		button2Texture = SDL_CreateTextureFromSurface(windowRender,loadingSurface2);
 		SDL_FreeSurface(loadingSurface2);
@@ -77,10 +76,10 @@ Widget* createSimpleButton(SDL_Renderer* windowRender, SDL_Rect* location,
 	data->type = type;
 	data->isPressed = isPressed;
 	data->isActive = isActive;
-	if(image2 != NULL){
+	if (image2 != NULL) {
 		data->isSecondTextureValid = 1;
 		data->secondTexture = button2Texture;
-	}else{
+	} else {
 		data->isSecondTextureValid = 0;
 	}
 	res->destroyWidget = destroySimpleButton;
@@ -97,7 +96,7 @@ void destroySimpleButton(Widget* src) {
 	}
 	SimpleButton* castData = (SimpleButton*) src->data;
 	free(castData->location);
-	if(castData->isSecondTextureValid){
+	if (castData->isSecondTextureValid) {
 		SDL_DestroyTexture(castData->secondTexture);
 	}
 	SDL_DestroyTexture(castData->buttonTexture);
@@ -107,15 +106,17 @@ void destroySimpleButton(Widget* src) {
 }
 
 
-void initilazeUserEvent(SDL_Event *user_event,SimpleButton* btn){
+void initilazeUserEvent(SDL_Event *user_event,SimpleButton* btn) {
 	switch (btn->type) {
 	case CH_BTN_EXIT:
+		btn->isPressed = 0;
 		user_event->type = SDL_QUIT;
 		break;
 	case CH_BTN_NEW_GAME:
 		user_event->user.code = EVENT_SHOW_GAME_MODE_SCREEN;
 		break;
 	case CH_BTN_MAIN_MENU:
+		btn->isPressed = 0;
 		user_event->user.code = EVENT_GO_TO_MAIN_MENU;
 		break;
 	case CH_BTN_RESTART:
@@ -196,49 +197,50 @@ void handleSimpleButtonEvent(Widget* src, SDL_Event* event) {
 	point.y = event->button.y;
 	if (event->type == SDL_MOUSEMOTION) {
 		if (PointInRect(&point, castData->location)) {
-			if(!(castData->isPressed) && castData->isActive == BTN_ACTIVE)
+			if (!(castData->isPressed) && castData->isActive == BTN_ACTIVE)
 				drawSimpleGlow(src);
 			    //castData->location->x = point.x;
 			   // castData->location->y = point.y;
 				//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Title",
 						//"We did it", NULL );
 		}
-	} else if(event->type == SDL_MOUSEBUTTONDOWN && event->button.button == SDL_BUTTON_LEFT){
+	} else if (event->type == SDL_MOUSEBUTTONDOWN && event->button.button == SDL_BUTTON_LEFT) {
 		if (PointInRect(&point, castData->location)) {
 			if (castData->isActive == BTN_ACTIVE) {
 				castData->isPressed = 1;
 				user_event.type = SDL_USEREVENT;
 				initilazeUserEvent(&user_event,castData);
 				SDL_PushEvent(&user_event);
-				if(castData->isPressed == 1){
+				if (castData->isPressed == 1) {
 					drawSimpleGlow(src);
 				}
 			}
 		}
-	}else if(event->type == SDL_USEREVENT && event->user.code == EVENT_UPDATE_TO_ONE_PLAYER){
-		if(castData->type != CH_BTN_ONE_PLAYER)
+	} else if (event->type == SDL_USEREVENT && event->user.code == EVENT_UPDATE_TO_ONE_PLAYER) {
+		if (castData->type != CH_BTN_ONE_PLAYER)
 			castData->isPressed = 0;
-		if(castData->type == CH_BTN_START){
+		if (castData->type == CH_BTN_START) {
 			castData->type = CH_BTN_NEXT;
 			updateTextureBtn(src,1);
 		}
 		user_event.type = SDL_USEREVENT;
 		user_event.user.code = EVENT_UPDATE_WINDOW;
 		SDL_PushEvent(&user_event);
-	}else if(event->type == SDL_USEREVENT && event->user.code == EVENT_UPDATE_TO_TWO_PLAYERS){
-		if(castData->type != CH_BTN_TWO_PLAYERS)
+	} else if (event->type == SDL_USEREVENT && event->user.code == EVENT_UPDATE_TO_TWO_PLAYERS) {
+		if (castData->type != CH_BTN_TWO_PLAYERS)
 			castData->isPressed = 0;
-		if(castData->type == CH_BTN_NEXT){
+		if (castData->type == CH_BTN_NEXT) {
 			castData->type = CH_BTN_START;
 			updateTextureBtn(src,1);
 		}
 		user_event.type = SDL_USEREVENT;
 		user_event.user.code = EVENT_UPDATE_WINDOW;
 		SDL_PushEvent(&user_event);
-	}else{
+	} else {
 		return;
 	}
 }
+
 
 void drawSimpleButton(Widget* src) {
 	if (src == NULL ) {
@@ -247,7 +249,7 @@ void drawSimpleButton(Widget* src) {
 	SimpleButton* castData = (SimpleButton*) src->data;
 	SDL_RenderCopy(castData->windowRenderer, castData->buttonTexture, NULL,
 			castData->location);
-	if(castData->isPressed)
+	if (castData->isPressed)
 		SDL_RenderCopy(castData->windowRenderer, castData->glowTexture, NULL,castData->location);
 }
 

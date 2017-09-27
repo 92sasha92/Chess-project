@@ -14,19 +14,18 @@
 #define startBtnPosY 100
 
 
-void pressDifficultyChange(SPWindow* src,int difficulty){
+void pressDifficultyChange(SPWindow* src,int difficulty) {
 	int i;
 	if (src == NULL ) {
 		return;
 	}
 	SPSimpleWindow * castData = (SPSimpleWindow *) src->data;
 	SimpleButton* castBtnData;
-	for(i = 0;i < castData->numOfWidgets;i++){
+	for (i = 0; i < castData->numOfWidgets; i++) {
 		castBtnData = (SimpleButton*) castData->widgets[i]->data;
-		if(i == difficulty - 1){
+		if (i == difficulty - 1) {
 			castBtnData->isPressed = 1;
-		}
-		else{
+		} else {
 			castBtnData->isPressed = 0;
 		}
 	}
@@ -42,12 +41,12 @@ Widget** createSimpleDifficultyWindowWidgets(SDL_Renderer* renderer) {
 	if (widgets == NULL ) {
 		return NULL ;
 	}
-	SDL_Rect backR = { .x = 50, .y = 400, .h = 80, .w = 296 };
-	SDL_Rect nextR = { .x = 454, .y = 400, .h = 80, .w = 296  };
-	SDL_Rect noobR = { .x = 100, .y = 170, .h = 80, .w = 296  };
-	SDL_Rect easyR = { .x = 100, .y = 250, .h = 80, .w = 296  };
-	SDL_Rect moderateR = { .x = 404, .y = 170, .h = 80, .w = 296  };
-	SDL_Rect hardR = { .x = 404, .y = 250, .h = 80, .w = 296  };
+	SDL_Rect backR = { .x = 50, .y = 400, .h = 80, .w = 296};
+	SDL_Rect nextR = { .x = 454, .y = 400, .h = 80, .w = 296};
+	SDL_Rect noobR = { .x = 100, .y = 170, .h = 80, .w = 296};
+	SDL_Rect easyR = { .x = 100, .y = 250, .h = 80, .w = 296};
+	SDL_Rect moderateR = { .x = 404, .y = 170, .h = 80, .w = 296};
+	SDL_Rect hardR = { .x = 404, .y = 250, .h = 80, .w = 296};
 
 	widgets[0] = createSimpleButton(renderer, &noobR, "./images/noobBtn.bmp",NULL,CH_BTN_EASY,0,BTN_ACTIVE);
 	widgets[1] = createSimpleButton(renderer, &easyR, "./images/easyBtn.bmp",NULL,CH_BTN_NOOB,1,BTN_ACTIVE);
@@ -56,7 +55,7 @@ Widget** createSimpleDifficultyWindowWidgets(SDL_Renderer* renderer) {
 	widgets[4] = createSimpleButton(renderer, &backR, "./images/backBtn.bmp",NULL,CH_BTN_BACK,0,BTN_ACTIVE);
 	widgets[5] = createSimpleButton(renderer, &nextR, "./images/nextBtn.bmp",NULL,CH_BTN_NEXT,0,BTN_ACTIVE);
 	if (widgets[0] == NULL || widgets[1] == NULL || widgets[2] == NULL || widgets[3] == NULL || widgets[4] == NULL || widgets[5] == NULL) {
-		for(i = 0;i < numOfWidgets;i++){
+		for (i = 0; i < numOfWidgets; i++) {
 			destroyWidget(widgets[i]);
 		}
 		free(widgets);

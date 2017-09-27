@@ -7,17 +7,20 @@
 
 #include "CHMoves.h"
 
+
 bool isABlackPiece(char c) {
 	if (c == CH_BLACK_ROOK || c == CH_BLACK_KNIGHT || c == CH_BLACK_BISHOP || c == CH_BLACK_KING || c == CH_BLACK_QUEEN || c == CH_BLACK_PAWN)
 		return true;
 	return false;
 }
 
+
 bool isAWhitePiece(char c) {
 	if (c == CH_WHITE_ROOK || c == CH_WHITE_KNIGHT || c == CH_WHITE_BISHOP || c == CH_WHITE_KING || c == CH_WHITE_QUEEN || c == CH_WHITE_PAWN)
 		return true;
 	return false;
 }
+
 
 bool isThePieceMyColor(char c, int color) {
 	if (color == CH_GAME_WHITE_PLAYER_SYMBOL) {
@@ -27,19 +30,20 @@ bool isThePieceMyColor(char c, int color) {
 	}
 }
 
+
 void findKing(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color,int *kRow,int *kCol){
 	int i,j;
-	bool isKingFound;
-	for(i = 0;i < CH_GAME_N_ROWS;i++){
-		for(j = 0;j < CH_GAME_N_COLUMNS;j++){
-			if((color == CH_GAME_WHITE_PLAYER_SYMBOL && gameBoard[i][j] == CH_WHITE_KING) || (color == CH_GAME_BLACK_PLAYER_SYMBOL && gameBoard[i][j] == CH_BLACK_KING)){
+	bool isKingFound = false;
+	for (i = 0; i < CH_GAME_N_ROWS; i++){
+		for (j = 0; j < CH_GAME_N_COLUMNS; j++){
+			if ((color == CH_GAME_WHITE_PLAYER_SYMBOL && gameBoard[i][j] == CH_WHITE_KING) || (color == CH_GAME_BLACK_PLAYER_SYMBOL && gameBoard[i][j] == CH_BLACK_KING)) {
 				*kRow = i;
 				*kCol = j;
 				isKingFound = true;
 				break;
 			}
 		}
-		if(isKingFound)
+		if (isKingFound)
 			break;
 	}
 }
@@ -70,7 +74,7 @@ CHMovesList * insertFirst(CHMovesList *list, int row, int col) {
 
 
 bool isKnightThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, int mRow, int mCol,int mode){
-	int i,kRow,kCol;
+	int i,kRow = 0,kCol = 0;
 	char curC;
 	int curRow = mRow;
 	int curCol = mCol;
@@ -285,32 +289,6 @@ bool isKingThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, i
 	}
 	return true;
 }
-
-//bool isTheKingSafe(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, int fRow, int fCol, int toRow, int toCol, int color, int kRow, int kCol) {
-//	int i,j;
-//	char gameBoardCopy[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS];
-//	for(i = 0;i < CH_GAME_N_ROWS;i++){
-//		for(j = 0;j < CH_GAME_N_COLUMNS;j++){
-//			gameBoardCopy[i][j] = gameBoard[i][j];
-//		}
-//	}
-//	if(c != CH_GAME_EMPTY_ENTRY){
-//		gameBoardCopy[fRow][fCol] = CH_GAME_EMPTY_ENTRY;
-//		gameBoardCopy[toRow][toCol] = c;
-//	}
-//	int *reRow,*reCol;
-//	if(!isPawnThreat(gameBoardCopy,color,kRow,kCol,0))
-//		return false;
-//	if(!isKnightThreat(gameBoardCopy,color,kRow,kCol,0))
-//		return false;
-//	if(!isRookOrQueenThreat(gameBoardCopy,color,kRow,kCol,0))
-//		return false;
-//	if(!isBishopOrQueenThreat(gameBoardCopy,color,kRow,kCol,0))
-//		return false;
-//	if(!isKingThreat(gameBoardCopy,color,kRow,kCol,0))
-//		return false;
-//	return true;
-//}
 
 bool isMyPieceSafe(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, int fRow, int fCol, int toRow, int toCol, int color, int mRow, int mCol,int mode) {
 	int i,j;
@@ -584,4 +562,3 @@ void destroyMoveList(CHMovesList *list) {
 		node = list;
 	}
 }
-
