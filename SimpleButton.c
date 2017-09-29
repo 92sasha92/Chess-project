@@ -35,6 +35,7 @@ Widget* createSimpleButton(SDL_Renderer* windowRender, SDL_Rect* location,
 	Widget* res = (Widget*) malloc(sizeof(Widget));
 	SimpleButton* data = (SimpleButton*) malloc(sizeof(SimpleButton));
 	SDL_Surface* loadingSurface = SDL_LoadBMP(image); //We use the surface as a temp var;
+	SDL_SetColorKey(loadingSurface, SDL_TRUE,SDL_MapRGB(loadingSurface->format, 255, 255, 255));
 	SDL_Texture* buttonTexture = SDL_CreateTextureFromSurface(windowRender,loadingSurface);
 	SDL_Surface* loadingGlowSurface; //We use the surface as a temp var;
 	if (type == CH_BTN_BLACK_COLOR || type == CH_BTN_WHITE_COLOR) {
@@ -46,6 +47,7 @@ Widget* createSimpleButton(SDL_Renderer* windowRender, SDL_Rect* location,
 	} else {
 		loadingGlowSurface = SDL_LoadBMP("./images/btnGlow.bmp");
 	}
+	SDL_SetColorKey(loadingGlowSurface, SDL_TRUE,SDL_MapRGB(loadingGlowSurface->format, 255, 255, 255));
 	SDL_Texture* glowTexture = SDL_CreateTextureFromSurface(windowRender,loadingGlowSurface);
 	SDL_Surface* loadingSurface2;
 	SDL_Texture* button2Texture;
@@ -68,6 +70,7 @@ Widget* createSimpleButton(SDL_Renderer* windowRender, SDL_Rect* location,
 		return NULL ;
 	}
 	SDL_FreeSurface(loadingSurface); //Surface is not actually needed after texture is created
+
 	SDL_FreeSurface(loadingGlowSurface);
 	data->buttonTexture = buttonTexture;
 	data->glowTexture = glowTexture;

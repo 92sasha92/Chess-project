@@ -8,7 +8,19 @@
 #include <stdlib.h>
 #include "CHMainAux.h"
 
-
+void setGuiMode(int argc, char** argv, bool *isGuiMode){
+	if (argc >= 1 && argc <3) {
+		if(argc == 2){
+			if(strcmp(argv[1],"-g") == 0){
+				*isGuiMode = true;
+			}else if(strcmp(argv[1],"-c") == 0){
+				*isGuiMode = false;
+			}else{
+				exit(0);
+			}
+		}
+	}
+}
 
 char *getPieceName(char piece) {
 	switch (piece) {
@@ -49,7 +61,7 @@ void change_turn(CHGame* game, bool *isTurnChanged) {
 	*isTurnChanged = true;
 }
 
-int end_of_move(CHGame* game, CHMoveNode* best_move, bool *isTurnChanged) {
+int end_of_move(CHGame* game, CHMoveNode* best_move, bool *isTurnChanged,bool isGuiMode) {
 	int winner;
 	change_turn(game, isTurnChanged);
 	winner = chIsCheckmateOrTie(game);
@@ -59,19 +71,19 @@ int end_of_move(CHGame* game, CHMoveNode* best_move, bool *isTurnChanged) {
 	} else if (winner != CH_GAME_NO_WIN_OR_TIE) {
 		if (winner == CH_GAME_WHITE_WINS) {
 			printf("Checkmate! white player wins the game\n");
-			if (GUI_ACTIVE) {
+			if (isGuiMode) {
 				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Info",
 						"Checkmate! white player wins the game", NULL );
 			}
 		} else if (winner == CH_GAME_BLACK_WINS) {
 			printf("Checkmate! black player wins the game\n");
-			if (GUI_ACTIVE) {
+			if (isGuiMode) {
 				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Info",
 						"Checkmate! black player wins the game", NULL );
 			}
 		} else {
 			printf("The game is tied\n");
-			if (GUI_ACTIVE) {
+			if (isGuiMode) {
 				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Info",
 						"The game is tied", NULL );
 			}
@@ -80,12 +92,12 @@ int end_of_move(CHGame* game, CHMoveNode* best_move, bool *isTurnChanged) {
 		return -1;
 	} else {
 		if ((game->gameMode == 1) && (game->currentTurn == game->userColor)) {
-			if (isCheck(game, 1) == CH_GAME_INVALID_ARGUMENT) {
+			if (isCheck(game, 1, isGuiMode) == CH_GAME_INVALID_ARGUMENT) {
 				free(best_move);
 				return -1;
 			}
 		} else {
-			if (isCheck(game, 0) == CH_GAME_INVALID_ARGUMENT) {
+			if (isCheck(game, 0, isGuiMode) == CH_GAME_INVALID_ARGUMENT) {
 				free(best_move);
 				return -1;
 			}
@@ -100,7 +112,6 @@ void printTurn(CHGame *src) {
 	else
 		printf("black player - enter your move:\n");
 }
-
 
 void undoGuiHandle(CHGame* game, SPWindow* window, CHMoveNode *best_move) {
 	SPSimpleWindow *simpleWindow = (SPSimpleWindow *) window->data;
@@ -124,7 +135,7 @@ void undoGuiHandle(CHGame* game, SPWindow* window, CHMoveNode *best_move) {
 }
 
 void undoHandle(CHGame* game, SPWindow* window, CHMoveNode *best_move,
-		bool *isTurnChanged) {
+		bool *isTurnChanged,bool isGuiMode) {
 	CH_GAME_MESSAGE mes;
 	if (game->gameMode == 2) {
 		printf("Undo command not available in 2 players mode\n");
@@ -136,7 +147,7 @@ void undoHandle(CHGame* game, SPWindow* window, CHMoveNode *best_move,
 					getPlayerName(game->userColor), (best_move->to_row + 1),
 					best_move->to_col + 65, (best_move->from_row + 1),
 					best_move->from_col + 65);
-			if (GUI_ACTIVE) {
+			if (isGuiMode) {
 				undoGuiHandle(game, window, best_move);
 			}
 			*best_move = spArrayListGetFirst(game->list);
@@ -146,7 +157,7 @@ void undoHandle(CHGame* game, SPWindow* window, CHMoveNode *best_move,
 						getPlayerName(!game->userColor),
 						(best_move->to_row + 1), best_move->to_col + 65,
 						(best_move->from_row + 1), best_move->from_col + 65);
-				if (GUI_ACTIVE) {
+				if (isGuiMode) {
 					undoGuiHandle(game, window, best_move);
 				}
 			}
@@ -158,9 +169,10 @@ void undoHandle(CHGame* game, SPWindow* window, CHMoveNode *best_move,
 	}
 }
 
-void returnPieceToPlase(BoardCell* prevCellData,Widget *widgetGameBoard,SPWindow* window){
+void returnPieceToPlase(BoardCell* prevCellData, Widget *widgetGameBoard,
+		SPWindow* window,bool isGuiMode) {
 	CHPiece* piece;
-	if (GUI_ACTIVE) {
+	if (isGuiMode) {
 		piece = (CHPiece*) prevCellData->piece->data;
 		piece->location->x = prevCellData->location->x;
 		piece->location->y = prevCellData->location->y;
@@ -169,53 +181,52 @@ void returnPieceToPlase(BoardCell* prevCellData,Widget *widgetGameBoard,SPWindow
 	}
 }
 
-void handleMoveCommand(CHGame* game, SPWindow* window, CHMoveNode *best_move,CHCommand command,
-		bool *isTurnChanged,bool *isSaved){
+void handleMoveCommand(CHGame* game, SPWindow* window, CHMoveNode *best_move,
+		CHCommand command, bool *isTurnChanged, bool *isSaved,bool isGuiMode) {
 	GameBoard* gameBoard;
 	BoardCell* cellData;
 	BoardCell* prevCellData;
 	SPSimpleWindow *simpleWindow;
 	Widget *widgetGameBoard = NULL;
 	CH_GAME_MESSAGE mes;
-	if (GUI_ACTIVE) {
+	if (isGuiMode) {
 		simpleWindow = (SPSimpleWindow *) window->data;
 		widgetGameBoard = simpleWindow->widgets[6];
 		gameBoard = (GameBoard*) widgetGameBoard->data;
-		prevCellData = (BoardCell*) gameBoard->gameBoard[command.fRow][command.fColomn]->data;
+		prevCellData =
+				(BoardCell*) gameBoard->gameBoard[command.fRow][command.fColomn]->data;
 	}
 	if (command.validArg) {
 		mes = chGameSetMove(game,
-				game->gameBoard[command.fRow][command.fColomn],
-				command.fRow, command.fColomn, command.toRow,
-				command.toColomn, false);
-		if (GUI_ACTIVE) {
-			cellData = (BoardCell*) gameBoard->gameBoard[command.toRow][command.toColomn]->data;
+				game->gameBoard[command.fRow][command.fColomn], command.fRow,
+				command.fColomn, command.toRow, command.toColomn, false, isGuiMode);
+		if (isGuiMode) {
+			cellData =
+					(BoardCell*) gameBoard->gameBoard[command.toRow][command.toColomn]->data;
 		}
 		if (mes == CH_GAME_INVALID_COLOR || mes == CH_GAME_INVALID_MOVE) {
-			if(mes == CH_GAME_INVALID_COLOR)
+			if (mes == CH_GAME_INVALID_COLOR)
 				printf("The specified position does not contain your piece\n");
 			else
 				printf("Illegal move\n");
-			returnPieceToPlase(prevCellData,widgetGameBoard,window);
+			returnPieceToPlase(prevCellData, widgetGameBoard, window, isGuiMode);
 		} else {
-			if (GUI_ACTIVE) {
+			if (isGuiMode) {
 				if (cellData->piece != NULL ) {
 					cellData->piece->destroyWidget(cellData->piece);
 				}
-				cellData->piece =
-						createCHPiece(cellData->windowRenderer,
-								cellData->location,
-								game->gameBoard[command.toRow][command.toColomn]);
-				prevCellData->piece->destroyWidget(
-						prevCellData->piece);
+				cellData->piece = createCHPiece(cellData->windowRenderer,
+						cellData->location,
+						game->gameBoard[command.toRow][command.toColomn]);
+				prevCellData->piece->destroyWidget(prevCellData->piece);
 				prevCellData->piece = NULL;
 				setNoGlowCells(widgetGameBoard);
 				window->drawWindow(window);
 			}
 			*isSaved = false;
-			if (end_of_move(game, best_move, isTurnChanged) == -1) {
+			if (end_of_move(game, best_move, isTurnChanged, isGuiMode) == -1) {
 				chGameDestroy(game);
-				if (GUI_ACTIVE) {
+				if (isGuiMode) {
 					destroyWindow(window);
 					SDL_Quit();
 					exit(1);
@@ -224,18 +235,18 @@ void handleMoveCommand(CHGame* game, SPWindow* window, CHMoveNode *best_move,CHC
 		}
 	} else {
 		printf("Invalid position on the board\n");
-		returnPieceToPlase(prevCellData,widgetGameBoard,window);
+		returnPieceToPlase(prevCellData, widgetGameBoard, window, isGuiMode);
 	}
 }
 
-void handleGetMovesCommand(CHGame* game, SPWindow* window, CHCommand command) {
+void handleGetMovesCommand(CHGame* game, SPWindow* window, CHCommand command,bool isGuiMode) {
 	GameBoard* gameBoard;
 	BoardCell* cellData;
 	SPSimpleWindow *simpleWindow;
 	Widget *widgetGameBoard = NULL;
 	CH_GAME_MESSAGE mes;
 	if (command.validArg) {
-		if (GUI_ACTIVE) {
+		if (isGuiMode) {
 			simpleWindow = (SPSimpleWindow *) window->data;
 			widgetGameBoard = simpleWindow->widgets[6];
 			gameBoard = (GameBoard*) widgetGameBoard->data;
@@ -243,16 +254,17 @@ void handleGetMovesCommand(CHGame* game, SPWindow* window, CHCommand command) {
 					(BoardCell*) gameBoard->gameBoard[command.fRow][command.fColomn]->data;
 			setNoGlowCells(widgetGameBoard);
 		}
-		mes = chGameShowMoves(game, command.fRow, command.fColomn, widgetGameBoard);
+		mes = chGameGetMoves(game, command.fRow, command.fColomn,
+				widgetGameBoard, isGuiMode);
 		if (mes == CH_GAME_INVALID_COLOR) {
 			printf("The specified position does not contain your piece\n");
-			if (GUI_ACTIVE) {
+			if (isGuiMode) {
 				window->drawWindow(window);
 			}
 		} else if (mes == CH_GAME_INVALID_MOVE) {
 			printf("Illegal move\n");
 		} else {
-			if (GUI_ACTIVE) {
+			if (isGuiMode) {
 				cellData->glow = CELL_GLOW_COLOR_REGULAR;
 				window->drawWindow(window);
 			}
@@ -261,8 +273,7 @@ void handleGetMovesCommand(CHGame* game, SPWindow* window, CHCommand command) {
 		printf("Invalid position on the board\n");
 }
 
-
-void handleSlotEvent(SPWindow** window,int *draw,int slot){
+void handleSlotEvent(SPWindow** window, int *draw, int slot) {
 	SPWindow* windowP = *window;
 	SPSimpleWindow * simpleWindow = (SPSimpleWindow *) windowP->data;
 	pressSlotChange(windowP, slot);
@@ -272,7 +283,8 @@ void handleSlotEvent(SPWindow** window,int *draw,int slot){
 	*draw = 1;
 }
 
-void showSaveMessage(CHGame** game,SPWindow** window,CHCommand *command,bool *isSaved,int *draw){
+void showSaveMessage(CHGame** game, SPWindow** window, CHCommand *command,
+		bool *isSaved, int *draw) {
 	SPWindow* windowP = *window;
 	SPSimpleWindow * simpleWindow = (SPSimpleWindow *) windowP->data;
 	int buttonid = 0;
@@ -298,7 +310,7 @@ void showSaveMessage(CHGame** game,SPWindow** window,CHCommand *command,bool *is
 	buttons, /* .buttons */
 	&colorScheme /* .colorScheme */
 	};
-	if(*isSaved != true){
+	if (*isSaved != true) {
 		if (SDL_ShowMessageBox(&messageboxdata, &buttonid) < 0) {
 			SDL_Log("error displaying message box");
 			return;
@@ -310,12 +322,14 @@ void showSaveMessage(CHGame** game,SPWindow** window,CHCommand *command,bool *is
 			chGuiSave(*game);
 			*isSaved = true;
 		}
-		SDL_FlushEvents(SDL_QUIT,SDL_USEREVENT);
+		SDL_FlushEvents(SDL_QUIT, SDL_USEREVENT);
 	}
 	*draw = 1;
 }
 
-void handleRestartEvent(CHGame** game, SPWindow** window,bool *isSaved){
+
+
+void handleRestartEvent(CHGame** game, SPWindow** window, bool *isSaved) {
 	CHGame* gameP = *game;
 	int i, j;
 	BoardCell* cellData;
@@ -323,7 +337,8 @@ void handleRestartEvent(CHGame** game, SPWindow** window,bool *isSaved){
 	SPSimpleWindow * simpleWindow = (SPSimpleWindow *) windowP->data;
 	Widget * widgetGameBoard = simpleWindow->widgets[6];
 	GameBoard* gameBoard = (GameBoard*) widgetGameBoard->data;
-	CHGame* tmp = chGameCreate(gameP->gameMode, gameP->userColor, gameP->difficulty,1);
+	CHGame* tmp = chGameCreate(gameP->gameMode, gameP->userColor,
+			gameP->difficulty, 1);
 	if ((gameP->gameMode == 1) && (gameP->list->actualSize != 0)) {
 		updateTextureBtn(simpleWindow->widgets[0], 0);
 	}
@@ -349,7 +364,7 @@ void handleRestartEvent(CHGame** game, SPWindow** window,bool *isSaved){
 	windowP->drawWindow(windowP);
 }
 
-void setFromCommandCoordinates(SPWindow** window, CHCommand *command){
+void setFromCommandCoordinates(SPWindow** window, CHCommand *command) {
 	int i, j;
 	BoardCell* cellData;
 	SPWindow* windowP = *window;
@@ -368,9 +383,9 @@ void setFromCommandCoordinates(SPWindow** window, CHCommand *command){
 	}
 }
 
-void handleLoadEvents(CHGame** game, SPWindow** window, int *draw){
+void handleLoadEvents(CHGame** game, SPWindow** window, int *draw) {
 	int slot;
-	SPSimpleWindow * simpleWindow = (SPSimpleWindow *)(*window)->data;
+	SPSimpleWindow * simpleWindow = (SPSimpleWindow *) (*window)->data;
 	if (simpleWindow->type == CH_WINDOW_MAIN) {
 		destroyWindow(*window);
 		*window = createLoadWindow();
@@ -389,7 +404,7 @@ void handleLoadEvents(CHGame** game, SPWindow** window, int *draw){
 	*draw = 1;
 }
 
-void handleBackEvent(CHGame** game, SPWindow** window,int *draw){
+void handleBackEvent(CHGame** game, SPWindow** window, int *draw) {
 	destroyWindow(*window);
 	*window = createSimpleWindow(*game);
 	SPSimpleWindow * simpleWindow = (SPSimpleWindow *) (*window)->data;
@@ -399,7 +414,7 @@ void handleBackEvent(CHGame** game, SPWindow** window,int *draw){
 	*draw = 1;
 }
 
-void handleMoveEvent(CHCommand *command, SPWindow** window){
+void handleMoveEvent(CHCommand *command, SPWindow** window) {
 	int i, j;
 	command->cmd = CH_MOVE;
 	command->validArg = true;
@@ -423,9 +438,9 @@ void handleMainEvents(CHGame** game, SPWindow** window, SDL_Event *event,
 	SPSimpleWindow * simpleWindow = NULL;
 	if (event->type == SDL_QUIT) {
 		command->cmd = CH_QUIT;
-		showSaveMessage(game, window,command, isSaved,draw);
+		showSaveMessage(game, window, command, isSaved, draw);
 	}
-	if (event->type == SDL_USEREVENT ){
+	if (event->type == SDL_USEREVENT) {
 		if (event->user.code == EVENT_MOVE) {
 			handleMoveEvent(command, window);
 		} else if (event->user.code == EVENT_DRAGGED_NOT_ON_BOARD) {
@@ -445,7 +460,7 @@ void handleMainEvents(CHGame** game, SPWindow** window, SDL_Event *event,
 		} else if (event->user.code == EVENT_GO_TO_MAIN_MENU) {
 			command->cmd = CH_RESET;
 			command->validArg = true;
-			showSaveMessage(game, window, command, isSaved,draw);
+			showSaveMessage(game, window, command, isSaved, draw);
 		} else if (event->user.code == EVENT_RESTART) {
 			handleRestartEvent(game, window, isSaved);
 		} else if (event->user.code == EVENT_SAVE) {
@@ -471,17 +486,16 @@ void handleMainEvents(CHGame** game, SPWindow** window, SDL_Event *event,
 	}
 }
 
-
 void computerTurn(CHGame* game, SPWindow* window, CHMoveNode *best_move,
-		bool *isSaved, bool *isTurnChanged) {
+		bool *isSaved, bool *isTurnChanged, bool isGuiMode) {
 	GameBoard* castData;
 	BoardCell* cellData;
 	BoardCell* prevCellData;
 	SPSimpleWindow * simpleWindow = (SPSimpleWindow *) window->data;
 	CH_GAME_MESSAGE mes = alphabeta(chGameCopy(game), game->difficulty,
-			game->currentTurn, best_move);
+			game->currentTurn, best_move, isGuiMode);
 	if (mes != CH_GAME_SUCCESS) {
-		if (GUI_ACTIVE) {
+		if (isGuiMode) {
 			destroyWindow(window);
 			SDL_Quit();
 		}
@@ -490,8 +504,8 @@ void computerTurn(CHGame* game, SPWindow* window, CHMoveNode *best_move,
 	chGameSetMove(game,
 			game->gameBoard[best_move->from_row][best_move->from_col],
 			best_move->from_row, best_move->from_col, best_move->to_row,
-			best_move->to_col, true);
-	if (GUI_ACTIVE) {
+			best_move->to_col, true, isGuiMode);
+	if (isGuiMode) {
 		castData = (GameBoard*) (simpleWindow->widgets[6]->data);
 		prevCellData =
 				(BoardCell*) castData->gameBoard[best_move->from_row][best_move->from_col]->data;
@@ -517,29 +531,30 @@ void computerTurn(CHGame* game, SPWindow* window, CHMoveNode *best_move,
 			best_move->from_col + 65, best_move->to_row + 1,
 			best_move->to_col + 65);
 	*isTurnChanged = true;
-	if (end_of_move(game, best_move, isTurnChanged) == -1) {
-		if (GUI_ACTIVE) {
+	if (end_of_move(game, best_move, isTurnChanged, isGuiMode) == -1) {
+		if (isGuiMode) {
 			destroyWindow(window);
-			SDL_Quit();
-		}
-		return exit(0);
-	}
-}
-
-void handleResetCommand(CHGame **game, SPWindow** window, CHMoveNode *best_move, SDL_Event *event, bool *isTurnChanged){
-	chGameDestroy(*game);
-	if (GUI_ACTIVE) {
-		destroyWindow(*window);
-	}
-	*game = startSettingsMode();
-	if (!(*game)) {
-		free(best_move);
-		if (GUI_ACTIVE) {
 			SDL_Quit();
 		}
 		exit(0);
 	}
-	if (GUI_ACTIVE) {
+}
+
+void handleResetCommand(CHGame **game, SPWindow** window, CHMoveNode *best_move,
+		SDL_Event *event, bool *isTurnChanged,bool isGuiMode) {
+	chGameDestroy(*game);
+	if (isGuiMode) {
+		destroyWindow(*window);
+	}
+	*game = startSettingsMode(isGuiMode);
+	if (!(*game)) {
+		free(best_move);
+		if (isGuiMode) {
+			SDL_Quit();
+		}
+		exit(0);
+	}
+	if (isGuiMode) {
 		*window = createSimpleWindow(*game);
 		if (window == NULL ) {
 			chGameDestroy(*game);
@@ -548,33 +563,34 @@ void handleResetCommand(CHGame **game, SPWindow** window, CHMoveNode *best_move,
 		}
 		SDL_WaitEvent(event);
 	}
-	if (!(GUI_ACTIVE)) {
+	if (!(isGuiMode)) {
 		printf("Restarting...\n");
 	}
 	*isTurnChanged = true;
 }
 
-void handleAllCommands(CHCommand command, CHGame **game, SPWindow** window, bool *isSaved,bool *isTurnChanged, CHMoveNode *best_move, SDL_Event *event){
+void handleAllCommands(CHCommand command, CHGame **game, SPWindow** window,
+		bool *isSaved, bool *isTurnChanged, CHMoveNode *best_move,
+		SDL_Event *event,bool isGuiMode) {
 	if (command.cmd == CH_MOVE) {
 		handleMoveCommand(*game, *window, best_move, command, isTurnChanged,
-				isSaved);
+				isSaved, isGuiMode);
 	} else if (command.cmd == CH_GET_MOVES) {
-		handleGetMovesCommand(*game, *window, command);
+		handleGetMovesCommand(*game, *window, command, isGuiMode);
 	} else if (command.cmd == CH_SAVE) {
 		if (chGameSave(*game, command.path) == CH_GAME_FILE_PROBLEM)
 			printf("File cannot be created or modified\n");
 	} else if (command.cmd == CH_RESET) {
-		handleResetCommand(game, window, best_move, event,
-				isTurnChanged);
+		handleResetCommand(game, window, best_move, event, isTurnChanged, isGuiMode);
 	} else if (command.cmd == CH_QUIT) {
 		chGameDestroy(*game);
 		printf("Exiting...\n");
-		if (GUI_ACTIVE) {
+		if (isGuiMode) {
 			destroyWindow(*window);
 			SDL_Quit();
 		}
 		exit(0);
 	} else if (command.cmd == CH_UNDO) {
-		undoHandle(*game, *window, best_move, isTurnChanged);
+		undoHandle(*game, *window, best_move, isTurnChanged, isGuiMode);
 	}
 }

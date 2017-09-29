@@ -9,6 +9,7 @@
 #define CHCOLORWINDOW_H_
 
 SPWindow* createSimpleColorWindow();
+
 void pressColorChange(SPWindow* src, int color);
 
 #endif /* CHCOLORWINDOW_H_ */

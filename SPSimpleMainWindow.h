@@ -2,7 +2,7 @@
 #define SPSIMPLEMAINWINDOW_H_
 #include "SPWindow.h"
 #include "Widget.h"
-#define GUI_ACTIVE 1
+
 
 
 typedef enum _windowType {

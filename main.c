@@ -9,24 +9,28 @@
 #define REC_DEPTH 4
 
 
+
 int main(int argc, char** argv) {
 	SP_BUFF_SET();
+	bool isGuiMode = false, isSaved = true, isTurnChanged = true;;
+	setGuiMode(argc, argv, &isGuiMode);
 	int draw = 1;
 	char strCommand[MAX_LINE_SIZE];
 	CHMoveNode *best_move = (CHMoveNode *) malloc(sizeof(CHMoveNode));
 	if (!best_move)
 		return 0;
 	CHCommand command;
-	bool isTurnChanged = true;
 	SPWindow* window;
 	SDL_Event event;
-	bool isSaved = true;
-	CHGame *game = startSettingsMode();
-	if (!game)
+	CHGame *game = startSettingsMode(isGuiMode);
+	if (!game){
+		free(best_move);
 		return 0;
-	if (GUI_ACTIVE) {
+	}
+	if (isGuiMode) {
 		window = createSimpleWindow(game);
 		if (window == NULL ) {
+			free(best_move);
 			chGameDestroy(game);
 			SDL_Quit();
 			return 0;
@@ -38,12 +42,12 @@ int main(int argc, char** argv) {
 				|| (game->gameMode == 1 && game->currentTurn == game->userColor)) {
 			if (isTurnChanged) {
 				chGamePrintBoard(game);
-				if (GUI_ACTIVE)
+				if (isGuiMode)
 					printTurn(game);
 			}
-			if (!(GUI_ACTIVE))
+			if (!isGuiMode)
 				printTurn(game);
-			if (GUI_ACTIVE) {
+			if (isGuiMode) {
 				SDL_WaitEvent(&event);
 				handleMainEvents(&game, &window, &event, &command, &isSaved,
 						&draw);
@@ -53,11 +57,11 @@ int main(int argc, char** argv) {
 			}
 			isTurnChanged = false;
 			handleAllCommands(command, &game, &window, &isSaved, &isTurnChanged,
-					best_move, &event);
+					best_move, &event, isGuiMode);
 		} else {
-			computerTurn(game, window, best_move, &isSaved, &isTurnChanged);
+			computerTurn(game, window, best_move, &isSaved, &isTurnChanged, isGuiMode);
 		}
-		if (GUI_ACTIVE) {
+		if (isGuiMode) {
 			window->handleEventWindow(window, &event);
 			if (draw == 1) {
 				window->drawWindow(window);

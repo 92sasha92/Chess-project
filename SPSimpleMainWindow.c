@@ -69,7 +69,6 @@ SPWindow* createSimpleWindow(CHGame *game) {
 		//We first destroy the renderer
 		SDL_DestroyRenderer(renderer); //NULL safe
 		SDL_DestroyWindow(window); //NULL safe
-		printf("1/n");
 		return NULL ;
 	}
 	SDL_FreeSurface(loadingSurface);

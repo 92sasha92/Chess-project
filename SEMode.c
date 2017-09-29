@@ -5,7 +5,7 @@
  *      Author: sasha
  */
 #include "SEMode.h"
-#include "save&load.h"
+#include "saveAndLoad.h"
 
 int gameMode = 1;
 int gameDifficulty = 2;
@@ -74,15 +74,16 @@ void printSettings(){
 
 
 
-CHGame* startSettingsMode(){
+CHGame* startSettingsMode(bool isGuiMode){
 	char strCommand[MAX_LINE_SIZE];
 	SECommand command;
 	CHGame* src;
 	SPWindow* window;
 	SPSimpleWindow *simpleWindow;
+	bool isLoaded = 0;
 	int slot = 0;
 	printf("Specify game setting or type 'start' to begin a game with the current setting:\n" );
-	if(GUI_ACTIVE){
+	if(isGuiMode){
 		if (SDL_Init(SDL_INIT_VIDEO) < 0) { //SDL2 INIT
 			printf("ERROR: unable to init SDL: %s\n", SDL_GetError());
 			return NULL;
@@ -265,7 +266,7 @@ CHGame* startSettingsMode(){
 						free(src);/////////////////////////change to function
 					}
 					else{
-						return src;
+						isLoaded = 1;
 					}
 				}
 				else
@@ -282,7 +283,11 @@ CHGame* startSettingsMode(){
 				return NULL;
 			}
 			else if(command.cmd == SE_START){
-				break;
+				if(isLoaded){
+					return src;
+				}else{
+					break;
+				}
 			}
 			else{
 				printf("ERROR: invalid Command\n");

@@ -98,7 +98,7 @@ void chGameDestroy(CHGame* src);
  * CH_GAME_NO_MOVES - if there isn't any moves for this piece
  * CH_GAME_SUCCESS - otherwise
  */
-CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol,Widget *widget);
+CH_GAME_MESSAGE chGameGetMoves(CHGame* src, int fRow,int fCol,Widget *widget, bool isGuiMode);
 
 /**
  * Sets the next move in a given game by specifying the position of the piece and where to move it.
@@ -114,7 +114,7 @@ CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol,Widget *widget);
  * CH_GAME_INVALID_MOVE - If the move is illegal for the piece in the position <x,y>.
  * CH_GAME_SUCCESS - otherwise
  */
-CH_GAME_MESSAGE chGameSetMove(CHGame* src,  char peice,int fRow,int fCol,int toRow,int toCol, bool is_alphaBeta_func);
+CH_GAME_MESSAGE chGameSetMove(CHGame* src,  char peice,int fRow,int fCol,int toRow,int toCol, bool is_alphaBeta_func, bool isGuiMode);
 
 
 /**
@@ -141,7 +141,7 @@ CH_GAME_MESSAGE chIsCheckmateOrTie(CHGame* src);
  * CH_GAME_INVALID_ARGUMENT - if src is NULL.
  * CH_GAME_SUCCESS - otherwise.
  */
-CH_GAME_MESSAGE isCheck(CHGame* src,int is_computer);
+CH_GAME_MESSAGE isCheck(CHGame* src,int is_computer, bool isGuiMode);
 
 
 /**

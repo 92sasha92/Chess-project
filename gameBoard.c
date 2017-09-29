@@ -14,8 +14,14 @@ Widget* createGameBoard(SDL_Renderer* windowRender, SDL_Rect* location, const ch
 	Widget* res = (Widget*) malloc(sizeof(Widget));
 	GameBoard* data = (GameBoard*) malloc(sizeof(GameBoard));
 	SDL_Surface* loadingSurface = SDL_LoadBMP(image); //We use the surface as a temp var;
+	loadingSurface->format->Amask = 0xFF000000;
+	loadingSurface->format->Ashift = 24;
+	if(SDL_SetColorKey(loadingSurface, SDL_TRUE,SDL_MapRGB(loadingSurface->format, 255, 0, 0)) < 0){
+		printf("color\n");
+
+	}
 	SDL_Texture* gameBoardTexture = SDL_CreateTextureFromSurface(windowRender,loadingSurface);
-	SDL_SetTextureBlendMode(gameBoardTexture, SDL_BLENDMODE_BLEND);
+//	SDL_SetTextureBlendMode(gameBoardTexture, SDL_BLENDMODE_BLEND);
 	SDL_Rect loc = { .x = startX, .y = startY, .h = 77, .w = 77 };
 	char* imageBlack = "./images/blackSquare.bmp";
 	char* imageWhite = "./images/whiteSquare.bmp";
@@ -87,7 +93,7 @@ void destroyGameBoard(Widget* src) {
 
 void handleGameBoardEvent(Widget* src, SDL_Event* event) {
 	int i, j;
-	int static isDragged = 0;
+	static int isDragged = 0;
 	if (src == NULL || event==NULL) {
 		return;
 	}

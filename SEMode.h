@@ -23,6 +23,6 @@
 #include "CHColorWindow.h"
 #include "CHLoadWindow.h"
 #define MAX_LINE_SIZE 1024
-CHGame* startSettingsMode();
+CHGame* startSettingsMode(bool isGuiMode);
 
 #endif /* SEMODE_H_ */
