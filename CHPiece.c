@@ -19,6 +19,8 @@ void drawCHPieceDrag(Widget* src){
 	SDL_RenderCopy(castData->windowRenderer, castData->Texture, NULL,castData->location);
 	SDL_RenderPresent(castData->windowRenderer);
 }
+
+
 SDL_Texture* createTexturePiece(SDL_Renderer* windowRender,const char* image){
 	SDL_Surface* loadingSurface = SDL_LoadBMP(image); //We use the surface as a temp var;
 	if(loadingSurface == NULL){
@@ -28,6 +30,8 @@ SDL_Texture* createTexturePiece(SDL_Renderer* windowRender,const char* image){
 	SDL_FreeSurface(loadingSurface);
 	return gameBoardTexture;
 }
+
+
 //You need a create function:
 Widget* createCHPiece(SDL_Renderer* windowRender, SDL_Rect* location,char c){
 	if (windowRender == NULL || location == NULL || c == CH_GAME_EMPTY_ENTRY) {
@@ -79,7 +83,6 @@ Widget* createCHPiece(SDL_Renderer* windowRender, SDL_Rect* location,char c){
 	res->handleEvent = handleCHPieceEvent;
 	res->data = data;
 	return res;
-
 }
 
 //You need this function in order to destroy all data Associate with a button:
@@ -93,6 +96,7 @@ void destroyCHPiece(Widget* src){
 	free(castData);
 	free(src);
 }
+
 
 void handleCHPieceEvent(Widget* src, SDL_Event* event){
 	if (src == NULL || event == NULL ) {
@@ -134,6 +138,7 @@ void handleCHPieceEvent(Widget* src, SDL_Event* event){
 		return;
 	}
 }
+
 
 void drawCHPiece(Widget* src){
 	if (src == NULL ) {

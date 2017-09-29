@@ -14,6 +14,7 @@ bool seParserIsInt(const char* str) {
 	return true;
 }
 
+
 SECommand seParserPraseLine(const char* str) {
 	int num;
 	char *cur;

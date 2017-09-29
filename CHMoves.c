@@ -49,9 +49,6 @@ void findKing(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color,int *k
 }
 
 
-
-
-
 CHMovesList * insertFirst(CHMovesList *list, int row, int col) {
 	CHMovesList *node;
 	if(!list->isValid){
@@ -70,7 +67,6 @@ CHMovesList * insertFirst(CHMovesList *list, int row, int col) {
 	node->col = col;
 	return node;
 }
-
 
 
 bool isKnightThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, int mRow, int mCol,int mode){
@@ -154,6 +150,7 @@ bool isRookOrQueenThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int c
 	return true;
 }
 
+
 bool isBishopOrQueenThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, int mRow, int mCol,int mode){
 	int i,kCol,kRow;
 	int curRow = mRow + 1;
@@ -207,6 +204,7 @@ bool isBishopOrQueenThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int
 	return true;
 }
 
+
 bool isPawnThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, int mRow, int mCol,int mode){
 	int curRow,curCol,kRow,kCol;
 	char curC;
@@ -244,6 +242,7 @@ bool isPawnThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, i
 	}
 	return true;
 }
+
 
 bool isKingThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, int mRow, int mCol,int mode){
 	int i;
@@ -290,6 +289,7 @@ bool isKingThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, i
 	return true;
 }
 
+
 bool isMyPieceSafe(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, int fRow, int fCol, int toRow, int toCol, int color, int mRow, int mCol,int mode) {
 	int i,j;
 	char gameBoardCopy[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS];
@@ -314,9 +314,6 @@ bool isMyPieceSafe(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, in
 		return false;
 	return true;
 }
-
-
-
 
 
 CHMovesList *pawnMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
@@ -369,6 +366,7 @@ CHMovesList *pawnMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 	return list;
 }
 
+
 CHMovesList *rookMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 		char c, int row, int col, CHMovesList *list, int color,int kRow,int kCol) {
 	int i;
@@ -409,6 +407,7 @@ CHMovesList *rookMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 	return list;
 }
 
+
 CHMovesList *knightMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 		char c, int row, int col, CHMovesList *list, int color,int kRow,int kCol) {
 	int curRow;
@@ -438,9 +437,9 @@ CHMovesList *knightMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 			}
 		}
 	}
-
 	return list;
 }
+
 
 CHMovesList *bishopMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 		char c, int row, int col, CHMovesList *list, int color,int kRow,int kCol) {
@@ -487,6 +486,7 @@ CHMovesList *bishopMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 	return list;
 }
 
+
 CHMovesList *kingMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, int row, int col, CHMovesList *list, int color) {
 	int i;
 	int curRow = row - 1;
@@ -527,6 +527,7 @@ CHMovesList *kingMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c
 	return list;
 }
 
+
 CHMovesList *createMoveList(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],char c, int row, int col, int color) {
 	int kRow = 0,kCol = 0;
 	CHMovesList *list = (CHMovesList *) malloc(sizeof(CHMovesList));
@@ -553,6 +554,7 @@ CHMovesList *createMoveList(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],ch
 	}
 	return list;
 }
+
 
 void destroyMoveList(CHMovesList *list) {
 	CHMovesList *node = list;

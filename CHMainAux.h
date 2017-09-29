@@ -1,10 +1,3 @@
-/*
- * CHMainAux.h
- *
- *  Created on: Sep 27, 2017
- *      Author: sasha
- */
-
 #ifndef CHMAINAUX_H_
 #define CHMAINAUX_H_
 

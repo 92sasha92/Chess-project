@@ -56,7 +56,7 @@ int get_board_score(int maximizer, CHGame* src);
  */
 CHMoveNode* set_cur_best_move(char piece, CHMoveNode* best_move, int i, int j, CHMovesList* cur_piece_moves_list);
 
-/** recursive function to compute the best option to move, use from depth 2.
+/** recursive function to compute the best option of the opponent of the maximizer to move, use from depth 2.
  * @param src - the game struct.
  * @param depth - the maximum depth to calculate the scoring function.
  * @param a - alpha value, used to cut off if there is no need to keep calculate the scoring of the sub-tree. use in maximum level.
@@ -65,7 +65,18 @@ CHMoveNode* set_cur_best_move(char piece, CHMoveNode* best_move, int i, int j, C
  * @return
  * the optimal score for this sub tree in respect to the minimum or maximum level.
  */
-BestMove rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer, bool isGuiMode);
+BestMove min_rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer, bool isGuiMode);
+
+/** recursive function to compute the best option of the maximizer to move, use from depth 2.
+ * @param src - the game struct.
+ * @param depth - the maximum depth to calculate the scoring function.
+ * @param a - alpha value, used to cut off if there is no need to keep calculate the scoring of the sub-tree. use in maximum level.
+ * @param b - beta value, used to cut off if there is no need to keep calculate the scoring of the sub-tree. use in minimum level.
+ * @param maximizer - the player hwo call the function.
+ * @return
+ * the optimal score for this sub tree in respect to the minimum or maximum level.
+ */
+BestMove max_rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer, bool isGuiMode);
 
 /** compute the best option to move.
  * @param src - the game struct.

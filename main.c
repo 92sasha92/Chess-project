@@ -1,14 +1,4 @@
-/*
- * main.c
- *
- *  Created on: Aug 30, 2017
- *      Author: sasha
- */
-
 #include "CHMainAux.h"
-#define REC_DEPTH 4
-
-
 
 int main(int argc, char** argv) {
 	SP_BUFF_SET();

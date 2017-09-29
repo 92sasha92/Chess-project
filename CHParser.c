@@ -27,8 +27,8 @@ CHCommand parseMove(char * cur,char delimiter[8]){
                 cur++;
                 y = cur[0];
                 cur++;
-                if(y >= 'A' && y <= 'H'){
-                    if(i == 0){
+                if (y >= 'A' && y <= 'H') {
+                    if (i == 0) {
                         command.fRow = x - 49;
                         command.fColomn = y - 65;
                     }
@@ -47,21 +47,22 @@ CHCommand parseMove(char * cur,char delimiter[8]){
             }
             else
                 command.validArg = false;
-            if(i == 0 &&(cur = strtok(NULL,delimiter)) == NULL)
+            if (i == 0 &&(cur = strtok(NULL,delimiter)) == NULL)
                 return command;
-        } else{
+        } else {
             return command;
         }
-        if(i == 0){
-            if(strcmp(cur, "to") != 0)
+        if (i == 0) {
+            if (strcmp(cur, "to") != 0)
                 return command;
-            if((cur = strtok(NULL,delimiter)) == NULL)
+            if ((cur = strtok(NULL,delimiter)) == NULL)
                 return command;
         }
     }
     command.cmd = CH_MOVE;
     return command;
 }
+
 
 CHCommand parseGetMoves(char *cur,char delimiter[8]){
     char x,y;
@@ -93,6 +94,7 @@ CHCommand parseGetMoves(char *cur,char delimiter[8]){
     command.cmd = CH_GET_MOVES;
     return command;
 }
+
 
 CHCommand chParserPraseLine(const char* str) {
     char *cur;

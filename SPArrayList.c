@@ -61,9 +61,6 @@ SP_ARRAY_LIST_MESSAGE spArrayListAddAt(SPArrayList* src, CHMoveNode elem, int in
 	if (src == NULL || index < 0 || index > src->actualSize) {
 		return SP_ARRAY_LIST_INVALID_ARGUMENT;
 	}
-//	else if(src->actualSize == src->maxSize){
-//		return SP_ARRAY_LIST_FULL;
-//	}
 	else {
 		if (src->actualSize == src->maxSize) {
 			for (i = src->actualSize - 1; i > index; i--) {
@@ -115,66 +112,3 @@ SP_ARRAY_LIST_MESSAGE spArrayListRemoveAt(SPArrayList* src, int index) {
 SP_ARRAY_LIST_MESSAGE spArrayListRemoveFirst(SPArrayList* src) {
 	return spArrayListRemoveAt(src, 0);
 }
-
-
-//SP_ARRAY_LIST_MESSAGE spArrayListRemoveLast(SPArrayList* src) {
-//	if (src==NULL) {
-//		return SP_ARRAY_LIST_INVALID_ARGUMENT;
-//	}
-//	return spArrayListRemoveAt(src, src->actualSize-1);
-//}
-//
-//
-//CHMoveNode spArrayListGetAt(SPArrayList* src, int index){
-//	if(src == NULL || index >= src->actualSize || index < 0){
-//		return NULL;
-//	}
-//	return src->elements[index];
-//}
-//
-//
-//CHMoveNode spArrayListGetLast(SPArrayList* src) {
-//	if(src == NULL || src->actualSize == 0){
-//		return NULL;
-//	}
-//	return src->elements[src->actualSize-1];
-//}
-//
-//
-//int spArrayListMaxCapacity(SPArrayList* src) {
-//	if (src == NULL || src->elements == NULL) {
-//		return -1;
-//	}
-//	return src->maxSize;
-//}
-//
-//
-//int spArrayListSize(SPArrayList* src) {
-//	if ((src == NULL) || (src->elements == NULL)) {
-//		return -1;
-//	}
-//	return src->actualSize;
-//}
-//
-//
-//bool spArrayListIsFull(SPArrayList* src) {
-//	if (src == NULL || src->elements == NULL || src->actualSize < src->maxSize) {
-//		return false;
-//	}
-//	return true;
-//}
-//
-//
-//SP_ARRAY_LIST_MESSAGE spArrayListClear(SPArrayList* src) {
-//	if(src == NULL){
-//		return SP_ARRAY_LIST_INVALID_ARGUMENT;
-//	}
-//	src->actualSize = 0;
-//	return SP_ARRAY_LIST_SUCCESS;
-//}
-//SP_ARRAY_LIST_MESSAGE spArrayListAddLast(SPArrayList* src, CHMoveNode elem) {
-//	if (src==NULL) {
-//		return SP_ARRAY_LIST_INVALID_ARGUMENT;
-//	}
-//	return spArrayListAddAt(src,elem,src->actualSize);
-//}

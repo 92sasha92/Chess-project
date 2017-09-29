@@ -57,7 +57,7 @@ void showPawnPromotionMessage(CHGame* game, int row, int col) {
 			game->gameBoard[row][col] = CH_WHITE_QUEEN;
 			break;
 		}
-	}else{
+	} else {
 		switch(buttonId){
 		case 0:
 			game->gameBoard[row][col] = CH_BLACK_PAWN;
@@ -78,6 +78,7 @@ void showPawnPromotionMessage(CHGame* game, int row, int col) {
 	}
 	SDL_FlushEvents(SDL_QUIT, SDL_USEREVENT);
 }
+
 
 void defaultBoard(CHGame *src) {
 	int i, j;
@@ -116,6 +117,7 @@ void defaultBoard(CHGame *src) {
 	}
 }
 
+
 int chGameCreateMode1(CHGame* src, int difficulty, int userColor) {
 	if (src->gameMode == 1) {
 		if (userColor != CH_GAME_BLACK_PLAYER_SYMBOL
@@ -137,6 +139,7 @@ int chGameCreateMode1(CHGame* src, int difficulty, int userColor) {
 	}
 	return 1;
 }
+
 
 CHGame* chGameCreate(int gameMode, int userColor, int difficulty,
 		int currentTurn) {
@@ -163,6 +166,7 @@ CHGame* chGameCreate(int gameMode, int userColor, int difficulty,
 	}
 	return src;
 }
+
 
 void chGameDestroy(CHGame* src) {
 	if (src != NULL ) {
@@ -192,6 +196,7 @@ CH_GAME_MESSAGE chGamePrintBoard(CHGame* src) {
 	return CH_GAME_SUCCESS;
 }
 
+
 bool isValidMove(CHMovesList *list, int toRow, int toCol) {
 	CHMovesList *node = list;
 	while (node != NULL ) {
@@ -202,12 +207,14 @@ bool isValidMove(CHMovesList *list, int toRow, int toCol) {
 	return false;
 }
 
+
 int cmpfunc(const void * a, const void * b) {
 	if (((CHNodeForSort*) a)->row - ((CHNodeForSort*) b)->row == 0) {
 		return ((CHNodeForSort*) a)->col - ((CHNodeForSort*) b)->col;
 	}
 	return ((CHNodeForSort*) a)->row - ((CHNodeForSort*) b)->row;
 }
+
 
 void printMoves(CHGame* src, CHMovesList *list, char c, int fRow, int fCol,
 		Widget *widget, bool isGuiMode) {
@@ -259,6 +266,7 @@ void printMoves(CHGame* src, CHMovesList *list, char c, int fRow, int fCol,
 	free(arr);
 }
 
+
 CH_GAME_MESSAGE chGameGetMoves(CHGame* src, int fRow, int fCol, Widget *widget,bool isGuiMode) {
 	bool isCorrectCol = false;
 	char c;
@@ -286,19 +294,16 @@ CH_GAME_MESSAGE chGameGetMoves(CHGame* src, int fRow, int fCol, Widget *widget,b
 	return CH_GAME_SUCCESS;
 }
 
+
 void chPawnPromotion(CHGame* src, int row, int col,  bool isGuiMode) {
-    char str[MAX_LINE_LENGTH];
+    char str[MAX_LINE_LENGTH], delimiter[8] = " \t\r\n", strCopy[MAX_LINE_LENGTH], *cur;
     bool isNotValid = true;
-    char delimiter[8] = " \t\r\n";
-    char strCopy[MAX_LINE_LENGTH];
-    char *cur;
     if(isGuiMode){
         showPawnPromotionMessage(src, row, col);
         return;
     }
     while (isNotValid) {
-        printf(
-                "Pawn promotion- please replace the pawn by queen, rook, knight, bishop or pawn:\n");
+        printf("Pawn promotion- please replace the pawn by queen, rook, knight, bishop or pawn:\n");
         fgets(str, MAX_LINE_LENGTH, stdin);
         strcpy(strCopy, str);
         cur = strtok(strCopy, delimiter);
@@ -325,7 +330,6 @@ void chPawnPromotion(CHGame* src, int row, int col,  bool isGuiMode) {
                 isNotValid = false;
             } else
                 printf("Invalid Type\n");
-
         } else if (strcmp(cur, "knight") == 0) {
             if (strtok(NULL, delimiter) == NULL ) {
                 if (src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL)
@@ -349,6 +353,7 @@ void chPawnPromotion(CHGame* src, int row, int col,  bool isGuiMode) {
         }
     }
 }
+
 
 CH_GAME_MESSAGE chGameSetMove(CHGame* src, char peice, int fRow, int fCol,
 		int toRow, int toCol, bool is_alphaBeta_func, bool isGuiMode) {
@@ -396,6 +401,7 @@ CH_GAME_MESSAGE chGameSetMove(CHGame* src, char peice, int fRow, int fCol,
 	return CH_GAME_SUCCESS;
 }
 
+
 CH_GAME_MESSAGE isCheck(CHGame* src, int is_computer, bool isGuiMode) {
 	int kRow = 0, kCol = 0;
 	if (src == NULL )
@@ -429,6 +435,7 @@ CH_GAME_MESSAGE isCheck(CHGame* src, int is_computer, bool isGuiMode) {
 	}
 	return CH_GAME_SUCCESS;
 }
+
 
 CH_GAME_MESSAGE chIsCheckmateOrTie(CHGame* src) {
 	int i, j, kRow, kCol;
@@ -464,6 +471,7 @@ CH_GAME_MESSAGE chIsCheckmateOrTie(CHGame* src) {
 	}
 }
 
+
 CHGame* chGameCopy(CHGame* src) {
 	if (src == NULL ) {
 		return NULL ;
@@ -488,6 +496,7 @@ CHGame* chGameCopy(CHGame* src) {
 	return new_src;
 
 }
+
 
 CH_GAME_MESSAGE chGameUndoPrevMove(CHGame* src) {
 	if (src == NULL ) {
