@@ -70,7 +70,6 @@ Widget* createSimpleButton(SDL_Renderer* windowRender, SDL_Rect* location,
 		return NULL ;
 	}
 	SDL_FreeSurface(loadingSurface); //Surface is not actually needed after texture is created
-
 	SDL_FreeSurface(loadingGlowSurface);
 	data->buttonTexture = buttonTexture;
 	data->glowTexture = glowTexture;

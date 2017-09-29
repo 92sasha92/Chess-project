@@ -585,6 +585,7 @@ void handleAllCommands(CHCommand command, CHGame **game, SPWindow** window,
 		handleResetCommand(game, window, best_move, event, isTurnChanged, isGuiMode);
 	} else if (command.cmd == CH_QUIT) {
 		chGameDestroy(*game);
+		free(best_move);
 		printf("Exiting...\n");
 		if (isGuiMode) {
 			destroyWindow(*window);

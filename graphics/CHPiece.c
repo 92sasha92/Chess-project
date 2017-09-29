@@ -22,6 +22,7 @@ void drawCHPieceDrag(Widget* src){
 SDL_Texture* createTexturePiece(SDL_Renderer* windowRender,const char* image){
 	SDL_Surface* loadingSurface = SDL_LoadBMP(image); //We use the surface as a temp var;
 	if(loadingSurface == NULL){
+		printf("Error: Could not create a surface: %s\n", SDL_GetError());
 		return NULL;
 	}
 	SDL_Texture* gameBoardTexture = SDL_CreateTextureFromSurface(windowRender,loadingSurface);
@@ -67,7 +68,6 @@ Widget* createCHPiece(SDL_Renderer* windowRender, SDL_Rect* location,char c){
 		free(res);
 		free(data);
 		SDL_DestroyTexture(gameBoardTexture); ////It is safe to pass NULL
-		printf("4/n");
 		return NULL ;
 	}
 	data->Texture = gameBoardTexture;
@@ -82,7 +82,6 @@ Widget* createCHPiece(SDL_Renderer* windowRender, SDL_Rect* location,char c){
 
 }
 
-//You need this function in order to destroy all data Associate with a button:
 void destroyCHPiece(Widget* src){
 	if (src == NULL ) {
 		return;
