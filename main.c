@@ -159,8 +159,7 @@ int main() {
                 } else
                     printf("Invalid position on the board\n");
             } else if (command.cmd == CH_SAVE) {
-                if (chGameSave(game, command.path) == CH_GAME_FILE_PROBLEM)
-                    printf("File cannot be created or modified\n");
+                printf("game save is not supported");
             } else if (command.cmd == CH_RESET) {
                 chGameDestroy(game);
                 game = startSettingsMode();

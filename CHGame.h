@@ -4,34 +4,33 @@
 #include "SPArrayList.h"
 #include "CHMoves.h"
 
-
 typedef struct ch_nodeForSort{
-	int row;
-	int col;
+  int row;
+  int col;
 }CHNodeForSort;
 
 typedef struct ch_fiar_game_t {
-	char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS];
-	int gameMode;
-	int userColor;
-	int difficulty;
-	int currentTurn;
-	SPArrayList *list;
+  char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS];
+  int gameMode;
+  int userColor;
+  int difficulty;
+  int currentTurn;
+  SPArrayList *list;
 } CHGame;
 
 typedef enum ch_fiar_game_message_t {
-	CH_GAME_INVALID_MOVE,
-	CH_GAME_INVALID_ARGUMENT,
-	CH_GAME_INVALID_COLOR,
-	CH_GAME_NO_MOVES,
-	CH_GAME_MEMORY_PROBLEM,
-	CH_GAME_SUCCESS,
-	CH_GAME_FILE_PROBLEM,
-  	CH_GAME_BLACK_WINS,
-  	CH_GAME_WHITE_WINS,
-  	CH_GAME_TIE,
-  	CH_GAME_NO_WIN_OR_TIE,
-  	CH_GAME_NO_HISTORY
+  CH_GAME_INVALID_MOVE,
+  CH_GAME_INVALID_ARGUMENT,
+  CH_GAME_INVALID_COLOR,
+  CH_GAME_NO_MOVES,
+  CH_GAME_MEMORY_PROBLEM,
+  CH_GAME_SUCCESS,
+  CH_GAME_FILE_PROBLEM,
+  CH_GAME_BLACK_WINS,
+  CH_GAME_WHITE_WINS,
+  CH_GAME_TIE,
+  CH_GAME_NO_WIN_OR_TIE,
+  CH_GAME_NO_HISTORY
 } CH_GAME_MESSAGE;
 
 /** Prints the board of the current game.
@@ -134,21 +133,8 @@ CH_GAME_MESSAGE chIsCheckmateOrTie(CHGame* src);
  * CH_GAME_INVALID_ARGUMENT - if src is NULL.
  * CH_GAME_SUCCESS - otherwise.
  */
-CH_GAME_MESSAGE isCheck(CHGame* , int);
+CH_GAME_MESSAGE isCheck(CHGame* src,int is_computer);
 
-
-
-/**
- * Save the current game state to the specified file.
- *
- * @param src - The target game.
- * @param path - represent the file relative or full path.
- * @return
- * CH_GAME_INVALID_ARGUMENT - If src is NULL.
- * CH_GAME_FILE_PROBLEM - If the file cannot be created or modified.
- * CH_GAME_SUCCESS - otherwise.
- */
-CH_GAME_MESSAGE chGameSave(CHGame* src,char *path);
 
 /**
  * Creates a copy of a given game.
@@ -177,6 +163,6 @@ CHGame* chGameCopy(CHGame* src);
  */
 CH_GAME_MESSAGE chGameUndoPrevMove(CHGame* src);
 
-void chPawnPromotion(CHGame* src,int row,int col, bool is_alphaBeta_func);
-
 #endif /* CHGAME_H_ */
+
+

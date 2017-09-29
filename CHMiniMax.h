@@ -17,7 +17,7 @@
 
 #define WIN_SCORE INT32_MAX
 #define LOOSE_SCORE INT32_MIN
-#define TIE_SCORE 0
+#define TIE_SCORE -1000
 
 typedef struct Move {
   int best_score;

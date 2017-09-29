@@ -2,27 +2,27 @@
 
 int get_piece_score(char piece, CHGame* src, int maximizer){
     int piece_score = 0;
-            switch (piece) {
-                case CH_BLACK_PAWN:
-                case CH_WHITE_PAWN:piece_score = PAWN_SCORE;
-                    break;
-                case CH_BLACK_ROOK:
-                case CH_WHITE_ROOK:piece_score = ROOK_SCORE;
-                    break;
-                case CH_BLACK_KNIGHT:
-                case CH_WHITE_KNIGHT:piece_score = KNIGHT_SCORE;
-                    break;
-                case CH_BLACK_BISHOP:
-                case CH_WHITE_BISHOP:piece_score = BISHOP_SCORE;
-                    break;
-                case CH_BLACK_KING:
-                case CH_WHITE_KING:piece_score = KING_SCORE;
-                    break;
-                case CH_BLACK_QUEEN:
-                case CH_WHITE_QUEEN:piece_score = QUEEN_SCORE;
-                    break;
-                default:
-                    return 0;
+    switch (piece) {
+        case CH_BLACK_PAWN:
+        case CH_WHITE_PAWN:piece_score = PAWN_SCORE;
+            break;
+        case CH_BLACK_ROOK:
+        case CH_WHITE_ROOK:piece_score = ROOK_SCORE;
+            break;
+        case CH_BLACK_KNIGHT:
+        case CH_WHITE_KNIGHT:piece_score = KNIGHT_SCORE;
+            break;
+        case CH_BLACK_BISHOP:
+        case CH_WHITE_BISHOP:piece_score = BISHOP_SCORE;
+            break;
+        case CH_BLACK_KING:
+        case CH_WHITE_KING:piece_score = KING_SCORE;
+            break;
+        case CH_BLACK_QUEEN:
+        case CH_WHITE_QUEEN:piece_score = QUEEN_SCORE;
+            break;
+        default:
+            return 0;
     }
     if ((isABlackPiece(piece) && (maximizer == 0)) || (isAWhitePiece(piece) && (maximizer == 1))) {
         return piece_score;
@@ -110,7 +110,7 @@ BestMove rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer){
                                 if ((score.best_score < new_score.best_score) || ((score.best_score == new_score.best_score) && (score.best_depth < new_score.best_depth))){
                                     score =  new_score;
                                     a = MAX(a, score.best_score);
-                                    if (b <= a)
+                                    if (b < a)
                                         break;
                                 }
                             } else {
@@ -249,6 +249,7 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
     spArrayListDestroy(src->list);
     src->list = spArrayListCreate(depth);
     if (!(src->list)) {
+        chGameDestroy(src);
         return CH_GAME_MEMORY_PROBLEM;
     }
     CH_GAME_MESSAGE mes;
@@ -258,6 +259,7 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
     int i, j, a = INT32_MIN, b = INT32_MAX ;
     int winner = chIsCheckmateOrTie(src);
     if ((depth == 0) || (winner != CH_GAME_NO_WIN_OR_TIE)){
+        chGameDestroy(src);
         return CH_GAME_INVALID_ARGUMENT;
     }
     score.best_score = INT32_MIN;
@@ -267,6 +269,7 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
             cur_piece_moves_list = createMoveList(src->gameBoard,src->gameBoard[i][j], i, j, src->currentTurn);
             node = cur_piece_moves_list;
             if (cur_piece_moves_list == NULL){
+                chGameDestroy(src);
                 return CH_GAME_MEMORY_PROBLEM;
             }
 
@@ -286,6 +289,7 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
                         }
 
                         if (new_score.best_depth == CH_ERROR_MOVE_DEPTH){
+                            chGameDestroy(src);
                             destroyMoveList(cur_piece_moves_list);
                             return CH_GAME_MEMORY_PROBLEM;
                         }
@@ -310,3 +314,4 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
     }
     return CH_GAME_SUCCESS;
 }
+
