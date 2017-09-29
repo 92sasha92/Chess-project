@@ -1,3 +1,17 @@
+/*
+ * CHMoves.h
+ *
+ *  Created on: Aug 29, 2017
+ *      Author: sasha
+ */
+
+/*
+ * CHMoves.h
+ *
+ *  Created on: Aug 29, 2017
+ *      Author: sasha
+ */
+
 #ifndef CHMOVES_H_
 #define CHMOVES_H_
 
@@ -28,13 +42,12 @@
 #define REGULAR_PIECE_MODE 1
 #define CH_ERROR_MOVE_DEPTH (-2)
 
-
-typedef struct ch_list{
+typedef struct ch_list {
 	int row;
 	int col;
 	bool isValid;
 	struct ch_list *next;
-}CHMovesList;
+} CHMovesList;
 
 /** Checks if the char c is a symbol representing a Black piece.
  * @param c - a char representing a piece on the board.
@@ -57,7 +70,7 @@ bool isAWhitePiece(char c);
  * @param kCol - and address of an int that will hold the column of the king when found.
  * if the king isn't on the board the game isn't legal so the function wont do anything.
  */
-void findKing(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color,int *kRow,int *kCol);
+void findKing(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], int color, int *kRow, int *kCol);
 
 /** Creates a move list of possible moves for a given piece on the board game.
  * @param gameBoard - a given game board of the current game
@@ -75,7 +88,7 @@ void findKing(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color,int *k
  *
  * NULL - if there was memory allocation failure
  */
-CHMovesList *createMoveList(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],char c,int row,int col,int color);
+CHMovesList *createMoveList(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, int row, int col, int color);
 
 /**
  * Frees all memory allocation of the move list.

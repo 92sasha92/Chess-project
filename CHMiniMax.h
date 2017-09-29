@@ -1,3 +1,7 @@
+//
+// Created by Guy Druker on 09/09/2017.
+//
+
 #ifndef CHESS_PROJECT_CHMINIMAX_H
 #define CHESS_PROJECT_CHMINIMAX_H
 
@@ -28,11 +32,10 @@ typedef struct Move {
 /** return the the score of that specific piece.
  * @param piece - a specific piece name
  * @param maximizer - the player hwo call the function.
- * @param src - the game struct.
  * @return
  * the piece score in accordance to the maximizer.
  */
-int get_piece_score(char piece, CHGame* src, int maximizer);
+int get_piece_score(char piece, int maximizer);
 
 /** return the the score of the board.
  * @param maximizer - the player hwo call the function.
@@ -62,7 +65,7 @@ CHMoveNode* set_cur_best_move(char peice, CHMoveNode* best_move, int i, int j, C
  * @return
  * the optimal score for this sub tree in respect to the minimum or maximum level.
  */
-BestMove rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer);
+BestMove rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer, bool isGuiMode);
 
 /** compute the best option to move.
  * @param src - the game struct.
@@ -72,9 +75,8 @@ BestMove rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer);
  * @return
  * struct of the the optimal piece to move and where to move it. (the data will set in the best_move struct)
  */
-CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* best_move );
+CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* best_move, bool isGuiMode );
 
-BestMove pawn_promotion_rec_alphabeta(CHGame* src, int depth , int a, int b, int maximizer , int toRow, int toCol);
+BestMove pawn_promotion_rec_alphabeta(CHGame* src, int depth , int a, int b, int maximizer , int toRow, int toCol, bool isGuiMode);
 
 #endif //CHESS_PROJECT_CHMINIMAX_H
-

@@ -1,12 +1,20 @@
+/*
+ * CHParser.h
+ *
+ *  Created on: Aug 29, 2017
+ *      Author: sasha
+ */
+
 #ifndef CHPARSER_H_
 #define CHPARSER_H_
 
+//specify the maximum line length
 #define MAX_LINE_LENGTH 1024
-
 #include "SEParser.h"
 
+
 //a type used to represent a command
-typedef enum ch{
+typedef enum ch {
 	CH_MOVE,
 	CH_GET_MOVES,
 	CH_SAVE,
@@ -15,6 +23,7 @@ typedef enum ch{
 	CH_QUIT,
 	CH_INVALID_LINE
 } CH_COMMAND;
+
 
 //a new type that is used to encapsulate a parsed line
 typedef struct command_ch {

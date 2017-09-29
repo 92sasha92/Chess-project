@@ -1,36 +1,44 @@
+/*
+ * CHGame.h
+ *
+ *  Created on: Aug 25, 2017
+ *      Author: sasha
+ */
+
 #ifndef CHGAME_H_
 #define CHGAME_H_
 
 #include "SPArrayList.h"
 #include "CHMoves.h"
+#include "Widget.h"
 
 typedef struct ch_nodeForSort{
-  int row;
-  int col;
+	int row;
+	int col;
 }CHNodeForSort;
 
 typedef struct ch_fiar_game_t {
-  char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS];
-  int gameMode;
-  int userColor;
-  int difficulty;
-  int currentTurn;
-  SPArrayList *list;
+	char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS];
+	int gameMode;
+	int userColor;
+	int difficulty;
+	int currentTurn;
+	SPArrayList *list;
 } CHGame;
 
 typedef enum ch_fiar_game_message_t {
-  CH_GAME_INVALID_MOVE,
-  CH_GAME_INVALID_ARGUMENT,
-  CH_GAME_INVALID_COLOR,
-  CH_GAME_NO_MOVES,
-  CH_GAME_MEMORY_PROBLEM,
-  CH_GAME_SUCCESS,
-  CH_GAME_FILE_PROBLEM,
-  CH_GAME_BLACK_WINS,
-  CH_GAME_WHITE_WINS,
-  CH_GAME_TIE,
-  CH_GAME_NO_WIN_OR_TIE,
-  CH_GAME_NO_HISTORY
+	CH_GAME_INVALID_MOVE,
+	CH_GAME_INVALID_ARGUMENT,
+	CH_GAME_INVALID_COLOR,
+	CH_GAME_NO_MOVES,
+	CH_GAME_MEMORY_PROBLEM,
+	CH_GAME_SUCCESS,
+	CH_GAME_FILE_PROBLEM,
+  	CH_GAME_BLACK_WINS,
+  	CH_GAME_WHITE_WINS,
+  	CH_GAME_TIE,
+  	CH_GAME_NO_WIN_OR_TIE,
+  	CH_GAME_NO_HISTORY
 } CH_GAME_MESSAGE;
 
 /** Prints the board of the current game.
@@ -90,7 +98,7 @@ void chGameDestroy(CHGame* src);
  * CH_GAME_NO_MOVES - if there isn't any moves for this piece
  * CH_GAME_SUCCESS - otherwise
  */
-CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol);
+CH_GAME_MESSAGE chGameGetMoves(CHGame* src, int fRow,int fCol,Widget *widget, bool isGuiMode);
 
 /**
  * Sets the next move in a given game by specifying the position of the piece and where to move it.
@@ -106,7 +114,7 @@ CH_GAME_MESSAGE chGameShowMoves(CHGame* src, int fRow,int fCol);
  * CH_GAME_INVALID_MOVE - If the move is illegal for the piece in the position <x,y>.
  * CH_GAME_SUCCESS - otherwise
  */
-CH_GAME_MESSAGE chGameSetMove(CHGame* src,  char peice,int fRow,int fCol,int toRow,int toCol, bool is_alphaBeta_func);
+CH_GAME_MESSAGE chGameSetMove(CHGame* src,  char peice,int fRow,int fCol,int toRow,int toCol, bool is_alphaBeta_func, bool isGuiMode);
 
 
 /**
@@ -133,7 +141,7 @@ CH_GAME_MESSAGE chIsCheckmateOrTie(CHGame* src);
  * CH_GAME_INVALID_ARGUMENT - if src is NULL.
  * CH_GAME_SUCCESS - otherwise.
  */
-CH_GAME_MESSAGE isCheck(CHGame* src,int is_computer);
+CH_GAME_MESSAGE isCheck(CHGame* src,int is_computer, bool isGuiMode);
 
 
 /**
@@ -164,5 +172,3 @@ CHGame* chGameCopy(CHGame* src);
 CH_GAME_MESSAGE chGameUndoPrevMove(CHGame* src);
 
 #endif /* CHGAME_H_ */
-
-

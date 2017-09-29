@@ -1,28 +1,36 @@
+/*
+ * CHMiniMax.c
+ *
+ *  Created on: Sep 12, 2017
+ *      Author: sasha
+ */
+
+
 #include "CHMiniMax.h"
 
-int get_piece_score(char piece, CHGame* src, int maximizer){
+int get_piece_score(char piece, int maximizer){
     int piece_score = 0;
-    switch (piece) {
-        case CH_BLACK_PAWN:
-        case CH_WHITE_PAWN:piece_score = PAWN_SCORE;
-            break;
-        case CH_BLACK_ROOK:
-        case CH_WHITE_ROOK:piece_score = ROOK_SCORE;
-            break;
-        case CH_BLACK_KNIGHT:
-        case CH_WHITE_KNIGHT:piece_score = KNIGHT_SCORE;
-            break;
-        case CH_BLACK_BISHOP:
-        case CH_WHITE_BISHOP:piece_score = BISHOP_SCORE;
-            break;
-        case CH_BLACK_KING:
-        case CH_WHITE_KING:piece_score = KING_SCORE;
-            break;
-        case CH_BLACK_QUEEN:
-        case CH_WHITE_QUEEN:piece_score = QUEEN_SCORE;
-            break;
-        default:
-            return 0;
+            switch (piece) {
+                case CH_BLACK_PAWN:
+                case CH_WHITE_PAWN:piece_score = PAWN_SCORE;
+                    break;
+                case CH_BLACK_ROOK:
+                case CH_WHITE_ROOK:piece_score = ROOK_SCORE;
+                    break;
+                case CH_BLACK_KNIGHT:
+                case CH_WHITE_KNIGHT:piece_score = KNIGHT_SCORE;
+                    break;
+                case CH_BLACK_BISHOP:
+                case CH_WHITE_BISHOP:piece_score = BISHOP_SCORE;
+                    break;
+                case CH_BLACK_KING:
+                case CH_WHITE_KING:piece_score = KING_SCORE;
+                    break;
+                case CH_BLACK_QUEEN:
+                case CH_WHITE_QUEEN:piece_score = QUEEN_SCORE;
+                    break;
+                default:
+                    return 0;
     }
     if ((isABlackPiece(piece) && (maximizer == 0)) || (isAWhitePiece(piece) && (maximizer == 1))) {
         return piece_score;
@@ -46,7 +54,7 @@ int get_board_score(int maximizer, CHGame* src){
 
     for (int i = 0; i < CH_GAME_N_ROWS; i++) {
         for (int j = 0; j < CH_GAME_N_COLUMNS; j++) {
-            total_score += get_piece_score(src->gameBoard[i][j], src, maximizer);
+            total_score += get_piece_score(src->gameBoard[i][j], maximizer);
         }
     }
     return total_score;
@@ -61,7 +69,7 @@ CHMoveNode* set_cur_best_move(char peice, CHMoveNode* best_move, int i, int j, C
     return best_move;
 }
 
-BestMove rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer){
+BestMove rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer, bool isGuiMode){
     BestMove score, new_score, error_move;
     error_move.best_depth = CH_ERROR_MOVE_DEPTH;
     if(src == NULL){
@@ -90,15 +98,15 @@ BestMove rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer){
 
                 if ((node->isValid)){
                     while (node != NULL){
-                        mes = chGameSetMove(src, src->gameBoard[i][j], i, j, node->row, node->col, true);
+                        mes = chGameSetMove(src, src->gameBoard[i][j], i, j, node->row, node->col, true, isGuiMode);
                         if (mes == CH_GAME_SUCCESS){
                             if (((src->gameBoard[node->row][node->col] == CH_BLACK_PAWN) && (node->row == 0)) || ((src->gameBoard[node->row][node->col] == CH_WHITE_PAWN) && (node->row == 7))) {
-                                new_score = pawn_promotion_rec_alphabeta(src, depth , a, b, maximizer , node->row, node->col);
+                                new_score = pawn_promotion_rec_alphabeta(src, depth , a, b, maximizer , node->row, node->col, isGuiMode);
                                 src->gameBoard[node->row][node->col] = new_score.peice;
                                 src->currentTurn = !(src->currentTurn);
                             } else {
                                 src->currentTurn = !(src->currentTurn);
-                                new_score = rec_alphabeta(src, depth - 1, a, b, maximizer);
+                                new_score = rec_alphabeta(src, depth - 1, a, b, maximizer, isGuiMode);
                             }
 
                             if (new_score.best_depth == CH_ERROR_MOVE_DEPTH){
@@ -137,16 +145,16 @@ BestMove rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer){
 
                 if ((node->isValid)){
                     while (node != NULL){
-                        mes = chGameSetMove(src, src->gameBoard[i][j], i, j, node->row,node->col, true);
+                        mes = chGameSetMove(src, src->gameBoard[i][j], i, j, node->row,node->col, true, isGuiMode);
                         if (mes == CH_GAME_SUCCESS){
 
                             if (((src->gameBoard[node->row][node->col] == CH_BLACK_PAWN) && (node->row == 0)) || ((src->gameBoard[node->row][node->col] == CH_WHITE_PAWN) && (node->row == 7))) {
-                                new_score = pawn_promotion_rec_alphabeta(src, depth , a, b, maximizer , node->row, node->col);
+                                new_score = pawn_promotion_rec_alphabeta(src, depth , a, b, maximizer , node->row, node->col,isGuiMode);
                                 src->gameBoard[node->row][node->col] = new_score.peice;
                                 src->currentTurn = !(src->currentTurn);
                             } else {
                                 src->currentTurn = !(src->currentTurn);
-                                new_score = rec_alphabeta(src, depth - 1, a, b, maximizer);
+                                new_score = rec_alphabeta(src, depth - 1, a, b, maximizer, isGuiMode);
                             }
 
                             if (new_score.best_depth == CH_ERROR_MOVE_DEPTH){
@@ -175,27 +183,27 @@ BestMove rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer){
     return score;
 }
 
-void setMaxPawnPromotion(char peice, BestMove *best_move, CHGame* src, int depth , int a, int b, int maximizer , int toRow, int toCol){
+void setMaxPawnPromotion(char peice, BestMove *best_move, CHGame* src, int depth , int a, int b, int maximizer , int toRow, int toCol, bool isGuiMode){
     BestMove cur_move;
     src->gameBoard[toRow][toCol] = peice;
-    cur_move = rec_alphabeta(src, depth - 1, a, b, maximizer);
+    cur_move = rec_alphabeta(src, depth - 1, a, b, maximizer, isGuiMode);
     if (cur_move.best_score > best_move->best_score) {
         best_move->best_score = cur_move.best_score;
         best_move->peice = peice;
     }
 }
 
-void setMinPawnPromotion(char peice, BestMove *best_move, CHGame* src, int depth , int a, int b, int maximizer , int toRow, int toCol){
+void setMinPawnPromotion(char peice, BestMove *best_move, CHGame* src, int depth , int a, int b, int maximizer , int toRow, int toCol, bool isGuiMode){
     BestMove cur_move;
     src->gameBoard[toRow][toCol] = peice;
-    cur_move = rec_alphabeta(src, depth - 1, a, b, maximizer);
+    cur_move = rec_alphabeta(src, depth - 1, a, b, maximizer, isGuiMode);
     if (cur_move.best_score < best_move->best_score) {
         best_move->best_score = cur_move.best_score;
         best_move->peice = peice;
     }
 }
 
-BestMove pawn_promotion_rec_alphabeta(CHGame* src, int depth , int a, int b, int maximizer , int toRow, int toCol) {
+BestMove pawn_promotion_rec_alphabeta(CHGame* src, int depth , int a, int b, int maximizer , int toRow, int toCol, bool isGuiMode) {
     BestMove best_move;
     best_move.peice = '\0';
     if (src->currentTurn == maximizer) {
@@ -203,46 +211,46 @@ BestMove pawn_promotion_rec_alphabeta(CHGame* src, int depth , int a, int b, int
         if (src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL) {
             src->currentTurn = !(src->currentTurn);
 
-            setMaxPawnPromotion(CH_WHITE_QUEEN, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
-            setMaxPawnPromotion(CH_WHITE_ROOK, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
-            setMaxPawnPromotion(CH_WHITE_BISHOP, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
-            setMaxPawnPromotion(CH_WHITE_KNIGHT, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
-            setMaxPawnPromotion(CH_WHITE_PAWN, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
+            setMaxPawnPromotion(CH_WHITE_QUEEN, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
+            setMaxPawnPromotion(CH_WHITE_ROOK, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
+            setMaxPawnPromotion(CH_WHITE_BISHOP, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
+            setMaxPawnPromotion(CH_WHITE_KNIGHT, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
+            setMaxPawnPromotion(CH_WHITE_PAWN, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
 
         } else {
             src->currentTurn = !(src->currentTurn);
 
-            setMaxPawnPromotion(CH_BLACK_QUEEN, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
-            setMaxPawnPromotion(CH_BLACK_ROOK, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
-            setMaxPawnPromotion(CH_BLACK_BISHOP, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
-            setMaxPawnPromotion(CH_BLACK_KNIGHT, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
-            setMaxPawnPromotion(CH_BLACK_PAWN, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
+            setMaxPawnPromotion(CH_BLACK_QUEEN, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
+            setMaxPawnPromotion(CH_BLACK_ROOK, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
+            setMaxPawnPromotion(CH_BLACK_BISHOP, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
+            setMaxPawnPromotion(CH_BLACK_KNIGHT, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
+            setMaxPawnPromotion(CH_BLACK_PAWN, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
         }
     } else {
         best_move.best_score = INT32_MAX;
         if (src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL) {
             src->currentTurn = !(src->currentTurn);
 
-            setMinPawnPromotion(CH_WHITE_QUEEN, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
-            setMinPawnPromotion(CH_WHITE_ROOK, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
-            setMinPawnPromotion(CH_WHITE_BISHOP, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
-            setMinPawnPromotion(CH_WHITE_KNIGHT, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
-            setMinPawnPromotion(CH_WHITE_PAWN, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
+            setMinPawnPromotion(CH_WHITE_QUEEN, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
+            setMinPawnPromotion(CH_WHITE_ROOK, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
+            setMinPawnPromotion(CH_WHITE_BISHOP, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
+            setMinPawnPromotion(CH_WHITE_KNIGHT, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
+            setMinPawnPromotion(CH_WHITE_PAWN, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
 
         } else {
             src->currentTurn = !(src->currentTurn);
 
-            setMinPawnPromotion(CH_BLACK_QUEEN, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
-            setMinPawnPromotion(CH_BLACK_ROOK, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
-            setMinPawnPromotion(CH_BLACK_BISHOP, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
-            setMinPawnPromotion(CH_BLACK_KNIGHT, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
-            setMinPawnPromotion(CH_BLACK_PAWN, &best_move, src,depth ,a, b, maximizer, toRow, toCol);
+            setMinPawnPromotion(CH_BLACK_QUEEN, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
+            setMinPawnPromotion(CH_BLACK_ROOK, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
+            setMinPawnPromotion(CH_BLACK_BISHOP, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
+            setMinPawnPromotion(CH_BLACK_KNIGHT, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
+            setMinPawnPromotion(CH_BLACK_PAWN, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
         }
     }
     return best_move;
 }
 
-CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* best_move ){
+CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* best_move, bool isGuiMode){
     if(src == NULL){
         return CH_GAME_INVALID_ARGUMENT;
     }
@@ -275,16 +283,16 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
 
             if ((cur_piece_moves_list->isValid)){
                 while (node != NULL) {
-                    mes = chGameSetMove(src, src->gameBoard[i][j], i, j, node->row,node->col, true);
+                    mes = chGameSetMove(src, src->gameBoard[i][j], i, j, node->row,node->col, true, isGuiMode);
                     if (mes == CH_GAME_SUCCESS){
 
                         if (((src->gameBoard[node->row][node->col] == CH_BLACK_PAWN) && (node->row == 0)) || ((src->gameBoard[node->row][node->col] == CH_WHITE_PAWN) && (node->row == 7))) {
-                            new_score = pawn_promotion_rec_alphabeta(src, depth , a, b, maximizer , node->row, node->col);
+                            new_score = pawn_promotion_rec_alphabeta(src, depth , a, b, maximizer , node->row, node->col, isGuiMode);
                             src->gameBoard[node->row][node->col] = new_score.peice;
                             src->currentTurn = !(src->currentTurn);
                         } else {
                             src->currentTurn = !(src->currentTurn);
-                            new_score = rec_alphabeta(src, depth - 1, a, b, maximizer);
+                            new_score = rec_alphabeta(src, depth - 1, a, b, maximizer, isGuiMode);
                             new_score.peice = src->gameBoard[node->row][node->col];
                         }
 
@@ -312,6 +320,6 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
             destroyMoveList(cur_piece_moves_list);
         }
     }
+    chGameDestroy(src);
     return CH_GAME_SUCCESS;
 }
-

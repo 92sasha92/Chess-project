@@ -10,13 +10,19 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <SDL.h>
+#include <SDL_video.h>
 #include "CHGame.h"
 #include "SEParser.h"
 #include "SPBufferset.h"
-
-
-
+#include "CHStartWindow.h"
+#include "CHModeWindow.h"
+#include "SPSimpleMainWindow.h"
+#include "SimpleButton.h"
+#include "CHDifficultyWindow.h"
+#include "CHColorWindow.h"
+#include "CHLoadWindow.h"
 #define MAX_LINE_SIZE 1024
-CHGame* startSettingsMode();
+CHGame* startSettingsMode(bool isGuiMode);
 
 #endif /* SEMODE_H_ */
