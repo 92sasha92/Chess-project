@@ -54,7 +54,7 @@ int get_board_score(int maximizer, CHGame* src);
  * @return
  * updated best_move struct.
  */
-CHMoveNode* set_cur_best_move(char peice, CHMoveNode* best_move, int i, int j, CHMovesList* cur_piece_moves_list);
+CHMoveNode* set_cur_best_move(char piece, CHMoveNode* best_move, int i, int j, CHMovesList* cur_piece_moves_list);
 
 /** recursive function to compute the best option to move, use from depth 2.
  * @param src - the game struct.
