@@ -488,7 +488,8 @@ void handleMainEvents(CHGame** game, SPWindow** window, SDL_Event *event,
 
 void computerTurn(CHGame* game, SPWindow* window, CHMoveNode *best_move,
 		bool *isSaved, bool *isTurnChanged, bool isGuiMode) {
-	GameBoard* castData;
+	bool is_pawn_promotion = false;
+    GameBoard* castData;
 	BoardCell* cellData;
 	BoardCell* prevCellData;
 	SPSimpleWindow * simpleWindow;
@@ -503,6 +504,9 @@ void computerTurn(CHGame* game, SPWindow* window, CHMoveNode *best_move,
 		}
 		exit(0);
 	}
+    if (best_move->current_piece != game->gameBoard[best_move->from_row][best_move->from_col]) {
+        is_pawn_promotion = true;
+    }
 	chGameSetMove(game,
 			best_move->current_piece,
 			best_move->from_row, best_move->from_col, best_move->to_row,
@@ -529,10 +533,17 @@ void computerTurn(CHGame* game, SPWindow* window, CHMoveNode *best_move,
 		*isSaved = false;
 		window->drawWindow(window);
 	}
-	printf("Computer: move %s at <%d,%c> to <%d,%c>\n",
-			getPieceName(best_move->current_piece), best_move->from_row + 1,
-			best_move->from_col + 65, best_move->to_row + 1,
-			best_move->to_col + 65);
+    if (is_pawn_promotion) {
+        printf("Computer: move pawn <%d,%c> to <%d,%c> and promote to %s\n",
+               best_move->from_row + 1, best_move->from_col + 65,
+               best_move->to_row + 1, best_move->to_col + 65,
+               getPieceName(best_move->current_piece));
+    } else {
+        printf("Computer: move %s at <%d,%c> to <%d,%c>\n",
+               getPieceName(best_move->current_piece), best_move->from_row + 1,
+               best_move->from_col + 65, best_move->to_row + 1,
+               best_move->to_col + 65);
+    }
 	*isTurnChanged = true;
 	if (end_of_move(game, best_move, isTurnChanged, isGuiMode) == -1) {
 		if (isGuiMode) {

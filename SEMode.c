@@ -280,6 +280,9 @@ CHGame* startSettingsMode(bool isGuiMode){
 			}
 			else if(command.cmd == SE_QUIT){
 				printf("Exiting...\n");
+				if(isLoaded){
+					chGameDestroy(src);
+				}
 				return NULL;
 			}
 			else if(command.cmd == SE_START){
