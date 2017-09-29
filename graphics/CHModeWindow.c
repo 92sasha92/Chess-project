@@ -35,10 +35,10 @@ Widget** createSimpleModeWindowWidgets(SDL_Renderer* renderer) {
 	SDL_Rect nextR = { .x = 454, .y = 400, .h = 80, .w = 296 };
 	SDL_Rect onePlayerR = { .x = 252, .y = 160, .h = 80, .w = 296 };
 	SDL_Rect twoPlayersR = { .x = 252, .y = 240, .h = 80, .w = 296 };
-	widgets[0] = createSimpleButton(renderer, &backR, "./images/backBtn.bmp",NULL,CH_BTN_BACK,0,BTN_ACTIVE);
-	widgets[1] = createSimpleButton(renderer, &nextR, "./images/nextBtn.bmp","./images/startBtn.bmp",CH_BTN_NEXT,0,BTN_ACTIVE);
-	widgets[2] = createSimpleButton(renderer, &onePlayerR, "./images/onePlayerBtn.bmp",NULL,CH_BTN_ONE_PLAYER,1,BTN_ACTIVE);
-	widgets[3] = createSimpleButton(renderer, &twoPlayersR, "./images/twoPlayersBtn.bmp",NULL,CH_BTN_TWO_PLAYERS,0,BTN_ACTIVE);
+	widgets[0] = createSimpleButton(renderer, &backR, "./graphics/images/backBtn.bmp",NULL,CH_BTN_BACK,0,BTN_ACTIVE);
+	widgets[1] = createSimpleButton(renderer, &nextR, "./graphics/images/nextBtn.bmp","./graphics/images/startBtn.bmp",CH_BTN_NEXT,0,BTN_ACTIVE);
+	widgets[2] = createSimpleButton(renderer, &onePlayerR, "./graphics/images/onePlayerBtn.bmp",NULL,CH_BTN_ONE_PLAYER,1,BTN_ACTIVE);
+	widgets[3] = createSimpleButton(renderer, &twoPlayersR, "./graphics/images/twoPlayersBtn.bmp",NULL,CH_BTN_TWO_PLAYERS,0,BTN_ACTIVE);
 	if (widgets[0] == NULL || widgets[1] == NULL || widgets[2] == NULL || widgets[3] == NULL) {
 		destroyWidget(widgets[0]); //NULL SAFE
 		destroyWidget(widgets[1]); //NULL SAFE
@@ -59,7 +59,7 @@ SPWindow* createSimpleModeWindow() {
 			SDL_WINDOWPOS_CENTERED, 800, 500, SDL_WINDOW_OPENGL);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,
 			SDL_RENDERER_ACCELERATED);
-	SDL_Surface* loadingSurface = SDL_LoadBMP("./images/modeB.bmp");
+	SDL_Surface* loadingSurface = SDL_LoadBMP("./graphics/images/modeB.bmp");
 	SDL_Texture* windowTexture = SDL_CreateTextureFromSurface(renderer,loadingSurface);
 	Widget** widgets = createSimpleModeWindowWidgets(renderer);
 	if (res == NULL || data == NULL || window == NULL || renderer == NULL

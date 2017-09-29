@@ -44,8 +44,7 @@ CH_GAME_MESSAGE load(char *path, CHGame *src, int *currentTurn, int *gameMode, i
 	char buf[20];
 	FILE *fp = fopen(path,"r");
 	if (fp == NULL) {
-//		printf("Error: File doesn't exist or cannot be opened\n");
-		printf("Error: File doesn’t exist or cannot be opened\n");
+		printf("Error: File doesn't exist or cannot be opened\n");
 		return CH_GAME_FILE_PROBLEM;
 	}
 	fscanf(fp, "%*[^\n]");
@@ -135,15 +134,15 @@ CH_GAME_MESSAGE chGameSave(CHGame* src,char *path) {
 char *slotPath(int slotNum) {
 	switch(slotNum){
 	case 1:
-		return "./gameSlot1.txt";
+		return "./savedGames/gameSlot1.xml";
 	case 2:
-		return "./gameSlot2.txt";
+		return "./savedGames/gameSlot2.xml";
 	case 3:
-		return "./gameSlot3.txt";
+		return "./savedGames/gameSlot3.xml";
 	case 4:
-		return "./gameSlot4.txt";
+		return "./savedGames/gameSlot4.xml";
 	case 5:
-		return "./gameSlot5.txt";
+		return "./savedGames/gameSlot5.xml";
 	}
 	return "";
 }
@@ -161,7 +160,7 @@ CH_GAME_MESSAGE chGuiSave(CHGame* src) {
 	if(src == NULL)
 		return CH_GAME_INVALID_ARGUMENT;
 	CHGame* tmp = NULL;
-	fp = fopen("./readMeForLoad.txt","r");
+	fp = fopen("./savedGames/readMeForLoad.txt","r");
 	if (!fp)
 		return CH_GAME_FILE_PROBLEM;
 	if (fscanf(fp,"%d",&numOfSaves) != 1) {
@@ -190,9 +189,10 @@ CH_GAME_MESSAGE chGuiSave(CHGame* src) {
 		chGameDestroy(tmp);
 	}
 	chGameSave(src,slotPath(i));
-	fp = fopen("./readMeForLoad.txt","w");
-	if (!fp)
+	fp = fopen("./savedGames/readMeForLoad.txt","w");
+	if (!fp){
 		return CH_GAME_FILE_PROBLEM;
+	}
 	fprintf(fp,"%d",numOfSaves);
 	fclose(fp);
 	return CH_GAME_SUCCESS;
@@ -210,19 +210,19 @@ CH_GAME_MESSAGE chGuiLoad(CHGame* src,int slot){
 	int userColor = 1;
 	switch (slot) {
 	case 1:
-		erCheck = load("./gameSlot1.txt",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
+		erCheck = load("./savedGames/gameSlot1.xml",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
 		break;
 	case 2:
-		erCheck = load("./gameSlot2.txt",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
+		erCheck = load("./savedGames/gameSlot2.xml",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
 		break;
 	case 3:
-		erCheck = load("./gameSlot3.txt",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
+		erCheck = load("./savedGames/gameSlot3.xml",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
 		break;
 	case 4:
-		erCheck = load("./gameSlot4.txt",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
+		erCheck = load("./savedGames/gameSlot4.xml",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
 		break;
 	case 5:
-		erCheck = load("./gameSlot5.txt",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
+		erCheck = load("./savedGames/gameSlot5.xml",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
 		break;
 	}
 	if(erCheck == -1){
