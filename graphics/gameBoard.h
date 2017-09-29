@@ -2,7 +2,7 @@
 #define GAMEBOARD_H_
 #include "Widget.h"
 #include "BoardCell.h"
-#include "CHGame.h"
+#include "../CHGame.h"
 #define startY 60
 #define startX 390
 

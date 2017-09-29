@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include "CHPiece.h"
 #include "SPCommon.h"
-#include "CHMoves.h"
+#include "../CHMoves.h"
 
 void drawCHPieceDrag(Widget* src){
 	if (src == NULL ) {
@@ -22,6 +22,7 @@ void drawCHPieceDrag(Widget* src){
 SDL_Texture* createTexturePiece(SDL_Renderer* windowRender,const char* image){
 	SDL_Surface* loadingSurface = SDL_LoadBMP(image); //We use the surface as a temp var;
 	if(loadingSurface == NULL){
+		printf("Error: Could not create a surface: %s\n", SDL_GetError());
 		return NULL;
 	}
 	SDL_Texture* gameBoardTexture = SDL_CreateTextureFromSurface(windowRender,loadingSurface);
@@ -38,36 +39,35 @@ Widget* createCHPiece(SDL_Renderer* windowRender, SDL_Rect* location,char c){
 	CHPiece* data = (CHPiece*) malloc(sizeof(CHPiece));
 	SDL_Texture* gameBoardTexture;
 	if (c == CH_WHITE_PAWN) {
-		gameBoardTexture = createTexturePiece(windowRender,"./images/pawnWhite.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./graphics/images/pawnWhite.bmp");
 	} else if (c == CH_BLACK_PAWN) {
-		gameBoardTexture = createTexturePiece(windowRender,"./images/pawnBlack.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./graphics/images/pawnBlack.bmp");
 	} else if (c == CH_WHITE_ROOK) {
-		gameBoardTexture = createTexturePiece(windowRender,"./images/rookWhite.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./graphics/images/rookWhite.bmp");
 	} else if (c == CH_BLACK_ROOK) {
-		gameBoardTexture = createTexturePiece(windowRender,"./images/rookBlack.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./graphics/images/rookBlack.bmp");
 	} else if (c == CH_WHITE_KNIGHT) {
-		gameBoardTexture = createTexturePiece(windowRender,"./images/knightWhite.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./graphics/images/knightWhite.bmp");
 	} else if (c == CH_BLACK_KNIGHT) {
-		gameBoardTexture = createTexturePiece(windowRender,"./images/knightBlack.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./graphics/images/knightBlack.bmp");
 	} else if (c == CH_WHITE_BISHOP) {
-		gameBoardTexture = createTexturePiece(windowRender,"./images/bishopWhite.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./graphics/images/bishopWhite.bmp");
 	} else if (c == CH_BLACK_BISHOP) {
-		gameBoardTexture = createTexturePiece(windowRender,"./images/bishopBlack.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./graphics/images/bishopBlack.bmp");
 	} else if (c == CH_WHITE_QUEEN) {
-		gameBoardTexture = createTexturePiece(windowRender,"./images/queenWhite.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./graphics/images/queenWhite.bmp");
 	} else if (c == CH_BLACK_QUEEN) {
-		gameBoardTexture = createTexturePiece(windowRender,"./images/queenBlack.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./graphics/images/queenBlack.bmp");
 	} else if (c == CH_WHITE_KING) {
-		gameBoardTexture = createTexturePiece(windowRender,"./images/kingWhite.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./graphics/images/kingWhite.bmp");
 	} else if (c == CH_BLACK_KING) {
-		gameBoardTexture = createTexturePiece(windowRender,"./images/kingBlack.bmp");
+		gameBoardTexture = createTexturePiece(windowRender,"./graphics/images/kingBlack.bmp");
 	}
 
 	if (res == NULL || data == NULL || gameBoardTexture == NULL) {
 		free(res);
 		free(data);
 		SDL_DestroyTexture(gameBoardTexture); ////It is safe to pass NULL
-		printf("4/n");
 		return NULL ;
 	}
 	data->Texture = gameBoardTexture;
@@ -82,7 +82,6 @@ Widget* createCHPiece(SDL_Renderer* windowRender, SDL_Rect* location,char c){
 
 }
 
-//You need this function in order to destroy all data Associate with a button:
 void destroyCHPiece(Widget* src){
 	if (src == NULL ) {
 		return;
@@ -117,8 +116,6 @@ void handleCHPieceEvent(Widget* src, SDL_Event* event){
 			castData->isDragged = 1;
 			castData->deltaX = point.x - castData->location->x;
 			castData->deltaY = point.y - castData->location->y;
-				//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Title",
-						//"We did it", NULL );
 		}
 	} else if(event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT) {
 		SDL_Point point;
@@ -126,8 +123,6 @@ void handleCHPieceEvent(Widget* src, SDL_Event* event){
 		point.y = event->button.y;
 		if (SDL_PointInRect(&point, castData->location)) {
 			castData->isDragged = 0;
-				//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Title",
-						//"We did it", NULL );
 		}
 	}
 	else{
