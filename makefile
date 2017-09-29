@@ -6,6 +6,7 @@ COMP_FLAG = -std=c99 -Wall -Wextra \
 SDL_COMP_FLAG = -I/usr/local/lib/sdl_2.0.5/include/SDL2 -D_REENTRANT
 SDL_LIB = -L/usr/local/Homebrew/Library -Wl,-rpath,/usr/local/Homebrew/Library -Wl, -lSDL2 -lSDL2main
 
+all:	$(EXEC)
 $(EXEC): $(OBJS)
 	$(CC) $(OBJS) $(SDL_LIB) -o $@
 SPArrayList.o: SPArrayList.h SPArrayList.c
@@ -34,9 +35,7 @@ CHPiece.o: CHPiece.c CHPiece.h SPCommon.h CHMoves.h Widget.h
 	$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c $*.c
 CHStartWindow.o: CHStartWindow.c CHStartWindow.h SPSimpleMainWindow.h SimpleButton.h
 	$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c $*.c
-SEParser.o: SEParser.c SEParser.h
-	$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c $*.c
-CHParser.o: CHParser.c CHParser.h
+SEParser.o: SEParser.c SEParser.h 
 	$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c $*.c
 SPCommon.o: SPCommon.c SPCommon.h 
 	$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c $*.c
