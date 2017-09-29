@@ -33,7 +33,7 @@
 #define EVENT_SET_SLOT_5 25
 #define EVENT_SAVE 26
 
-typedef enum _btnType{
+typedef enum _btnType {
 	CH_BTN_EXIT,
 	CH_BTN_NEW_GAME,
 	CH_BTN_LOAD,
@@ -57,14 +57,14 @@ typedef enum _btnType{
 	CH_BTN_GAME_SLOT3,
 	CH_BTN_GAME_SLOT4,
 	CH_BTN_GAME_SLOT5
-}BtnType;
+} BtnType;
 
 
 
 
 
 
-typedef struct simplebutton_t{
+typedef struct simplebutton_t {
 	SDL_Texture* buttonTexture;
 	int isSecondTextureValid;
 	SDL_Texture* secondTexture;
@@ -74,14 +74,14 @@ typedef struct simplebutton_t{
 	BtnType type;
 	int isPressed;
 	int isActive;
-}SimpleButton;
+} SimpleButton;
 
 
 
-void updateTextureBtn(Widget* src,int active);
+void updateTextureBtn(Widget* src, int active);
 //You need a create function:
 Widget* createSimpleButton(SDL_Renderer* windowRender, SDL_Rect* location,
-		const char* image,const char* image2,BtnType type,int isPressed,int isActive);
+		const char* image, const char* image2, BtnType type, int isPressed, int isActive);
 
 //You need this function in order to destroy all data Associate with a button:
 void destroySimpleButton(Widget*);

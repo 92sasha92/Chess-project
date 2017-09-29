@@ -56,11 +56,11 @@ Widget* createBoardCell(SDL_Renderer* windowRender, SDL_Rect* location,
 	SDL_FreeSurface(glowRedSurface);
 	SDL_FreeSurface(glowGreenSurface);
 
-	if(c == '_'){
+	if (c == '_') {
 		data->piece = NULL;
-	}else{
+	} else {
 		data->piece = createCHPiece(windowRender,location,c);
-        if(data->piece == NULL){
+        if (data->piece == NULL) {
     		free(res);
     		free(data);
     		SDL_DestroyTexture(gameBoardTexture);
@@ -86,9 +86,10 @@ Widget* createBoardCell(SDL_Renderer* windowRender, SDL_Rect* location,
 	res->handleEvent = handleBoardCellEvent;
 	res->data = data;
 	return res;
-
 }
-void drawGlowCell(Widget* src){
+
+
+void drawGlowCell(Widget* src) {
 	if (src == NULL ) {
 		return;
 	}
@@ -97,13 +98,15 @@ void drawGlowCell(Widget* src){
 			castData->location);
 	SDL_RenderPresent(castData->windowRenderer);
 }
+
+
 //You need this function in order to destroy all data Associate with a button:
-void destroyBoardCell(Widget* src){
+void destroyBoardCell(Widget* src) {
 	if (src == NULL ) {
 		return;
 	}
 	BoardCell* castData = (BoardCell*) src->data;
-	if(castData->piece != NULL){
+	if (castData->piece != NULL) {
 		castData->piece->destroyWidget(castData->piece);
 	}
 	free(castData->location);
@@ -116,7 +119,8 @@ void destroyBoardCell(Widget* src){
 	free(src);
 }
 
-void handleBoardCellEvent(Widget* src, SDL_Event* event){
+
+void handleBoardCellEvent(Widget* src, SDL_Event* event) {
 	static int isDragged = 0;
 	if (src == NULL || event == NULL ) {
 		return; //Better to return an error value
@@ -133,7 +137,7 @@ void handleBoardCellEvent(Widget* src, SDL_Event* event){
 //				//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Title",
 //						//"We did it", NULL );
 //		}
-	} else if(event->type == SDL_MOUSEBUTTONDOWN && event->button.button == SDL_BUTTON_RIGHT) {
+	} else if (event->type == SDL_MOUSEBUTTONDOWN && event->button.button == SDL_BUTTON_RIGHT) {
 		SDL_Point point;
 		point.x = event->button.x;
 		point.y = event->button.y;
@@ -145,7 +149,7 @@ void handleBoardCellEvent(Widget* src, SDL_Event* event){
 			user_event.user.code = EVENT_GET_MOVES;
 			SDL_PushEvent(&user_event);
 		}
-	} else if(event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT && isDragged) {
+	} else if (event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT && isDragged) {
 		SDL_Point point;
 		point.x = event->button.x;
 		point.y = event->button.y;
@@ -156,12 +160,12 @@ void handleBoardCellEvent(Widget* src, SDL_Event* event){
 			user_event.user.code = EVENT_MOVE;
 			SDL_PushEvent(&user_event);
 		}
-	}else if(event->type == SDL_MOUSEBUTTONDOWN && event->button.button == SDL_BUTTON_LEFT ) {
+	} else if (event->type == SDL_MOUSEBUTTONDOWN && event->button.button == SDL_BUTTON_LEFT ) {
 		SDL_Point point;
 		point.x = event->button.x;
 		point.y = event->button.y;
 		if (SDL_PointInRect(&point, castData->location)) {
-			if(castData->piece != NULL){
+			if (castData->piece != NULL) {
 				castData->isChosenByUser = 1;
 				isDragged = 1;
 				user_event.type = SDL_USEREVENT;
@@ -171,35 +175,36 @@ void handleBoardCellEvent(Widget* src, SDL_Event* event){
 				//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Title",
 						//"We did it", NULL );
 		}
-	}else if(event->type == SDL_USEREVENT && event->user.code == EVENT_DRAGGED_NOT_ON_BOARD){
+	} else if (event->type == SDL_USEREVENT && event->user.code == EVENT_DRAGGED_NOT_ON_BOARD) {
 		isDragged = 0;
 	}
-	if(castData->piece != NULL){
+	if (castData->piece != NULL) {
 		castData->piece->handleEvent(castData->piece,event);
 	}
 }
 
-void drawBoardCell(Widget* src){
+
+void drawBoardCell(Widget* src) {
 	if (src == NULL ) {
 		return;
 	}
 	BoardCell* castData = (BoardCell*) src->data;
 	SDL_RenderCopy(castData->windowRenderer, castData->regularBoardCellTexture, NULL,
 			castData->location);
-	if(castData->glow == CELL_GLOW_COLOR_REGULAR){
+	if (castData->glow == CELL_GLOW_COLOR_REGULAR) {
 		SDL_RenderCopy(castData->windowRenderer, castData->regularGlowTexture, NULL,
 				castData->location);
-	}else if(castData->glow == CELL_GLOW_COLOR_BLUE){
+	} else if (castData->glow == CELL_GLOW_COLOR_BLUE) {
 		SDL_RenderCopy(castData->windowRenderer, castData->blueGlowTexture, NULL,
 				castData->location);
-	}else if(castData->glow == CELL_GLOW_COLOR_GREEN){
+	} else if (castData->glow == CELL_GLOW_COLOR_GREEN) {
 		SDL_RenderCopy(castData->windowRenderer, castData->greenGlowTexture, NULL,
 				castData->location);
-	}else if(castData->glow == CELL_GLOW_COLOR_RED){
+	} else if (castData->glow == CELL_GLOW_COLOR_RED) {
 		SDL_RenderCopy(castData->windowRenderer, castData->redGlowTexture, NULL,
 				castData->location);
 	}
-	if(castData->piece != NULL){
+	if (castData->piece != NULL) {
 		castData->piece->drawWidget(castData->piece);
 	}
 

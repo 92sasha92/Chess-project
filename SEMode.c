@@ -5,7 +5,7 @@
  *      Author: sasha
  */
 #include "SEMode.h"
-#include "save&load.h"
+#include "saveAndLoad.h"
 
 int gameMode = 1;
 int gameDifficulty = 2;
@@ -74,16 +74,16 @@ void printSettings(){
 
 
 
-CHGame* startSettingsMode(){
+CHGame* startSettingsMode(bool isGuiMode){
 	char strCommand[MAX_LINE_SIZE];
 	SECommand command;
 	CHGame* src;
 	SPWindow* window;
 	SPSimpleWindow *simpleWindow;
+	bool isLoaded = 0;
 	int slot = 0;
-	int erCheck = 0;
 	printf("Specify game setting or type 'start' to begin a game with the current setting:\n" );
-	if(GUI_ACTIVE){
+	if(isGuiMode){
 		if (SDL_Init(SDL_INIT_VIDEO) < 0) { //SDL2 INIT
 			printf("ERROR: unable to init SDL: %s\n", SDL_GetError());
 			return NULL;
@@ -118,30 +118,8 @@ CHGame* startSettingsMode(){
 						destroyWindow(window);
 						if(slot > 0){
 							src = (CHGame*) malloc(sizeof(CHGame)); /* allocate place in memory */
-							if (!src){
-								printf("Error: malloc has failed\n");
+							if(chGuiLoad(src,slot) != CH_GAME_SUCCESS){
 								return NULL;
-							}
-							switch (slot) {
-							case 1:
-								erCheck = load("./gameSlot1.txt",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
-								break;
-							case 2:
-								erCheck = load("./gameSlot2.txt",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
-								break;
-							case 3:
-								erCheck = load("./gameSlot3.txt",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
-								break;
-							case 4:
-								erCheck = load("./gameSlot4.txt",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
-								break;
-							case 5:
-								erCheck = load("./gameSlot5.txt",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
-								break;
-							}
-							if(erCheck == -1){
-								setDefault();
-								free(src);
 							}else{
 								return src;
 							}
@@ -288,7 +266,7 @@ CHGame* startSettingsMode(){
 						free(src);/////////////////////////change to function
 					}
 					else{
-						return src;
+						isLoaded = 1;
 					}
 				}
 				else
@@ -305,7 +283,11 @@ CHGame* startSettingsMode(){
 				return NULL;
 			}
 			else if(command.cmd == SE_START){
-				break;
+				if(isLoaded){
+					return src;
+				}else{
+					break;
+				}
 			}
 			else{
 				printf("ERROR: invalid Command\n");

@@ -2,17 +2,17 @@
 #define SPSIMPLEMAINWINDOW_H_
 #include "SPWindow.h"
 #include "Widget.h"
-#define GUI_ACTIVE 1
 
 
-typedef enum _windowType{
+
+typedef enum _windowType {
 	CH_WINDOW_MAIN,
 	CH_WINDOW_START,
 	CH_WINDOW_MODE,
 	CH_WINDOW_DIFFICULTY,
 	CH_WINDOW_COLOR,
 	CH_WINDOW_LOAD
-}WindowType;
+} WindowType;
 
 typedef struct sp_simplewindow_t {
 	SDL_Window* window;
@@ -22,7 +22,7 @@ typedef struct sp_simplewindow_t {
 	int numOfWidgets;
 	WindowType type;
 	SDL_Texture* windowTexture;
-}SPSimpleWindow;
+} SPSimpleWindow;
 
 SPWindow* createSimpleWindow();
 void destroySimpleWindow(SPWindow* src);
