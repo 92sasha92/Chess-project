@@ -2,8 +2,8 @@
 #define WIDGET_H_
 
 
-#include <SDL.h>
-#include <SDL_video.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_video.h>
 
 
 typedef struct widget_t Widget;

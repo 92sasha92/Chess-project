@@ -10,8 +10,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include <SDL.h>
-#include <SDL_video.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_video.h>
 #include "CHGame.h"
 #include "SEParser.h"
 #include "SPBufferset.h"
