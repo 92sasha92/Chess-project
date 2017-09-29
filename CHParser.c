@@ -127,7 +127,7 @@ CHCommand chParserPraseLine(const char* str) {
 		command.cmd = CH_QUIT;
 	}
 	if (strtok(NULL, delimiter) != NULL) {
-		command.cmd = SE_INVALID_LINE;
+		command.cmd = CH_INVALID_LINE;
 		command.validArg = false;
 	}
 	return command;

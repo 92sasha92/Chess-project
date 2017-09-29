@@ -2,8 +2,8 @@
 #define SPCOMMON_H_
 
 
-#include <SDL.h>
-#include <SDL_video.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_video.h>
 
 
 SDL_Rect* spCopyRect(SDL_Rect* src);

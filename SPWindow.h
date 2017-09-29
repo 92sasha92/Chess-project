@@ -1,7 +1,7 @@
 #ifndef SPWINDOW_H_
 #define SPWINDOW_H_
-#include <SDL.h>
-#include <SDL_video.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_video.h>
 
 typedef struct spwindow_t SPWindow;
 struct spwindow_t {

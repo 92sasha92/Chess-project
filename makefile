@@ -4,7 +4,7 @@ EXEC = chessprog
 COMP_FLAG = -std=c99 -Wall -Wextra \
 -Werror -pedantic-errors
 SDL_COMP_FLAG = -I/usr/local/lib/sdl_2.0.5/include/SDL2 -D_REENTRANT
-SDL_LIB = -L/usr/local/lib/sdl_2.0.5/lib -Wl,-rpath,/usr/local/lib/sdl_2.0.5/lib -Wl,--enable-new-dtags -lSDL2 -lSDL2main
+SDL_LIB = -L/usr/local/Homebrew/Library -Wl,-rpath,/usr/local/Homebrew/Library -Wl, -lSDL2 -lSDL2main
 
 $(EXEC): $(OBJS)
 	$(CC) $(OBJS) $(SDL_LIB) -o $@
@@ -34,7 +34,9 @@ CHPiece.o: CHPiece.c CHPiece.h SPCommon.h CHMoves.h Widget.h
 	$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c $*.c
 CHStartWindow.o: CHStartWindow.c CHStartWindow.h SPSimpleMainWindow.h SimpleButton.h
 	$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c $*.c
-SEParser.o: SEParser.c SEParser.h 
+SEParser.o: SEParser.c SEParser.h
+	$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c $*.c
+CHParser.o: CHParser.c CHParser.h
 	$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c $*.c
 SPCommon.o: SPCommon.c SPCommon.h 
 	$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c $*.c
