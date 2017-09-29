@@ -22,9 +22,9 @@ Widget** createSimpleStartWindowWidgets(SDL_Renderer* renderer) {
 	SDL_Rect newGameR = { .x = 52, .y = startBtnPosY, .h = 80, .w = 296 };
 	SDL_Rect loadR = { .x = 52, .y = startBtnPosY + 90, .h = 80, .w = 296  };
 	SDL_Rect exitR = { .x = 52, .y = startBtnPosY + 90*2, .h = 80, .w = 296  };
-	widgets[0] = createSimpleButton(renderer, &newGameR, "./images/newGameBtn.bmp",NULL,CH_BTN_NEW_GAME,0,BTN_ACTIVE);
-	widgets[1] = createSimpleButton(renderer, &loadR, "./images/loadBtn.bmp",NULL,CH_BTN_LOAD,0,BTN_ACTIVE);
-	widgets[2] = createSimpleButton(renderer, &exitR, "./images/exitBtn.bmp",NULL,CH_BTN_EXIT,0,BTN_ACTIVE);
+	widgets[0] = createSimpleButton(renderer, &newGameR, "./graphics/images/newGameBtn.bmp",NULL,CH_BTN_NEW_GAME,0,BTN_ACTIVE);
+	widgets[1] = createSimpleButton(renderer, &loadR, "./graphics/images/loadBtn.bmp",NULL,CH_BTN_LOAD,0,BTN_ACTIVE);
+	widgets[2] = createSimpleButton(renderer, &exitR, "./graphics/images/exitBtn.bmp",NULL,CH_BTN_EXIT,0,BTN_ACTIVE);
 	if (widgets[0] == NULL || widgets[1] == NULL || widgets[2] == NULL) {
 		destroyWidget(widgets[0]); //NULL SAFE
 		destroyWidget(widgets[1]); //NULL SAFE
@@ -44,11 +44,11 @@ SPWindow* createSimpleStartWindow() {
 			SDL_WINDOWPOS_CENTERED, 400, 400, SDL_WINDOW_OPENGL);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,
 			SDL_RENDERER_ACCELERATED);
-	SDL_Surface* loadingSurface = SDL_LoadBMP("./images/background.bmp");
+	SDL_Surface* loadingSurface = SDL_LoadBMP("./graphics/images/background.bmp");
 	SDL_Texture* windowTexture = SDL_CreateTextureFromSurface(renderer,loadingSurface);
 	Widget** widgets = createSimpleStartWindowWidgets(renderer);
 	if (res == NULL || data == NULL || window == NULL || renderer == NULL
-			|| widgets == NULL || windowTexture == NULL) {
+			|| widgets == NULL || windowTexture == NULL || loadingSurface == NULL) {
 		free(res);
 		free(data);
 		free(widgets);

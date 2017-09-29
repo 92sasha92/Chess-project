@@ -15,13 +15,13 @@
 #include "CHGame.h"
 #include "SEParser.h"
 #include "SPBufferset.h"
-#include "CHStartWindow.h"
-#include "CHModeWindow.h"
-#include "SPSimpleMainWindow.h"
-#include "SimpleButton.h"
-#include "CHDifficultyWindow.h"
-#include "CHColorWindow.h"
-#include "CHLoadWindow.h"
+#include "graphics/CHStartWindow.h"
+#include "graphics/CHModeWindow.h"
+#include "graphics/SPSimpleMainWindow.h"
+#include "graphics/SimpleButton.h"
+#include "graphics/CHDifficultyWindow.h"
+#include "graphics/CHColorWindow.h"
+#include "graphics/CHLoadWindow.h"
 #define MAX_LINE_SIZE 1024
 CHGame* startSettingsMode(bool isGuiMode);
 

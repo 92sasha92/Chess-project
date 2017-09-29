@@ -229,8 +229,8 @@ void handleMoveCommand(CHGame* game, SPWindow* window, CHMoveNode *best_move,
 				if (isGuiMode) {
 					destroyWindow(window);
 					SDL_Quit();
-					exit(1);
 				}
+				exit(1);
 			}
 		}
 	} else {
@@ -491,7 +491,7 @@ void computerTurn(CHGame* game, SPWindow* window, CHMoveNode *best_move,
 	GameBoard* castData;
 	BoardCell* cellData;
 	BoardCell* prevCellData;
-	SPSimpleWindow * simpleWindow = (SPSimpleWindow *) window->data;
+	SPSimpleWindow * simpleWindow;
 	CH_GAME_MESSAGE mes = alphabeta(chGameCopy(game), game->difficulty,
 			game->currentTurn, best_move, isGuiMode);
 	if (mes != CH_GAME_SUCCESS) {
@@ -506,6 +506,7 @@ void computerTurn(CHGame* game, SPWindow* window, CHMoveNode *best_move,
 			best_move->from_row, best_move->from_col, best_move->to_row,
 			best_move->to_col, true, isGuiMode);
 	if (isGuiMode) {
+		simpleWindow = (SPSimpleWindow *) window->data;
 		castData = (GameBoard*) (simpleWindow->widgets[6]->data);
 		prevCellData =
 				(BoardCell*) castData->gameBoard[best_move->from_row][best_move->from_col]->data;
