@@ -128,3 +128,4 @@ void setMaxPawnPromotion(char piece, BestMove *best_move, CHGame* src, int depth
 void setMinPawnPromotion(char piece, BestMove *best_move, CHGame* src, int depth , int a, int b, int maximizer , int toRow, int toCol, bool isGuiMode);
 
 #endif //CHESS_PROJECT_CHMINIMAX_H
+

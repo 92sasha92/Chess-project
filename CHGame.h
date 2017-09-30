@@ -76,7 +76,7 @@ CH_GAME_MESSAGE chGamePrintBoard(CHGame* src);
  * userColor is not 0 or 1.
  * 1 - Otherwise.
  */
-int chGameCreateMode1(CHGame* src,int difficulty,int userColor);
+CH_GAME_MESSAGE chGameCreateMode1(CHGame* src,int difficulty,int userColor);
 
 /**
  * Creates a new game with a specified game mode,current Turn,user Color and difficulty(if in 1 player mode).
@@ -131,7 +131,7 @@ CH_GAME_MESSAGE chGameGetMoves(CHGame* src, int fRow,int fCol,Widget *widget, bo
  * CH_GAME_INVALID_MOVE - If the move is illegal for the piece in the position <x,y>.
  * CH_GAME_SUCCESS - otherwise
  */
-CH_GAME_MESSAGE chGameSetMove(CHGame* src,  char peice,int fRow,int fCol,int toRow,int toCol, bool is_alphaBeta_func, bool isGuiMode);
+CH_GAME_MESSAGE chGameSetMove(CHGame* src,  char piece,int fRow,int fCol,int toRow,int toCol, bool is_alphaBeta_func, bool isGuiMode);
 
 
 /**
@@ -223,7 +223,7 @@ int cmpfunc(const void * a, const void * b);
  * @param isGuiMode - flag that set to true if gui is in use
  * @return
  */
-void printMoves(CHGame* src, CHMovesList *list, char c, int fRow, int fCol, Widget *gameBoardWidget, bool isGuiMode);
+CH_GAME_MESSAGE printMoves(CHGame* src, CHMovesList *list, char c, int fRow, int fCol, Widget *gameBoardWidget, bool isGuiMode);
 
 /**
  * make pawn promotion by asking the player to what piece to change.
@@ -234,6 +234,7 @@ void printMoves(CHGame* src, CHMovesList *list, char c, int fRow, int fCol, Widg
  * @param isGuiMode - flag that set to true if gui is in use
  * @return
  */
-void chPawnPromotion(CHGame* src, int row, int col,  bool isGuiMode);
+CH_GAME_MESSAGE chPawnPromotion(CHGame* src, int row, int col,  bool isGuiMode);
 
 #endif /* CHGAME_H_ */
+

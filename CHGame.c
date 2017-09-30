@@ -11,7 +11,7 @@
 #include "graphics/gameBoard.h"
 #include "CHMiniMax.h"
 
-
+#define ERROR 0
 
 void showPawnPromotionMessage(CHGame* game, int row, int col) {
 	int buttonId = 0;
@@ -26,7 +26,7 @@ void showPawnPromotionMessage(CHGame* game, int row, int col) {
 	&colorScheme /* .colorScheme */
 	};
 	if (SDL_ShowMessageBox(&messageboxdata, &buttonId) < 0) {
-		SDL_Log("error displaying message box");
+		SDL_Log("ERROR: displaying message box");
 		return;
 	}
 	if(game->gameBoard[row][col] == CH_WHITE_PAWN){
@@ -108,26 +108,26 @@ void defaultBoard(CHGame *src) {
 }
 
 
-int chGameCreateMode1(CHGame* src, int difficulty, int userColor) {
+CH_GAME_MESSAGE chGameCreateMode1(CHGame* src, int difficulty, int userColor) {
 	if (src->gameMode == 1) {
 		if (userColor != CH_GAME_BLACK_PLAYER_SYMBOL
 				&& userColor != CH_GAME_WHITE_PLAYER_SYMBOL)
-			return 0;
+			return CH_GAME_INVALID_ARGUMENT;
 		src->userColor = userColor;
 		if (difficulty < 1 || 4 < difficulty)
-			return 0;
+			return CH_GAME_INVALID_ARGUMENT;
 		src->difficulty = difficulty;
 		src->list = spArrayListCreate(6); /* every undo move include computer and user moves */
 		if (!(src->list)) {
 			free(src);
 			printf("Error: malloc has failed\n");
-			return 0;
+			return CH_GAME_MEMORY_PROBLEM;
 		}
 	} else {
 		src->list = NULL;
 		src->difficulty = 0;
 	}
-	return 1;
+	return CH_GAME_SUCCESS;
 }
 
 
@@ -150,7 +150,7 @@ CHGame* chGameCreate(int gameMode, int userColor, int difficulty,
 		return NULL ;
 	}
 	src->currentTurn = currentTurn; // set current turn
-	if (!chGameCreateMode1(src, difficulty, userColor)) {
+	if (chGameCreateMode1(src, difficulty, userColor) != CH_GAME_SUCCESS) {
 		free(src);
 		return NULL ;
 	}
@@ -206,7 +206,7 @@ int cmpfunc(const void * a, const void * b) {
 }
 
 
-void printMoves(CHGame* src, CHMovesList *list, char c, int fRow, int fCol, Widget *gameBoardWidget, bool isGuiMode) {
+CH_GAME_MESSAGE printMoves(CHGame* src, CHMovesList *list, char c, int fRow, int fCol, Widget *gameBoardWidget, bool isGuiMode) {
 	CHMovesList *node = list;
 	int numOfMoves = 0;
 	int i = 0;
@@ -217,6 +217,10 @@ void printMoves(CHGame* src, CHMovesList *list, char c, int fRow, int fCol, Widg
 	}
 	node = list;
 	CHNodeForSort *arr = (CHNodeForSort *) malloc(sizeof(CHNodeForSort) * numOfMoves);
+	if (arr == NULL) {
+		printf ("ERROR: problem occurred when malloc\n");
+		return CH_GAME_MEMORY_PROBLEM;
+	}
 	while (node != NULL ) {
 		arr[i].row = node->row;
 		arr[i].col = node->col;
@@ -247,6 +251,7 @@ void printMoves(CHGame* src, CHMovesList *list, char c, int fRow, int fCol, Widg
 		printf("\n");
 	}
 	free(arr);
+	return CH_GAME_SUCCESS;
 }
 
 
@@ -272,18 +277,23 @@ CH_GAME_MESSAGE chGameGetMoves(CHGame* src, int fRow, int fCol, Widget *widget,b
 		destroyMoveList(list);
 		return CH_GAME_NO_MOVES;
 	}
-	printMoves(src, list, c, fRow, fCol, widget, isGuiMode);
+	if (printMoves(src, list, c, fRow, fCol, widget, isGuiMode) == CH_GAME_MEMORY_PROBLEM){
+		destroyMoveList(list);
+		return CH_GAME_MEMORY_PROBLEM;
+	}
 	destroyMoveList(list);
 	return CH_GAME_SUCCESS;
 }
 
 
-void chPawnPromotion(CHGame* src, int row, int col,  bool isGuiMode) {
+CH_GAME_MESSAGE chPawnPromotion(CHGame* src, int row, int col,  bool isGuiMode) {
+	if (src == NULL)
+		return CH_GAME_INVALID_ARGUMENT;
     char str[MAX_LINE_LENGTH], delimiter[8] = " \t\r\n", strCopy[MAX_LINE_LENGTH], *cur;
     bool isNotValid = true;
     if(isGuiMode){
         showPawnPromotionMessage(src, row, col);
-        return;
+        return CH_GAME_SUCCESS;
     }
     while (isNotValid) {
         printf("Pawn promotion- please replace the pawn by queen, rook, knight, bishop or pawn:\n");
@@ -335,10 +345,11 @@ void chPawnPromotion(CHGame* src, int row, int col,  bool isGuiMode) {
             printf("Invalid Type\n");
         }
     }
+	return CH_GAME_SUCCESS;
 }
 
 
-CH_GAME_MESSAGE chGameSetMove(CHGame* src, char peice, int fRow, int fCol, int toRow, int toCol, bool is_alphaBeta_func, bool isGuiMode) {
+CH_GAME_MESSAGE chGameSetMove(CHGame* src, char piece, int fRow, int fCol, int toRow, int toCol, bool is_alphaBeta_func, bool isGuiMode) {
 	if (src == NULL )
 		return CH_GAME_INVALID_ARGUMENT;
 	bool isCorrectCol = false;
@@ -362,7 +373,7 @@ CH_GAME_MESSAGE chGameSetMove(CHGame* src, char peice, int fRow, int fCol, int t
 	}
 	list = createMoveList(src->gameBoard, c, fRow, fCol, src->currentTurn);
 	if (isValidMove(list, toRow, toCol)) {
-		src->gameBoard[toRow][toCol] = peice;
+		src->gameBoard[toRow][toCol] = piece;
 		src->gameBoard[fRow][fCol] = CH_GAME_EMPTY_ENTRY;
 	} else {
 		free(node);
@@ -373,9 +384,9 @@ CH_GAME_MESSAGE chGameSetMove(CHGame* src, char peice, int fRow, int fCol, int t
 	if ((((src->gameBoard[toRow][toCol] == CH_BLACK_PAWN) && (toRow == 0)) // checks if pawn promotion is valid
 			|| ((src->gameBoard[toRow][toCol] == CH_WHITE_PAWN)
 					&& (toRow == CH_GAME_N_ROWS - 1))) && !is_alphaBeta_func) {
-		chPawnPromotion(src, toRow, toCol,isGuiMode);
-		if(isGuiMode){
-
+		if (chPawnPromotion(src, toRow, toCol,isGuiMode) == CH_GAME_INVALID_ARGUMENT) {
+			free(node);
+			return CH_GAME_INVALID_ARGUMENT;
 		}
 	}
 	spArrayListAddFirst(src->list, *node); // add the move to the moves list

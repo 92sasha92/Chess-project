@@ -42,6 +42,7 @@ CH_GAME_MESSAGE exitload(FILE *fp){
 
 CH_GAME_MESSAGE load(char *path, CHGame *src, int *currentTurn, int *gameMode, int *gameDifficulty, int *userColor) {
 	char buf[20];
+	CH_GAME_MESSAGE mes;
 	FILE *fp = fopen(path,"r");
 	if (fp == NULL) {
 		printf("Error: File doesn’t exist or cannot be opened\n");
@@ -94,8 +95,11 @@ CH_GAME_MESSAGE load(char *path, CHGame *src, int *currentTurn, int *gameMode, i
 	fclose(fp);
 	src->currentTurn = *currentTurn;
 	src->gameMode = *gameMode;
-	if (!chGameCreateMode1(src,*gameDifficulty,*userColor))
-		return 0;
+	if ((mes = chGameCreateMode1(src,*gameDifficulty,*userColor)) == CH_GAME_INVALID_ARGUMENT)
+		return CH_GAME_INVALID_ARGUMENT;
+	else if (mes == CH_GAME_MEMORY_PROBLEM) {
+		return CH_GAME_MEMORY_PROBLEM;
+	}
 	return CH_GAME_SUCCESS;
 }
 

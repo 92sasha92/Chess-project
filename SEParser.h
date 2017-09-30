@@ -55,3 +55,4 @@ bool seParserIsInt(const char* str);
 SECommand seParserPraseLine(const char* str);
 
 #endif /* SEPARSER_H_ */
+

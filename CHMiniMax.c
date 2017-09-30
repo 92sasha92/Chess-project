@@ -319,3 +319,4 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
     }
     return CH_GAME_SUCCESS;
 }
+
