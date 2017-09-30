@@ -10,7 +10,7 @@
 
 #include "SPArrayList.h"
 #include "CHMoves.h"
-#include "Widget.h"
+#include "graphics/Widget.h"
 
 typedef struct ch_nodeForSort{
 	int row;

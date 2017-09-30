@@ -7,8 +7,8 @@
 
 #include "CHGame.h"
 #include "SPBufferset.h"
-#include "SPSimpleMainWindow.h"
-#include "gameBoard.h"
+#include "graphics/SPSimpleMainWindow.h"
+#include "graphics/gameBoard.h"
 #include "CHMiniMax.h"
 
 

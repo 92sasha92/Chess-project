@@ -295,6 +295,7 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
                         if (((src->gameBoard[node->row][node->col] == CH_BLACK_PAWN) && (node->row == 0)) || ((src->gameBoard[node->row][node->col] == CH_WHITE_PAWN) && (node->row == CH_GAME_N_ROWS - 1))) {
                             new_score = pawn_promotion_rec_alphabeta(src, depth , a, b, maximizer , node->row, node->col, isGuiMode);
                             src->gameBoard[node->row][node->col] = new_score.peice;
+                            printf("cur piece: %c \n", new_score.peice);
                         } else {
                             src->currentTurn = !(src->currentTurn);
                             new_score = min_rec_alphabeta(src, depth - 1, a, b, maximizer, isGuiMode);

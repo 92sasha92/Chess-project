@@ -44,7 +44,7 @@ CH_GAME_MESSAGE load(char *path, CHGame *src, int *currentTurn, int *gameMode, i
 	char buf[20];
 	FILE *fp = fopen(path,"r");
 	if (fp == NULL) {
-		printf("Error: File doesn't exist or cannot be opened\n");
+		printf("Error: File doesn’t exist or cannot be opened\n");
 		return CH_GAME_FILE_PROBLEM;
 	}
 	fscanf(fp, "%*[^\n]");

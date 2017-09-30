@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include "CHPiece.h"
 #include "SPCommon.h"
-#include "CHMoves.h"
+#include "../CHMoves.h"
 
 void drawCHPieceDrag(Widget* src){
 	if (src == NULL ) {

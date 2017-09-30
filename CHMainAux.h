@@ -4,7 +4,7 @@
 #include "SEMode.h"
 #include "CHGame.h"
 #include "CHParser.h"
-#include "gameBoard.h"
+#include "graphics/gameBoard.h"
 #include "CHMiniMax.h"
 #include "saveAndLoad.h"
 

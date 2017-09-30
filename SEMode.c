@@ -243,7 +243,7 @@ CHGame* loadCommandHandle(bool *isLoaded, SECommand command){
 CHGame* startSettingsMode(bool isGuiMode) {
 	char strCommand[MAX_LINE_SIZE];
 	SECommand command;
-	CHGame* src;
+	CHGame* src = NULL;
 	bool isLoaded = 0;
 	printf(
 			"Specify game setting or type 'start' to begin a game with the current setting:\n");
