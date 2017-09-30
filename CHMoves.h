@@ -267,3 +267,4 @@ CHMovesList *bishopMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char
 CHMovesList *kingMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, int row, int col, CHMovesList *list, int color);
 
 #endif /* CHMOVES_H_ */
+

@@ -96,7 +96,7 @@ CH_GAME_MESSAGE load(char *path, CHGame *src, int *currentTurn, int *gameMode, i
 	src->currentTurn = *currentTurn;
 	src->gameMode = *gameMode;
 	if ((mes = chGameCreateMode1(src,*gameDifficulty,*userColor)) == CH_GAME_INVALID_ARGUMENT)
-		return CH_GAME_INVALID_ARGUMENT;
+		return 0;
 	else if (mes == CH_GAME_MEMORY_PROBLEM) {
 		return CH_GAME_MEMORY_PROBLEM;
 	}

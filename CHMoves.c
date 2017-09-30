@@ -57,7 +57,7 @@ CHMovesList * insertFirst(CHMovesList *list, int row, int col) {
 	else{
 		node = (CHMovesList *) malloc(sizeof(CHMovesList)); // allocate memory for the move node
 		if (!node) {
-			printf("Error: malloc has failed\n");
+			printf("ERROR: malloc has failed\n");
 			return NULL ;
 		}
 		node->next = list;
@@ -529,7 +529,7 @@ CHMovesList *createMoveList(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],ch
 	int kRow = 0,kCol = 0;
 	CHMovesList *list = (CHMovesList *) malloc(sizeof(CHMovesList)); // allocate memory for the list
 	if (!list) {
-		printf("Error: malloc has failed\n");
+		printf("ERROR: malloc has failed\n");
 		return NULL ;
 	}
 	list->next = NULL;

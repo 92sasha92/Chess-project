@@ -120,7 +120,7 @@ CH_GAME_MESSAGE chGameCreateMode1(CHGame* src, int difficulty, int userColor) {
 		src->list = spArrayListCreate(6); /* every undo move include computer and user moves */
 		if (!(src->list)) {
 			free(src);
-			printf("Error: malloc has failed\n");
+			printf("ERROR: malloc has failed\n");
 			return CH_GAME_MEMORY_PROBLEM;
 		}
 	} else {
@@ -135,7 +135,7 @@ CHGame* chGameCreate(int gameMode, int userColor, int difficulty,
 		int currentTurn) {
 	CHGame* src = (CHGame*) malloc(sizeof(CHGame)); /* allocate place in memory */
 	if (!src) {
-		printf("Error: malloc has failed\n");
+		printf("ERROR: malloc has failed\n");
 		return NULL ;
 	}
 	defaultBoard(src);
@@ -475,7 +475,7 @@ CHGame* chGameCopy(CHGame* src) {
 	CHGame* new_src = (CHGame*) malloc(sizeof(CHGame)); /* allocate place in memory */
 	if (!new_src) {
 		chGameDestroy(src);
-		printf("Error: malloc has failed\n");
+		printf("ERROR: malloc has failed\n");
 		return NULL ;
 	}
 	new_src->currentTurn = src->currentTurn;
