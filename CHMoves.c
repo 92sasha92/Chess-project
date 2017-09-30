@@ -37,7 +37,7 @@ void findKing(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color,int *k
 	for (i = 0; i < CH_GAME_N_ROWS; i++){
 		for (j = 0; j < CH_GAME_N_COLUMNS; j++){
 			if ((color == CH_GAME_WHITE_PLAYER_SYMBOL && gameBoard[i][j] == CH_WHITE_KING) || (color == CH_GAME_BLACK_PLAYER_SYMBOL && gameBoard[i][j] == CH_BLACK_KING)) {
-				*kRow = i;
+				*kRow = i; //set the location of the king on the board if found
 				*kCol = j;
 				isKingFound = true;
 				break;
@@ -49,18 +49,15 @@ void findKing(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color,int *k
 }
 
 
-
-
-
 CHMovesList * insertFirst(CHMovesList *list, int row, int col) {
 	CHMovesList *node;
 	if(!list->isValid){
 		node = list;
 	}
 	else{
-		node = (CHMovesList *) malloc(sizeof(CHMovesList));
+		node = (CHMovesList *) malloc(sizeof(CHMovesList)); // allocate memory for the move node
 		if (!node) {
-			printf("Error: malloc has failed\n");
+			printf("ERROR: malloc has failed\n");
 			return NULL ;
 		}
 		node->next = list;
@@ -72,13 +69,12 @@ CHMovesList * insertFirst(CHMovesList *list, int row, int col) {
 }
 
 
-
-bool isKnightThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, int mRow, int mCol,int mode){
+bool isKnightThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, int mRow, int mCol,int mode) {
 	int i,kRow = 0,kCol = 0;
 	char curC;
 	int curRow = mRow;
 	int curCol = mCol;
-	for (i = -2; i < 3; i++) {
+	for (i = -2; i < 3; i++) { // all the knight optional moves
 		curRow = mRow + i;
 		if (curRow < CH_GAME_N_ROWS && curRow >= 0 && i != 0) {
 			for (int j = 0; j < 2; j++) {
@@ -94,7 +90,7 @@ bool isKnightThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color,
 				if (curCol < CH_GAME_N_COLUMNS && curCol >= 0) {
 					curC = gameBoard[curRow][curCol];
 					if ((color == CH_GAME_BLACK_PLAYER_SYMBOL && curC == CH_WHITE_KNIGHT) || (color == CH_GAME_WHITE_PLAYER_SYMBOL && curC == CH_BLACK_KNIGHT)){
-						if(mode){
+						if (mode){ //checks if the king is threatened
 							findKing(gameBoard,!color,&kRow,&kCol);
 							if(isMyPieceSafe(gameBoard, curC, curRow, curCol, mRow, mCol, !color, kRow, kCol,KING_MODE)){
 								return false;
@@ -111,12 +107,12 @@ bool isKnightThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color,
 }
 
 
-bool isRookOrQueenThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, int mRow, int mCol,int mode){
+bool isRookOrQueenThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, int mRow, int mCol,int mode) {
 	int curRow = mRow + 1;
 	int curCol = mCol;
 	int i,kCol,kRow;
 	char curC ;
-	for (i = 0; i < 4; i++) {
+	for (i = 0; i < 4; i++) { // all the horizontal and vertical moves
 		if (i == 1) {
 			curRow = mRow - 1;
 			curCol = mCol;
@@ -130,12 +126,12 @@ bool isRookOrQueenThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int c
 		while (curRow >= 0 && curRow < CH_GAME_N_ROWS && curCol >= 0 && curCol < CH_GAME_N_COLUMNS) {
 			curC = gameBoard[curRow][curCol];
 			if ((color == CH_GAME_BLACK_PLAYER_SYMBOL && (curC == CH_WHITE_QUEEN || curC == CH_WHITE_ROOK)) || (color == CH_GAME_WHITE_PLAYER_SYMBOL && (curC == CH_BLACK_QUEEN || curC == CH_BLACK_ROOK))){
-				if(mode){
+				if (mode) { //checks if the king is threatened
 					findKing(gameBoard,!color,&kRow,&kCol);
-					if(isMyPieceSafe(gameBoard, curC, curRow, curCol, mRow, mCol, !color, kRow, kCol,KING_MODE)){
+					if(isMyPieceSafe(gameBoard, curC, curRow, curCol, mRow, mCol, !color, kRow, kCol,KING_MODE)) {
 						return false;
 					}
-				}else{
+				} else {
 					return false;
 				}
 			}
@@ -154,12 +150,13 @@ bool isRookOrQueenThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int c
 	return true;
 }
 
-bool isBishopOrQueenThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, int mRow, int mCol,int mode){
+
+bool isBishopOrQueenThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, int mRow, int mCol,int mode) {
 	int i,kCol,kRow;
 	int curRow = mRow + 1;
 	int curCol = mCol + 1;
 	char curC;
-	for(i = 0;i < 4;i++){
+	for (i = 0; i < 4; i++) { // all the diagonal moves
 		if(i == 1){
 			curRow = mRow - 1;
 			curCol = mCol - 1;
@@ -175,18 +172,18 @@ bool isBishopOrQueenThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int
 		while(curRow >= 0 && curRow < CH_GAME_N_ROWS && curCol >= 0 && curCol < CH_GAME_N_COLUMNS){
 			curC = gameBoard[curRow][curCol];
 			if ((color == CH_GAME_BLACK_PLAYER_SYMBOL && (curC == CH_WHITE_BISHOP || curC == CH_WHITE_QUEEN)) || (color == CH_GAME_WHITE_PLAYER_SYMBOL && (curC == CH_BLACK_BISHOP || curC == CH_BLACK_QUEEN))){
-				if(mode){
+				if (mode){ //checks if the king is threatened
 					findKing(gameBoard,!color,&kRow,&kCol);
 					if(isMyPieceSafe(gameBoard, curC, curRow, curCol, mRow, mCol, !color, kRow, kCol,KING_MODE)){
 						return false;
 					}
-				}else{
+				} else {
 					return false;
 				}
 			}
 			if (curC != CH_GAME_EMPTY_ENTRY)
 				break;
-			if(i == 0){
+			if (i == 0) {
 				curRow++;
 				curCol++;
 			}
@@ -207,7 +204,8 @@ bool isBishopOrQueenThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int
 	return true;
 }
 
-bool isPawnThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, int mRow, int mCol,int mode){
+
+bool isPawnThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, int mRow, int mCol,int mode) {
 	int curRow,curCol,kRow,kCol;
 	char curC;
 	if (color == CH_GAME_BLACK_PLAYER_SYMBOL)
@@ -218,7 +216,7 @@ bool isPawnThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, i
 	if(curRow >= 0 && curRow < CH_GAME_N_ROWS && curCol >= 0 && curCol < CH_GAME_N_COLUMNS){
 		curC = gameBoard[curRow][curCol];
 		if((color == CH_GAME_BLACK_PLAYER_SYMBOL && curC == CH_WHITE_PAWN) || (color == CH_GAME_WHITE_PLAYER_SYMBOL && curC == CH_BLACK_PAWN)){
-			if(mode){
+			if (mode) { //checks if the king is threatened
 				findKing(gameBoard,!color,&kRow,&kCol);
 				if(isMyPieceSafe(gameBoard, curC, curRow, curCol, mRow, mCol, !color, kRow, kCol,KING_MODE)){
 					return false;
@@ -232,7 +230,7 @@ bool isPawnThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, i
 	if(curRow >= 0 && curRow < CH_GAME_N_ROWS && curCol >= 0 && curCol < CH_GAME_N_COLUMNS){
 		curC = gameBoard[curRow][curCol];
 		if((color == CH_GAME_BLACK_PLAYER_SYMBOL && curC == CH_WHITE_PAWN) || (color == CH_GAME_WHITE_PLAYER_SYMBOL && curC == CH_BLACK_PAWN)){
-			if(mode){
+			if (mode) { //checks if the king is threatened
 				findKing(gameBoard,!color,&kRow,&kCol);
 				if(isMyPieceSafe(gameBoard, curC, curRow, curCol, mRow, mCol, !color, kRow, kCol,KING_MODE)){
 					return false;
@@ -245,12 +243,13 @@ bool isPawnThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, i
 	return true;
 }
 
-bool isKingThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, int mRow, int mCol,int mode){
+
+bool isKingThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], int color, int mRow, int mCol,int mode) {
 	int i;
 	int curRow = mRow - 1;
 	int curCol = mCol - 1;
 	char curC;
-	for(i = 0; i < 8;i++){
+	for(i = 0; i < 8; i++) { // all king optional moves
 		if(i == 1){
 			curRow = mRow - 1;
 			curCol = mCol;
@@ -276,7 +275,7 @@ bool isKingThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, i
 		if(curRow >= 0 && curRow < CH_GAME_N_ROWS && curCol >= 0 && curCol < CH_GAME_N_COLUMNS){
 			curC = gameBoard[curRow][curCol];
 			if((color == CH_GAME_BLACK_PLAYER_SYMBOL && curC == CH_WHITE_KING) || (color == CH_GAME_WHITE_PLAYER_SYMBOL && curC == CH_BLACK_KING)){
-				if(mode){
+				if (mode) { //checks if the king is threatened
 					if(isMyPieceSafe(gameBoard, curC, curRow, curCol, mRow, mCol, !color, mRow, mCol,KING_MODE)){
 						return false;
 					}
@@ -284,15 +283,15 @@ bool isKingThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, i
 					return false;
 				}
 			}
-
 		}
 	}
 	return true;
 }
 
+
 bool isMyPieceSafe(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, int fRow, int fCol, int toRow, int toCol, int color, int mRow, int mCol,int mode) {
 	int i,j;
-	char gameBoardCopy[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS];
+	char gameBoardCopy[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS]; // copy the board
 	for(i = 0;i < CH_GAME_N_ROWS;i++){
 		for(j = 0;j < CH_GAME_N_COLUMNS;j++){
 			gameBoardCopy[i][j] = gameBoard[i][j];
@@ -302,7 +301,7 @@ bool isMyPieceSafe(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, in
 		gameBoardCopy[fRow][fCol] = CH_GAME_EMPTY_ENTRY;
 		gameBoardCopy[toRow][toCol] = c;
 	}
-	if(!isPawnThreat(gameBoardCopy,color,mRow,mCol,mode))
+	if(!isPawnThreat(gameBoardCopy,color,mRow,mCol,mode)) // checks if there is any piece that threat my piece
 		return false;
 	if(!isKnightThreat(gameBoardCopy,color,mRow,mCol,mode))
 		return false;
@@ -314,9 +313,6 @@ bool isMyPieceSafe(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, in
 		return false;
 	return true;
 }
-
-
-
 
 
 CHMovesList *pawnMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
@@ -340,7 +336,7 @@ CHMovesList *pawnMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 			if (curCol >= 0 && curCol < CH_GAME_N_COLUMNS) {
 				curC = gameBoard[curRow][curCol];
 				if (!isThePieceMyColor(curC, color) && ((i != 2 && curC != CH_GAME_EMPTY_ENTRY) || (i == 2 && curC == CH_GAME_EMPTY_ENTRY)) && isMyPieceSafe(gameBoard,c,row,col,curRow,curCol,color, kRow, kCol,KING_MODE)) {
-					list = insertFirst(list, curRow, curCol);
+					list = insertFirst(list, curRow, curCol);  //insert the move to the list if valid
 					if (list == NULL )
 						return NULL ;
 				}
@@ -348,26 +344,25 @@ CHMovesList *pawnMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 		}
 	}
 	curCol = col;
-
 	if((color == CH_GAME_BLACK_PLAYER_SYMBOL && row == 6) || (color == CH_GAME_WHITE_PLAYER_SYMBOL && row == 1)){
 		if(color == CH_GAME_BLACK_PLAYER_SYMBOL){
 			curRow = row - 2;
 			curRowMinus1 = row - 1;
-		}
-		else{
+		} else {
 			curRow = row + 2;
 			curRowMinus1 = row + 1;
 		}
 		curC = gameBoard[curRow][curCol];
 		curCMinus = gameBoard[curRowMinus1][curCol];
 		if ( curCMinus == CH_GAME_EMPTY_ENTRY && curC == CH_GAME_EMPTY_ENTRY && isMyPieceSafe(gameBoard,c,row,col,curRow,curCol,color, kRow, kCol,KING_MODE)) {
-			list = insertFirst(list, curRow, curCol);
+			list = insertFirst(list, curRow, curCol); //insert the move to the list if valid
 			if (list == NULL )
 				return NULL ;
 		}
 	}
 	return list;
 }
+
 
 CHMovesList *rookMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 		char c, int row, int col, CHMovesList *list, int color,int kRow,int kCol) {
@@ -389,7 +384,7 @@ CHMovesList *rookMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 		while (curRow >= 0 && curRow < CH_GAME_N_ROWS && curCol >= 0 && curCol < CH_GAME_N_COLUMNS) {
 			curC = gameBoard[curRow][curCol];
 			if (!isThePieceMyColor(curC, color) && isMyPieceSafe(gameBoard,c,row,col,curRow,curCol,color, kRow, kCol,KING_MODE)) {
-				list = insertFirst(list, curRow, curCol);
+				list = insertFirst(list, curRow, curCol); //insert the move to the list if valid
 				if (list == NULL )
 					return NULL ;
 				if(curC != CH_GAME_EMPTY_ENTRY)
@@ -408,6 +403,7 @@ CHMovesList *rookMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 	}
 	return list;
 }
+
 
 CHMovesList *knightMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 		char c, int row, int col, CHMovesList *list, int color,int kRow,int kCol) {
@@ -430,7 +426,7 @@ CHMovesList *knightMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 				if (curCol < CH_GAME_N_COLUMNS && curCol >= 0) {
 					curC = gameBoard[curRow][curCol];
 					if (!isThePieceMyColor(curC, color) && isMyPieceSafe(gameBoard,c,row,col,curRow,curCol,color, kRow, kCol,KING_MODE)) {
-						list = insertFirst(list, curRow, curCol);
+						list = insertFirst(list, curRow, curCol); //insert the move to the list if valid
 						if (list == NULL )
 							return NULL ;
 					}
@@ -438,9 +434,9 @@ CHMovesList *knightMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 			}
 		}
 	}
-
 	return list;
 }
+
 
 CHMovesList *bishopMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 		char c, int row, int col, CHMovesList *list, int color,int kRow,int kCol) {
@@ -462,7 +458,7 @@ CHMovesList *bishopMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 		while (curRow >= 0 && curRow < CH_GAME_N_ROWS && curCol >= 0 && curCol < CH_GAME_N_COLUMNS) {
 			curC = gameBoard[curRow][curCol];
 			if (!isThePieceMyColor(curC, color) && isMyPieceSafe(gameBoard,c,row,col,curRow,curCol,color, kRow, kCol,KING_MODE)) {
-				list = insertFirst(list, curRow, curCol);
+				list = insertFirst(list, curRow, curCol); //insert the move to the list if valid
 				if (list == NULL )
 					return NULL ;
 				if(curC != CH_GAME_EMPTY_ENTRY)
@@ -486,6 +482,7 @@ CHMovesList *bishopMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],
 	}
 	return list;
 }
+
 
 CHMovesList *kingMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, int row, int col, CHMovesList *list, int color) {
 	int i;
@@ -518,7 +515,7 @@ CHMovesList *kingMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c
 		if(curRow >= 0 && curRow < CH_GAME_N_ROWS && curCol >= 0 && curCol < CH_GAME_N_COLUMNS){
 			curC = gameBoard[curRow][curCol];
 			if (!isThePieceMyColor(curC, color) && isMyPieceSafe(gameBoard,c,row,col,curRow,curCol,color, curRow, curCol,KING_MODE)) {
-				list = insertFirst(list, curRow, curCol);
+				list = insertFirst(list, curRow, curCol); //insert the move to the list if valid
 				if (list == NULL )
 					return NULL ;
 			}
@@ -527,16 +524,17 @@ CHMovesList *kingMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c
 	return list;
 }
 
+
 CHMovesList *createMoveList(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],char c, int row, int col, int color) {
 	int kRow = 0,kCol = 0;
-	CHMovesList *list = (CHMovesList *) malloc(sizeof(CHMovesList));
+	CHMovesList *list = (CHMovesList *) malloc(sizeof(CHMovesList)); // allocate memory for the list
 	if (!list) {
-		printf("Error: malloc has failed\n");
+		printf("ERROR: malloc has failed\n");
 		return NULL ;
 	}
 	list->next = NULL;
 	list->isValid = false;
-	findKing(gameBoard,color,&kRow,&kCol);
+	findKing(gameBoard,color,&kRow,&kCol); // chose the specific piece to make the move list for
 	if (c == CH_WHITE_PAWN || c == CH_BLACK_PAWN) {
 		return pawnMoves(gameBoard, c, row, col, list, color,kRow,kCol);
 	} else if (c == CH_WHITE_ROOK || c == CH_BLACK_ROOK) {
@@ -553,6 +551,7 @@ CHMovesList *createMoveList(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],ch
 	}
 	return list;
 }
+
 
 void destroyMoveList(CHMovesList *list) {
 	CHMovesList *node = list;
