@@ -175,7 +175,7 @@ void seNextEventHandle(SPWindow** window,SDL_Event *event){
 	}
 }
 
-void seSetModeEventHandle(SPWindow** window,SDL_Event event){
+void seSetColorEventHandle(SPWindow** window,SDL_Event event){
     if(event.user.code == EVENT_SET_COLOR_WHITE){
     	seSetUserColor(1);
 		pressColorChange(*window,1);
@@ -207,23 +207,24 @@ CH_GAME_MESSAGE seLoadWindowEventHandle(SPWindow** window,SDL_Event *event, CHGa
 			printf("ERROR: unable to create load window: %s\n", SDL_GetError());
 			seMessageTerminate();
 		}
+		SDL_WaitEvent(event);
 	}else if(simpleWindow->type == CH_WINDOW_LOAD){
 		slot = getSlotPressed(*window);
 		if(slot > 0){
 			*src = (CHGame*) malloc(sizeof(CHGame)); /* allocate place in memory */
 			mes = chGuiLoad(*src,slot);
-			if(mes == CH_GAME_FILE_PROBLEM){
+			if(mes == CH_GAME_FILE_PROBLEM || mes == CH_GAME_INVALID_ARGUMENT){
 				free(*src);
 				*src = NULL;
 			}else if(mes == CH_GAME_MEMORY_PROBLEM){
 				*src = NULL;
 			}else{
 				destroyWindow(*window);
+				return CH_GAME_LOAD_SUCCESS;
 			}
 			return mes;
 		}
 	}
-	SDL_WaitEvent(event);
 	return CH_GAME_SUCCESS;
 }
 
@@ -268,7 +269,7 @@ CHGame *seGuiActiveHandle(){
 			}else if(event.user.code >= EVENT_DIFFICULTY_NOOB && event.user.code <= EVENT_DIFFICULTY_HARD){
 				seSetDifficultyEventHandle(&window, event);
 			}else if(event.user.code >= EVENT_SET_COLOR_WHITE && event.user.code <= EVENT_SET_COLOR_BLACK){
-				seSetModeEventHandle(&window, event);
+				seSetColorEventHandle(&window, event);
 			}else if(event.user.code >= EVENT_SET_SLOT_1 && event.user.code <= EVENT_SET_SLOT_5){
 				seSetSlotEventHandle(event,window);
 			}

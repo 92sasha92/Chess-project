@@ -114,8 +114,12 @@ CH_GAME_MESSAGE chGameCreateMode1(CHGame* src, int difficulty, int userColor) {
 				&& userColor != CH_GAME_WHITE_PLAYER_SYMBOL)
 			return CH_GAME_INVALID_ARGUMENT;
 		src->userColor = userColor;
-		if (difficulty < 1 || 4 < difficulty)
+		if (difficulty < 1 || 4 < difficulty){
+			if(difficulty == 5){
+				printf("Expert level not supported\n");
+			}
 			return CH_GAME_INVALID_ARGUMENT;
+		}
 		src->difficulty = difficulty;
 		src->list = spArrayListCreate(6); /* every undo move include computer and user moves */
 		if (!(src->list)) {

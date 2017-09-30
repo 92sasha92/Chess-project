@@ -2,7 +2,7 @@
 <game>
 	<current_turn>1</current_turn>
 	<game_mode>1</game_mode>
-	<difficulty>2</difficulty>
+	<difficulty>5</difficulty>
 	<user_color>1</user_color>
 	<board>
 		<row_8>RNBQKBNR</row_8>
