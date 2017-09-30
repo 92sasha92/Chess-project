@@ -43,6 +43,8 @@ typedef struct command_ch {
  * and the field validArg is set to true . In any other case then 'validArg' is set to
  * false and the values fRow,fCol,toRow,toCol and path are undefined.
  *
+ * @param str - a string represent the command.
+ *
  * @return
  * A parsed line such that:
  *   cmd - contains the command type, if the line is invalid then this field is
@@ -56,5 +58,43 @@ typedef struct command_ch {
  *   path      - the string argument in case validArg is set to true and the command is save.
  */
 CHCommand chParserPraseLine(const char* str);
+
+/**
+ * Parses a move line. if the command is not correct its return the according value in order that the calling function will
+ * find the reason to the problem. incorrect line or column, or invalid argument.
+ *
+ * @param cur - a string represent the command.
+ * @param delimiter - a string represent the command delimiters.
+ *
+ * @return
+ * A parsed line such that:
+ *   cmd - contains the CH_MOVE command, if the line is invalid then this field is
+ *         set to INVALID_LINE
+ *   validArg  - is set to true if the command is valid.
+ *   fRow      - the row argument of the piece in case validArg is set to true and the command is not save.
+ *   fCol      - the column argument of the piece in case validArg is set to true and the command is not save.
+ *   toRow     - the row argument to move the piece to in case validArg is set to true and the command is move.
+ *   toCol     - the column argument to move the piece to in case validArg is set to true and the command is move.
+ */
+CHCommand parseMove(char * cur,char delimiter[8]);
+
+/**
+ * Parses a get_moves line. if the command is not correct its return the according value in order that the calling function will
+ * find the reason to the problem. incorrect line or column, or invalid argument.
+ *
+ * @param cur - a string represent the command.
+ * @param delimiter - a string represent the command delimiters.
+ *
+ * @return
+ * A parsed line such that:
+ *   cmd - CH_GET_MOVES command, if the line is invalid then this field is
+ *         set to INVALID_LINE
+ *   validArg  - is set to true if the command is valid.
+ *   fRow      - the row argument of the piece in case validArg is set to true and the command is not save.
+ *   fCol      - the column argument of the piece in case validArg is set to true and the command is not save.
+ *   toRow     - the row argument to move the piece to in case validArg is set to true and the command is move.
+ *   toCol     - the column argument to move the piece to in case validArg is set to true and the command is move.
+ */
+CHCommand parseGetMoves(char *cur,char delimiter[8]);
 
 #endif /* CHPARSER_H_ */

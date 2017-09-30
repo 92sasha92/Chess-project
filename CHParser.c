@@ -1,23 +1,22 @@
 #include "CHParser.h"
 
 
-CHCommand parseMove(char * cur,char delimiter[8]){
+CHCommand parseMove(char * cur,char delimiter[8]) {
     int i;
     char x,y,z;
     CHCommand command;
-    command.cmd = CH_INVALID_LINE;
+    command.cmd = CH_INVALID_LINE; // initialize command
     command.validArg = false;
-    if((cur = strtok(NULL,delimiter)) == NULL){
+    if((cur = strtok(NULL,delimiter)) == NULL)
         return command;
-    }
-    for(i = 0;i < 2;i++){
+    for(i = 0;i < 2; i++){
         if(cur[0]=='<'){
             cur++;
-            x = cur[0];
+            x = cur[0]; // set 'x' to the row
             cur++;
-            if(x > '0' && x < '9' ){
+            if (x > '0' && x < '9' ) {
                 z = cur[0];
-                while(z >= '0' && z <= '9' ){
+                while(z >= '0' && z <= '9' ) {
                     cur++;
                     z = cur[0];
                     command.validArg = false;
@@ -25,7 +24,7 @@ CHCommand parseMove(char * cur,char delimiter[8]){
                 if(cur[0] != ',')
                     return command;
                 cur++;
-                y = cur[0];
+                y = cur[0]; // set 'y' to the column
                 cur++;
                 if (y >= 'A' && y <= 'H') {
                     if (i == 0) {
@@ -49,9 +48,8 @@ CHCommand parseMove(char * cur,char delimiter[8]){
                 command.validArg = false;
             if (i == 0 &&(cur = strtok(NULL,delimiter)) == NULL)
                 return command;
-        } else {
+        } else  // error in the command
             return command;
-        }
         if (i == 0) {
             if (strcmp(cur, "to") != 0)
                 return command;
@@ -64,7 +62,7 @@ CHCommand parseMove(char * cur,char delimiter[8]){
 }
 
 
-CHCommand parseGetMoves(char *cur,char delimiter[8]){
+CHCommand parseGetMoves(char *cur,char delimiter[8]) {
     char x,y;
     CHCommand command;
     command.cmd = CH_INVALID_LINE;
