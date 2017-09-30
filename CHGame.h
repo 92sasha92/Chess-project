@@ -33,6 +33,7 @@ typedef enum ch_fiar_game_message_t {
 	CH_GAME_NO_MOVES,
 	CH_GAME_MEMORY_PROBLEM,
 	CH_GAME_SUCCESS,
+	CH_LOAD_GAME_SUCCESS,
 	CH_GAME_FILE_PROBLEM,
   	CH_GAME_BLACK_WINS,
   	CH_GAME_WHITE_WINS,
@@ -98,7 +99,7 @@ void chGameDestroy(CHGame* src);
  * CH_GAME_NO_MOVES - if there isn't any moves for this piece
  * CH_GAME_SUCCESS - otherwise
  */
-CH_GAME_MESSAGE chGameGetMoves(CHGame* src, int fRow,int fCol,Widget *widget, bool isGuiMode);
+CH_GAME_MESSAGE chGameGetMoves(CHGame* src, int fRow,int fCol,Widget *gameBoardWidget, bool isGuiMode);
 
 /**
  * Sets the next move in a given game by specifying the position of the piece and where to move it.

@@ -48,8 +48,8 @@ Widget** createSimpleDifficultyWindowWidgets(SDL_Renderer* renderer) {
 	SDL_Rect moderateR = { .x = 404, .y = 160, .h = 80, .w = 296};
 	SDL_Rect hardR = { .x = 404, .y = 240, .h = 80, .w = 296};
 
-	widgets[0] = createSimpleButton(renderer, &noobR, "./graphics/images/noobBtn.bmp",NULL,CH_BTN_EASY,0,BTN_ACTIVE);
-	widgets[1] = createSimpleButton(renderer, &easyR, "./graphics/images/easyBtn.bmp",NULL,CH_BTN_NOOB,1,BTN_ACTIVE);
+	widgets[0] = createSimpleButton(renderer, &noobR, "./graphics/images/noobBtn.bmp",NULL,CH_BTN_NOOB,0,BTN_ACTIVE);
+	widgets[1] = createSimpleButton(renderer, &easyR, "./graphics/images/easyBtn.bmp",NULL,CH_BTN_EASY,1,BTN_ACTIVE);
 	widgets[2] = createSimpleButton(renderer, &moderateR, "./graphics/images/moderateBtn.bmp",NULL,CH_BTN_MODERATE,0,BTN_ACTIVE);
 	widgets[3] = createSimpleButton(renderer, &hardR, "./graphics/images/hardBtn.bmp",NULL,CH_BTN_HARD,0,BTN_ACTIVE);
 	widgets[4] = createSimpleButton(renderer, &backR, "./graphics/images/backBtn.bmp",NULL,CH_BTN_BACK,0,BTN_ACTIVE);

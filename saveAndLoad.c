@@ -44,7 +44,7 @@ CH_GAME_MESSAGE load(char *path, CHGame *src, int *currentTurn, int *gameMode, i
 	char buf[20];
 	FILE *fp = fopen(path,"r");
 	if (fp == NULL) {
-		printf("Error: File doesn't exist or cannot be opened\n");
+		printf("ERROR: File doesn't exist or cannot be opened\n");
 		return CH_GAME_FILE_PROBLEM;
 	}
 	fscanf(fp, "%*[^\n]");
@@ -199,9 +199,9 @@ CH_GAME_MESSAGE chGuiSave(CHGame* src) {
 }
 
 CH_GAME_MESSAGE chGuiLoad(CHGame* src,int slot){
-	int erCheck = 0;
+	CH_GAME_MESSAGE erCheck;
 	if (!src){
-		printf("Error: malloc has failed\n");
+		printf("ERROR: malloc has failed\n");
 		return CH_GAME_MEMORY_PROBLEM;
 	}
 	int currentTurn = 1;
@@ -225,10 +225,10 @@ CH_GAME_MESSAGE chGuiLoad(CHGame* src,int slot){
 		erCheck = load("./savedGames/gameSlot5.xml",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
 		break;
 	}
-	if(erCheck == -1){
+	if(erCheck == CH_GAME_FILE_PROBLEM){
 		return CH_GAME_FILE_PROBLEM;
 	}else{
-		return CH_GAME_SUCCESS;
+		return CH_LOAD_GAME_SUCCESS;
 	}
 }
 

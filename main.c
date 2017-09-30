@@ -16,15 +16,17 @@ int main(int argc, char** argv) {
 	setGuiMode(argc, argv, &isGuiMode);
 	int draw = 1;
 	char strCommand[MAX_LINE_SIZE];
-	CHMoveNode *best_move = (CHMoveNode *) malloc(sizeof(CHMoveNode));
-	if (!best_move)
-		return 0;
+
 	CHCommand command;
 	SPWindow* window;
 	SDL_Event event;
 	CHGame *game = startSettingsMode(isGuiMode);
 	if (!game){
-		free(best_move);
+		return 0;
+	}
+	CHMoveNode *best_move = (CHMoveNode *) malloc(sizeof(CHMoveNode));
+	if (!best_move){
+		chGameDestroy(game);
 		return 0;
 	}
 	if (isGuiMode) {

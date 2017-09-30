@@ -48,7 +48,7 @@ Widget** createSimpleColorWindowWidgets(SDL_Renderer* renderer) {
 	widgets[0] = createSimpleButton(renderer, &kingBlackR, "./graphics/images/kingBlackBtn.bmp",NULL,CH_BTN_BLACK_COLOR,0,BTN_ACTIVE);
 	widgets[1] = createSimpleButton(renderer, &kingWhiteR, "./graphics/images/kingWhiteBtn.bmp",NULL,CH_BTN_WHITE_COLOR,1,BTN_ACTIVE);
 	widgets[2] = createSimpleButton(renderer, &backR, "./graphics/images/backBtn.bmp",NULL,CH_BTN_BACK,0,BTN_ACTIVE);
-	widgets[3] = createSimpleButton(renderer, &nextR, "./graphics/images/nextBtn.bmp",NULL,CH_BTN_NEXT,0,BTN_ACTIVE);
+	widgets[3] = createSimpleButton(renderer, &nextR, "./graphics/images/startBtn.bmp",NULL,CH_BTN_START,0,BTN_ACTIVE);
 	if (widgets[0] == NULL || widgets[1] == NULL || widgets[2] == NULL || widgets[3] == NULL) {
 		for(i = 0;i < numOfWidgets;i++){
 			destroyWidget(widgets[i]);

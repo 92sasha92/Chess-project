@@ -13,9 +13,14 @@ int userColor = 1;
 int currentTurn = 1;
 
 
+void seMessageTerminate(){
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "ERROR",
+			"A problem occurred, the program is terminated", NULL );
+	SDL_Quit();
+	exit(0);
+}
 
-
-void setGameMode(int modeNum){
+void seSetGameMode(int modeNum){
 	if (modeNum != 1 &&  modeNum != 2){
 		printf("Wrong game mode\n");
 	}
@@ -31,7 +36,7 @@ void setGameMode(int modeNum){
 	}
 }
 
-void setDifficulty(int difficultyNum){
+void seSetDifficulty(int difficultyNum){
 	if(difficultyNum <= 0 || 5 < difficultyNum){
 		printf("Wrong difficulty level. The value should be between 1 to 5\n");
 	}
@@ -43,20 +48,20 @@ void setDifficulty(int difficultyNum){
 	}
 }
 
-void setDefault(){
+void seSetDefault(){
 	gameMode = 1;
 	gameDifficulty = 2;
 	userColor = 1;
 	currentTurn = 1;
 }
 
-void setUserColor(int userColorNum){
+void seSetUserColor(int userColorNum){
 	if(userColorNum == 0 || userColorNum == 1){
 		userColor = userColorNum;
 	}
 }
 
-void printSettings(){
+void sePrintSettings(){
 	if(gameMode == 1){
 		printf("SETTINGS:\n");
 		printf("GAME_MODE: 1\n");
@@ -72,22 +77,171 @@ void printSettings(){
 	}
 }
 
+
+void seSetSlotEventHandle(SDL_Event event,SPWindow* window){
+	SPSimpleWindow *simpleWindow =(SPSimpleWindow *)window->data;
+	if(event.user.code == EVENT_SET_SLOT_1){
+		pressSlotChange(window,1);
+		if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
+			updateTextureBtn(simpleWindow->widgets[1],1);
+		}
+	}else if(event.user.code == EVENT_SET_SLOT_2){
+		pressSlotChange(window,2);
+		if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
+			updateTextureBtn(simpleWindow->widgets[1],1);
+		}
+	}else if(event.user.code == EVENT_SET_SLOT_3){
+		pressSlotChange(window,3);
+		if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
+			updateTextureBtn(simpleWindow->widgets[1],1);
+		}
+	}else if(event.user.code == EVENT_SET_SLOT_4){
+		pressSlotChange(window,4);
+		if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
+			updateTextureBtn(simpleWindow->widgets[1],1);
+		}
+	}else if(event.user.code == EVENT_SET_SLOT_5){
+		pressSlotChange(window,5);
+		if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
+			updateTextureBtn(simpleWindow->widgets[1],1);
+		}
+	}
+}
+
+void seBackEventHandle(SPWindow** window,SDL_Event *event){
+	SPSimpleWindow *simpleWindow =(SPSimpleWindow *)(*window)->data;
+	if(simpleWindow->type == CH_WINDOW_MODE || simpleWindow->type == CH_WINDOW_LOAD){
+		destroyWindow(*window);
+		*window = createSimpleStartWindow();
+		if (*window == NULL ) {
+			printf("ERROR: unable to create start window: %s\n", SDL_GetError());
+			seMessageTerminate();
+		}
+	}else if(simpleWindow->type == CH_WINDOW_DIFFICULTY){
+		destroyWindow(*window);
+		*window = createSimpleModeWindow();
+		if (*window == NULL ) {
+			printf("ERROR: unable to create difficulty window: %s\n", SDL_GetError());
+			seMessageTerminate();
+		}
+	}else if(simpleWindow->type == CH_WINDOW_COLOR){
+		destroyWindow(*window);
+		*window = createSimpleDifficultyWindow();
+		if (*window == NULL ) {
+			printf("ERROR: unable to create difficulty window: %s\n", SDL_GetError());
+			seMessageTerminate();
+		}
+		pressDifficultyChange(*window,gameDifficulty);
+	}
+	SDL_WaitEvent(event);
+}
+
+void seSetDifficultyEventHandle(SPWindow** window,SDL_Event event){
+	if(event.user.code == EVENT_DIFFICULTY_NOOB){
+		seSetDifficulty(1);
+		pressDifficultyChange(*window,1);
+	}else if(event.user.code == EVENT_DIFFICULTY_EASY){
+		seSetDifficulty(2);
+		pressDifficultyChange(*window,2);
+	}else if(event.user.code == EVENT_DIFFICULTY_MODERATE){
+		seSetDifficulty(3);
+		pressDifficultyChange(*window,3);
+	}else if(event.user.code == EVENT_DIFFICULTY_HARD){
+		seSetDifficulty(4);
+		pressDifficultyChange(*window,4);
+	}
+}
+
+void seNextEventHandle(SPWindow** window,SDL_Event *event){
+	SPSimpleWindow *simpleWindow =(SPSimpleWindow *)(*window)->data;
+	if(simpleWindow->type == CH_WINDOW_MODE){
+		destroyWindow(*window);
+		*window = createSimpleDifficultyWindow();
+		if (*window == NULL ) {
+			printf("ERROR: unable to create difficulty window: %s\n", SDL_GetError());
+			seMessageTerminate();
+		}
+		pressDifficultyChange(*window,gameDifficulty);
+		SDL_WaitEvent(event);
+	}else if(simpleWindow->type == CH_WINDOW_DIFFICULTY){
+		destroyWindow(*window);
+		*window = createSimpleColorWindow();
+		if (*window == NULL ) {
+			printf("ERROR: unable to create choose color window: %s\n", SDL_GetError());
+			seMessageTerminate();
+		}
+		pressColorChange(*window,userColor);
+		SDL_WaitEvent(event);
+	}
+}
+
+void seSetModeEventHandle(SPWindow** window,SDL_Event event){
+    if(event.user.code == EVENT_SET_COLOR_WHITE){
+    	seSetUserColor(1);
+		pressColorChange(*window,1);
+    }else if(event.user.code == EVENT_SET_COLOR_BLACK){
+    	seSetUserColor(0);
+		pressColorChange(*window,0);
+	}
+}
+
+void seShowModeWindowEventHandle(SPWindow** window,SDL_Event *event){
+	destroyWindow(*window);
+	*window = createSimpleModeWindow();
+	if (*window == NULL ) {
+		printf("ERROR: unable to create mode window: %s\n", SDL_GetError());
+		seMessageTerminate();
+	}
+	pressModeChange(*window,gameMode);
+	SDL_WaitEvent(event);
+}
+
+CH_GAME_MESSAGE seLoadWindowEventHandle(SPWindow** window,SDL_Event *event, CHGame** src){
+	SPSimpleWindow *simpleWindow =(SPSimpleWindow *)(*window)->data;
+	int slot;
+	CH_GAME_MESSAGE mes;
+	if(simpleWindow->type == CH_WINDOW_START){
+		destroyWindow(*window);
+		*window = createLoadWindow();
+		if(*window == NULL){
+			printf("ERROR: unable to create load window: %s\n", SDL_GetError());
+			seMessageTerminate();
+		}
+	}else if(simpleWindow->type == CH_WINDOW_LOAD){
+		slot = getSlotPressed(*window);
+		if(slot > 0){
+			*src = (CHGame*) malloc(sizeof(CHGame)); /* allocate place in memory */
+			mes = chGuiLoad(*src,slot);
+			if(mes == CH_GAME_FILE_PROBLEM){
+				free(*src);
+				*src = NULL;
+			}else if(mes == CH_GAME_MEMORY_PROBLEM){
+				*src = NULL;
+			}else{
+				destroyWindow(*window);
+			}
+			return mes;
+		}
+	}
+	SDL_WaitEvent(event);
+	return CH_GAME_SUCCESS;
+}
+
 CHGame *seGuiActiveHandle(){
 	SPWindow* window;
 	CHGame* src;
-	int slot;
+	SDL_Event event;
+	bool drawWindow = true;
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) { //SDL2 INIT
 		printf("ERROR: unable to init SDL: %s\n", SDL_GetError());
 		return NULL;
 	}
 	window = createSimpleStartWindow();
 	if (window == NULL ) {
-		SDL_Quit();
+		printf("ERROR: unable to create start window: %s\n", SDL_GetError());
+		seMessageTerminate();
 		return NULL;
 	}
-	SPSimpleWindow *simpleWindow =(SPSimpleWindow *)window->data;
-	SDL_Event event;
-	int flag = 1;
 	while (1) {
 		SDL_WaitEvent(&event);
 		if(event.type == SDL_QUIT){
@@ -96,128 +250,41 @@ CHGame *seGuiActiveHandle(){
 			return NULL;
 		}else if(event.type == SDL_USEREVENT){
 			if(event.user.code == EVENT_SHOW_GAME_MODE_SCREEN){
-				destroyWindow(window);
-				window = createSimpleModeWindow();
-				simpleWindow =(SPSimpleWindow *)window->data;
-				pressModeChange(window,gameMode);
-				SDL_WaitEvent(&event);
+				seShowModeWindowEventHandle(&window, &event);
 			}else if(event.user.code == EVENT_LOAD_WINDOW){
-				if(simpleWindow->type == CH_WINDOW_START){
-					destroyWindow(window);
-					window = createLoadWindow();
-				}else if(simpleWindow->type == CH_WINDOW_LOAD){
-					slot = getSlotPressed(window);
-					destroyWindow(window);
-					if(slot > 0){
-						src = (CHGame*) malloc(sizeof(CHGame)); /* allocate place in memory */
-						if(chGuiLoad(src,slot) != CH_GAME_SUCCESS){
-							return NULL;
-						}else{
-							return src;
-						}
-					}
-				}
-				simpleWindow =(SPSimpleWindow *)window->data;
-				SDL_WaitEvent(&event);
+				if(seLoadWindowEventHandle(&window, &event, &src) == CH_LOAD_GAME_SUCCESS)
+					return src;
 			}else if(event.user.code == EVENT_UPDATE_TO_ONE_PLAYER){
-				setGameMode(1);
+				seSetGameMode(1);
 			}else if(event.user.code == EVENT_UPDATE_TO_TWO_PLAYERS){
-				setGameMode(2);
+				seSetGameMode(2);
 			}else if(event.user.code == EVENT_START_GAME){
 				destroyWindow(window);
 				break;
 			}else if(event.user.code == EVENT_NEXT){
-				if(simpleWindow->type == CH_WINDOW_MODE){
-					destroyWindow(window);
-					window = createSimpleDifficultyWindow();
-					pressDifficultyChange(window,gameDifficulty);
-					simpleWindow =(SPSimpleWindow *)window->data;
-					SDL_WaitEvent(&event);
-				}else if(simpleWindow->type == CH_WINDOW_DIFFICULTY){
-					destroyWindow(window);
-					window = createSimpleColorWindow();
-					pressColorChange(window,userColor);
-					simpleWindow =(SPSimpleWindow *)window->data;
-					SDL_WaitEvent(&event);
-				}else if(simpleWindow->type == CH_WINDOW_COLOR){
-					destroyWindow(window);
-					break;
-				}
+				seNextEventHandle(&window, &event);
 			}else if(event.user.code == EVENT_BACK){
-				if(simpleWindow->type == CH_WINDOW_MODE || simpleWindow->type == CH_WINDOW_LOAD){
-					destroyWindow(window);
-					window = createSimpleStartWindow();
-					simpleWindow =(SPSimpleWindow *)window->data;
-					SDL_WaitEvent(&event);
-				}else if(simpleWindow->type == CH_WINDOW_DIFFICULTY){
-					destroyWindow(window);
-					window = createSimpleModeWindow();
-					simpleWindow =(SPSimpleWindow *)window->data;
-					SDL_WaitEvent(&event);
-				}else if(simpleWindow->type == CH_WINDOW_COLOR){
-					destroyWindow(window);
-					window = createSimpleDifficultyWindow();
-					pressDifficultyChange(window,gameDifficulty);
-					simpleWindow =(SPSimpleWindow *)window->data;
-					SDL_WaitEvent(&event);
-				}
-			}else if(event.user.code == EVENT_DIFFICULTY_EASY){
-				setDifficulty(1);
-				pressDifficultyChange(window,1);
-			}else if(event.user.code == EVENT_DIFFICULTY_NOOB){
-				setDifficulty(2);
-				pressDifficultyChange(window,2);
-			}else if(event.user.code == EVENT_DIFFICULTY_MODERATE){
-				setDifficulty(3);
-				pressDifficultyChange(window,3);
-			}else if(event.user.code == EVENT_DIFFICULTY_HARD){
-				setDifficulty(4);
-				pressDifficultyChange(window,4);
-			}else if(event.user.code == EVENT_SET_COLOR_WHITE){
-				setUserColor(1);
-				pressColorChange(window,1);
-			}else if(event.user.code == EVENT_SET_COLOR_BLACK){
-				setUserColor(0);
-				pressColorChange(window,0);
-			}else if(event.user.code == EVENT_SET_SLOT_1){
-				pressSlotChange(window,1);
-				if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
-					updateTextureBtn(simpleWindow->widgets[1],1);
-				}
-			}else if(event.user.code == EVENT_SET_SLOT_2){
-				pressSlotChange(window,2);
-				if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
-					updateTextureBtn(simpleWindow->widgets[1],1);
-				}
-			}else if(event.user.code == EVENT_SET_SLOT_3){
-				pressSlotChange(window,3);
-				if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
-					updateTextureBtn(simpleWindow->widgets[1],1);
-				}
-			}else if(event.user.code == EVENT_SET_SLOT_4){
-				pressSlotChange(window,4);
-				if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
-					updateTextureBtn(simpleWindow->widgets[1],1);
-				}
-			}else if(event.user.code == EVENT_SET_SLOT_5){
-				pressSlotChange(window,5);
-				if(!(((SimpleButton*) simpleWindow->widgets[1]->data)->isActive)){
-					updateTextureBtn(simpleWindow->widgets[1],1);
-				}
+				seBackEventHandle(&window,&event);
+			}else if(event.user.code >= EVENT_DIFFICULTY_NOOB && event.user.code <= EVENT_DIFFICULTY_HARD){
+				seSetDifficultyEventHandle(&window, event);
+			}else if(event.user.code >= EVENT_SET_COLOR_WHITE && event.user.code <= EVENT_SET_COLOR_BLACK){
+				seSetModeEventHandle(&window, event);
+			}else if(event.user.code >= EVENT_SET_SLOT_1 && event.user.code <= EVENT_SET_SLOT_5){
+				seSetSlotEventHandle(event,window);
 			}
-			flag = 1;
+			drawWindow = true;
 		}
 		window->handleEventWindow(window,&event);
-		if(flag == 1){
+		if(drawWindow == true){
 			window->drawWindow(window);
-			flag = 0;
+			drawWindow = false;
 		}
 	}
 	src = chGameCreate(gameMode,userColor,gameDifficulty,currentTurn);
 	return src;
 }
 
-CHGame* loadCommandHandle(bool *isLoaded, SECommand command){
+CHGame* seloadCommandHandle(bool *isLoaded, SECommand command){
 	CHGame* src;
 	if(command.validArg){
 		src = (CHGame*) malloc(sizeof(CHGame)); /* allocate place in memory */
@@ -226,12 +293,12 @@ CHGame* loadCommandHandle(bool *isLoaded, SECommand command){
 			return NULL;
 		}
 		if(load(command.path,src,&currentTurn,&gameMode,&gameDifficulty,&userColor)!= CH_GAME_SUCCESS){
-			setDefault();
+			seSetDefault();
 			free(src);
 			return NULL;
 		}
 		else{
-			*isLoaded = 1;
+			*isLoaded = true;
 			return src;
 		}
 	}
@@ -243,7 +310,7 @@ CHGame* loadCommandHandle(bool *isLoaded, SECommand command){
 CHGame* startSettingsMode(bool isGuiMode) {
 	char strCommand[MAX_LINE_SIZE];
 	SECommand command;
-	CHGame* src;
+	CHGame* src = NULL;
 	bool isLoaded = 0;
 	printf(
 			"Specify game setting or type 'start' to begin a game with the current setting:\n");
@@ -255,29 +322,27 @@ CHGame* startSettingsMode(bool isGuiMode) {
 			command = seParserPraseLine(strCommand);
 			if(command.cmd == SE_GAME_MODE) {
 				if(command.validArg)
-				   setGameMode(command.arg);
+					seSetGameMode(command.arg);
 				else
 				   printf("ERROR: invalid argument\n");
 			} else if(command.cmd == SE_DIFFICULTY) {
 				if(gameMode == 1)
-					setDifficulty(command.arg);
+					seSetDifficulty(command.arg);
 				else
 					printf("ERROR: invalid Command\n");
 			} else if(command.cmd == SE_USER_COLOR){
 				if(gameMode == 1){
 					if(command.validArg)
-						setUserColor(command.arg);
-	//				else
-	//					printf("ERROR: invalid argument\n");
+						seSetUserColor(command.arg);
 				}
 				else
 					printf("ERROR: invalid Command\n");
 			} else if(command.cmd == SE_LOAD){
-				src = loadCommandHandle(&isLoaded, command);
+				src = seloadCommandHandle(&isLoaded, command);
 			} else if(command.cmd == SE_DEFAULT){
-				setDefault();
+				seSetDefault();
 			} else if(command.cmd == SE_PRINT_SETTINGS){
-				printSettings();
+				sePrintSettings();
 			} else if(command.cmd == SE_QUIT){
 				printf("Exiting...\n");
 				chGameDestroy(src);
