@@ -20,13 +20,13 @@
 #define KING_SCORE 100
 
 #define WIN_SCORE INT32_MAX
-#define LOOSE_SCORE INT32_MIN
+#define LOSE_SCORE INT32_MIN
 #define TIE_SCORE -1000
 
 typedef struct Move {
   int best_score;
   int best_depth;
-  char peice;
+  char piece;
 } BestMove;
 
 /** return the the score of that specific piece.
@@ -56,17 +56,6 @@ int get_board_score(int maximizer, CHGame* src);
  */
 CHMoveNode* set_cur_best_move(char piece, CHMoveNode* best_move, int i, int j, CHMovesList* cur_piece_moves_list);
 
-/** recursive function to compute the best option of the opponent of the maximizer to move, use from depth 2.
- * @param src - the game struct.
- * @param depth - the maximum depth to calculate the scoring function.
- * @param a - alpha value, used to cut off if there is no need to keep calculate the scoring of the sub-tree. use in maximum level.
- * @param b - beta value, used to cut off if there is no need to keep calculate the scoring of the sub-tree. use in minimum level.
- * @param maximizer - the player hwo call the function.
- * @return
- * the optimal score for this sub tree in respect to the minimum or maximum level.
- */
-BestMove min_rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer, bool isGuiMode);
-
 /** recursive function to compute the best option of the maximizer to move, use from depth 2.
  * @param src - the game struct.
  * @param depth - the maximum depth to calculate the scoring function.
@@ -78,6 +67,17 @@ BestMove min_rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer, 
  */
 BestMove max_rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer, bool isGuiMode);
 
+/** recursive function to compute the best option of the opponent of the maximizer to move, use from depth 2.
+ * @param src - the game struct.
+ * @param depth - the maximum depth to calculate the scoring function.
+ * @param a - alpha value, used to cut off if there is no need to keep calculate the scoring of the sub-tree. use in maximum level.
+ * @param b - beta value, used to cut off if there is no need to keep calculate the scoring of the sub-tree. use in minimum level.
+ * @param maximizer - the player hwo call the function.
+ * @return
+ * the optimal score for this sub tree in respect to the minimum or maximum level.
+ */
+BestMove min_rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer, bool isGuiMode);
+
 /** compute the best option to move.
  * @param src - the game struct.
  * @param depth - the maximum depth to calculate the scoring function.
@@ -88,6 +88,47 @@ BestMove max_rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer, 
  */
 CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* best_move, bool isGuiMode );
 
+/** compute the best option to do pawn promotion.
+ * @param src - the game struct.
+ * @param depth - the maximum depth to calculate the scoring function.
+ * @param a - alpha value, used to cut off if there is no need to keep calculate the scoring of the sub-tree. use in maximum level.
+ * @param b - beta value, used to cut off if there is no need to keep calculate the scoring of the sub-tree. use in minimum level.
+ * @param maximizer - the player hwo call the function.
+ * @param roRow - the row the piece has moved to.
+ * @param toCol - the column the piece has moved to.
+ * @param isGuiMode - flag that set to true if gui is in use
+ * @return
+ * struct of the the optimal piece to move and where to move it. (the data will set in the best_move struct)
+ */
 BestMove pawn_promotion_rec_alphabeta(CHGame* src, int depth , int a, int b, int maximizer , int toRow, int toCol, bool isGuiMode);
+
+/** compute the specific pawn promotion and update best_move if need to.
+ * @param piece - the piece to promote to.
+ * @param src - the game struct.
+ * @param depth - the maximum depth to calculate the scoring function.
+ * @param a - alpha value, used to cut off if there is no need to keep calculate the scoring of the sub-tree. use in maximum level.
+ * @param b - beta value, used to cut off if there is no need to keep calculate the scoring of the sub-tree. use in minimum level.
+ * @param maximizer - the player hwo call the function.
+ * @param roRow - the row the piece has moved to.
+ * @param toCol - the column the piece has moved to.
+ * @param isGuiMode - flag that set to true if gui is in use
+ * @return
+ */
+void setMaxPawnPromotion(char piece, BestMove *best_move, CHGame* src, int depth , int a, int b, int maximizer , int toRow, int toCol, bool isGuiMode);
+
+/** compute the specific pawn promotion and update best_move if need to.
+ * @param piece - the piece to promote to.
+ * @param src - the game struct.
+ * @param depth - the maximum depth to calculate the scoring function.
+ * @param a - alpha value, used to cut off if there is no need to keep calculate the scoring of the sub-tree. use in maximum level.
+ * @param b - beta value, used to cut off if there is no need to keep calculate the scoring of the sub-tree. use in minimum level.
+ * @param maximizer - the player hwo call the function.
+ * @param roRow - the row the piece has moved to.
+ * @param toCol - the column the piece has moved to.
+ * @param isGuiMode - flag that set to true if gui is in use
+ * @return
+ */
+
+void setMinPawnPromotion(char piece, BestMove *best_move, CHGame* src, int depth , int a, int b, int maximizer , int toRow, int toCol, bool isGuiMode);
 
 #endif //CHESS_PROJECT_CHMINIMAX_H

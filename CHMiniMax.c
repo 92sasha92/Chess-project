@@ -33,9 +33,9 @@ int get_piece_score(char piece, int maximizer){
                     return 0;
     }
     if ((isABlackPiece(piece) && (maximizer == 0)) || (isAWhitePiece(piece) && (maximizer == 1))) {
-        return piece_score;
+        return piece_score; // piece is belong to maximizer
     }
-    return (piece_score * (-1));
+    return (piece_score * (-1)); // piece is not belong to maximizer
 }
 
 
@@ -46,13 +46,11 @@ int get_board_score(int maximizer, CHGame* src){
         if(maximizer != src->currentTurn){
             return WIN_SCORE;
         }
-        return (WIN_SCORE * (-1));
+        return LOSE_SCORE;
     }
-
     if (winner == CH_GAME_TIE){
         return TIE_SCORE;
     }
-
     for (int i = 0; i < CH_GAME_N_ROWS; i++) {
         for (int j = 0; j < CH_GAME_N_COLUMNS; j++) {
             total_score += get_piece_score(src->gameBoard[i][j], maximizer);
@@ -81,7 +79,7 @@ BestMove max_rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer, 
     CH_GAME_MESSAGE mes;
     CHMovesList *cur_piece_moves_list = NULL, *node = NULL;
     int i, j, winner = chIsCheckmateOrTie(src);
-    if ((depth == 0) || (winner != CH_GAME_NO_WIN_OR_TIE)) {
+    if ((depth == 0) || (winner != CH_GAME_NO_WIN_OR_TIE)) { // stop recursion condition
         score.best_depth = depth;
         score.best_score = get_board_score(maximizer, src);
         return score;
@@ -97,12 +95,12 @@ BestMove max_rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer, 
                     return error_move;
                 }
                 if ((node->isValid)) {
-                    while (node != NULL) {
+                    while (node != NULL) { // checks all possible move for the piece in this location
                         mes = chGameSetMove(src, src->gameBoard[i][j], i, j, node->row, node->col, true, isGuiMode);
                         if (mes == CH_GAME_SUCCESS) {
                             if (((src->gameBoard[node->row][node->col] == CH_BLACK_PAWN) && (node->row == 0)) || ((src->gameBoard[node->row][node->col] == CH_WHITE_PAWN) && (node->row == CH_GAME_N_ROWS - 1))) {
-                                new_score = pawn_promotion_rec_alphabeta(src, depth, a, b, maximizer, node->row, node->col, isGuiMode);
-                                src->gameBoard[node->row][node->col] = new_score.peice;
+                                new_score = pawn_promotion_rec_alphabeta(src, depth, a, b, maximizer, node->row, node->col, isGuiMode); // pawn promotion case
+                                src->gameBoard[node->row][node->col] = new_score.piece;
                             } else {
                                 src->currentTurn = !(src->currentTurn);
                                 new_score = min_rec_alphabeta(src, depth - 1, a, b, maximizer, isGuiMode);
@@ -114,13 +112,13 @@ BestMove max_rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer, 
                             mes = chGameUndoPrevMove(src);
                             if (mes == CH_GAME_SUCCESS) {
                                 if ((score.best_score < new_score.best_score) || ((score.best_score == new_score.best_score) && (score.best_depth < new_score.best_depth))) {
-                                    score = new_score;
+                                    score = new_score; // update the current best option to move
                                     a = MAX(a, score.best_score);
                                     if (b < a)
                                         break;
                                 }
                             } else {
-                                printf("problem occurred when trying to undo move\n ");
+                                printf("ERROR: problem occurred when trying to undo move\n ");
                             }
                         }
                         node = node->next;
@@ -143,7 +141,7 @@ BestMove min_rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer, 
     CH_GAME_MESSAGE mes;
     CHMovesList *cur_piece_moves_list = NULL, *node = NULL;
     int i, j, winner = chIsCheckmateOrTie(src);
-    if ((depth == 0) || (winner != CH_GAME_NO_WIN_OR_TIE)) {
+    if ((depth == 0) || (winner != CH_GAME_NO_WIN_OR_TIE)) { // stop recursion condition
         score.best_depth = depth;
         score.best_score = get_board_score(maximizer, src);
         return score;
@@ -163,8 +161,8 @@ BestMove min_rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer, 
                         mes = chGameSetMove(src, src->gameBoard[i][j], i, j, node->row,node->col, true, isGuiMode);
                         if (mes == CH_GAME_SUCCESS){
                             if (((src->gameBoard[node->row][node->col] == CH_BLACK_PAWN) && (node->row == 0)) || ((src->gameBoard[node->row][node->col] == CH_WHITE_PAWN) && (node->row == CH_GAME_N_ROWS - 1))) {
-                                new_score = pawn_promotion_rec_alphabeta(src, depth , a, b, maximizer , node->row, node->col,isGuiMode);
-                                src->gameBoard[node->row][node->col] = new_score.peice;
+                                new_score = pawn_promotion_rec_alphabeta(src, depth , a, b, maximizer , node->row, node->col,isGuiMode); // pawn promotion case
+                                src->gameBoard[node->row][node->col] = new_score.piece;
                             } else {
                                 src->currentTurn = !(src->currentTurn);
                                 new_score = max_rec_alphabeta(src, depth - 1, a, b, maximizer, isGuiMode);
@@ -176,13 +174,13 @@ BestMove min_rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer, 
                             mes = chGameUndoPrevMove(src);
                             if (mes == CH_GAME_SUCCESS){
                                 if ((score.best_score > new_score.best_score) || ((score.best_score == new_score.best_score) && (score.best_depth < new_score.best_depth))){
-                                    score = new_score;
+                                    score = new_score; // update the current best option to move
                                     b = MIN(b, score.best_score);
                                     if (b <= a)
                                         break;
                                 }
                             } else {
-                                printf("problem occurred to undo move\n");
+                                printf("ERROR: problem occurred to undo move\n");
                             }
                         }
                         node = node->next;
@@ -202,7 +200,7 @@ void setMaxPawnPromotion(char piece, BestMove *best_move, CHGame* src, int depth
     cur_move = min_rec_alphabeta(src, depth - 1, a, b, maximizer, isGuiMode);
     if (cur_move.best_score > best_move->best_score) {
         best_move->best_score = cur_move.best_score;
-        best_move->peice = piece;
+        best_move->piece = piece;
     }
 }
 
@@ -213,28 +211,27 @@ void setMinPawnPromotion(char piece, BestMove *best_move, CHGame* src, int depth
     cur_move = max_rec_alphabeta(src, depth - 1, a, b, maximizer, isGuiMode);
     if (cur_move.best_score < best_move->best_score) {
         best_move->best_score = cur_move.best_score;
-        best_move->peice = piece;
+        best_move->piece = piece;
     }
 }
 
 
 BestMove pawn_promotion_rec_alphabeta(CHGame* src, int depth , int a, int b, int maximizer , int toRow, int toCol, bool isGuiMode) {
     BestMove best_move;
-    best_move.peice = '\0';
+    best_move.piece = '\0';
     if (src->currentTurn == maximizer) {
         best_move.best_score = INT32_MIN;
         if (src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL) {
             src->currentTurn = !(src->currentTurn);
-
+            // checks all options for pawn promotion
             setMaxPawnPromotion(CH_WHITE_QUEEN, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
             setMaxPawnPromotion(CH_WHITE_ROOK, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
             setMaxPawnPromotion(CH_WHITE_BISHOP, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
             setMaxPawnPromotion(CH_WHITE_KNIGHT, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
             setMaxPawnPromotion(CH_WHITE_PAWN, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
-
         } else {
             src->currentTurn = !(src->currentTurn);
-
+            // checks all options for pawn promotion
             setMaxPawnPromotion(CH_BLACK_QUEEN, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
             setMaxPawnPromotion(CH_BLACK_ROOK, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
             setMaxPawnPromotion(CH_BLACK_BISHOP, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
@@ -245,16 +242,15 @@ BestMove pawn_promotion_rec_alphabeta(CHGame* src, int depth , int a, int b, int
         best_move.best_score = INT32_MAX;
         if (src->currentTurn == CH_GAME_WHITE_PLAYER_SYMBOL) {
             src->currentTurn = !(src->currentTurn);
-
+            // checks all options for pawn promotion
             setMinPawnPromotion(CH_WHITE_QUEEN, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
             setMinPawnPromotion(CH_WHITE_ROOK, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
             setMinPawnPromotion(CH_WHITE_BISHOP, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
             setMinPawnPromotion(CH_WHITE_KNIGHT, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
             setMinPawnPromotion(CH_WHITE_PAWN, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
-
         } else {
             src->currentTurn = !(src->currentTurn);
-
+            // checks all options for pawn promotion
             setMinPawnPromotion(CH_BLACK_QUEEN, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
             setMinPawnPromotion(CH_BLACK_ROOK, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
             setMinPawnPromotion(CH_BLACK_BISHOP, &best_move, src,depth ,a, b, maximizer, toRow, toCol, isGuiMode);
@@ -270,7 +266,7 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
     if(src == NULL){
         return CH_GAME_INVALID_ARGUMENT;
     }
-    spArrayListDestroy(src->list);
+    spArrayListDestroy(src->list); // create new undo list, for the recursion.
     src->list = spArrayListCreate(depth);
     if (!(src->list))
         return CH_GAME_MEMORY_PROBLEM;
@@ -280,7 +276,7 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
     int i, j, a = INT32_MIN, b = INT32_MAX, winner = chIsCheckmateOrTie(src);
     if ((depth == 0) || (winner != CH_GAME_NO_WIN_OR_TIE))
         return CH_GAME_INVALID_ARGUMENT;
-    score.best_score = INT32_MIN;
+    score.best_score = INT32_MIN; // initialize the struct of the best move to be return
     score.best_depth = -1;
     for (i = 0; i < CH_GAME_N_ROWS; i++) {
         for (j = 0; j < CH_GAME_N_COLUMNS; j++) {
@@ -290,17 +286,17 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
                 return CH_GAME_MEMORY_PROBLEM;
             if ((cur_piece_moves_list->isValid)){
                 while (node != NULL) {
-                    mes = chGameSetMove(src, src->gameBoard[i][j], i, j, node->row,node->col, true, isGuiMode);
+                    mes = chGameSetMove(src, src->gameBoard[i][j], i, j, node->row, node->col, true, isGuiMode);
                     if (mes == CH_GAME_SUCCESS){
                         if (((src->gameBoard[node->row][node->col] == CH_BLACK_PAWN) && (node->row == 0)) || ((src->gameBoard[node->row][node->col] == CH_WHITE_PAWN) && (node->row == CH_GAME_N_ROWS - 1))) {
-                            new_score = pawn_promotion_rec_alphabeta(src, depth , a, b, maximizer , node->row, node->col, isGuiMode);
-                            src->gameBoard[node->row][node->col] = new_score.peice;
+                            new_score = pawn_promotion_rec_alphabeta(src, depth , a, b, maximizer , node->row, node->col, isGuiMode); // pawn promotion case
+                            src->gameBoard[node->row][node->col] = new_score.piece;
                         } else {
                             src->currentTurn = !(src->currentTurn);
                             new_score = min_rec_alphabeta(src, depth - 1, a, b, maximizer, isGuiMode);
-                            new_score.peice = src->gameBoard[node->row][node->col];
+                            new_score.piece = src->gameBoard[node->row][node->col];
                         }
-                        if (new_score.best_depth == CH_ERROR_MOVE_DEPTH) {
+                        if (new_score.best_depth == CH_ERROR_MOVE_DEPTH) { // error occured during the recursion
                             destroyMoveList(cur_piece_moves_list);
                             return CH_GAME_MEMORY_PROBLEM;
                         }
@@ -308,9 +304,9 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
                         if (mes == CH_GAME_SUCCESS){
                             if ((score.best_score < new_score.best_score) || ((score.best_score == new_score.best_score) && (score.best_depth < new_score.best_depth))){
                                 score = new_score;
-                                set_cur_best_move(score.peice, best_move, i, j, node);
+                                set_cur_best_move(score.piece, best_move, i, j, node);
                             }
-                            a = MAX(a, score.best_score);
+                            a = MAX(a, score.best_score); // alpha beta pruning
                             if (b <= a)
                                 break;
                         } else

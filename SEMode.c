@@ -252,7 +252,7 @@ CHGame *seGuiActiveHandle(){
 			if(event.user.code == EVENT_SHOW_GAME_MODE_SCREEN){
 				seShowModeWindowEventHandle(&window, &event);
 			}else if(event.user.code == EVENT_LOAD_WINDOW){
-				if(seLoadWindowEventHandle(&window, &event, &src) == CH_LOAD_GAME_SUCCESS)
+				if(seLoadWindowEventHandle(&window, &event, &src) == CH_GAME_LOAD_SUCCESS)
 					return src;
 			}else if(event.user.code == EVENT_UPDATE_TO_ONE_PLAYER){
 				seSetGameMode(1);
