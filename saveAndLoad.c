@@ -4,6 +4,12 @@
 #include "CHGame.h"
 
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include "CHGame.h"
+
+
 CH_GAME_MESSAGE readBoard(FILE *fp,CHGame *src) {
 	int i, j;
 	char strMark[10];
@@ -34,7 +40,7 @@ CH_GAME_MESSAGE readBoard(FILE *fp,CHGame *src) {
 }
 
 
-CH_GAME_MESSAGE exitload(FILE *fp){
+CH_GAME_MESSAGE exitload(FILE *fp) {
 	fclose(fp);
 	return CH_GAME_INVALID_ARGUMENT;
 }
@@ -45,7 +51,7 @@ CH_GAME_MESSAGE load(char *path, CHGame *src, int *currentTurn, int *gameMode, i
 	CH_GAME_MESSAGE mes;
 	FILE *fp = fopen(path,"r");
 	if (fp == NULL) {
-		printf("Error: File doesn’t exist or cannot be opened\n");
+		printf("Error: File doesn't exist or cannot be opened\n");
 		return CH_GAME_FILE_PROBLEM;
 	}
 	fscanf(fp, "%*[^\n]");
@@ -57,7 +63,7 @@ CH_GAME_MESSAGE load(char *path, CHGame *src, int *currentTurn, int *gameMode, i
 	if (strcmp(buf,"<current_turn>") != 0)
 		return exitload(fp);
 	fscanf(fp, "%d",currentTurn);
-    fscanf(fp,"%15s",buf);
+	fscanf(fp,"%15s",buf);
 	if (strcmp(buf,"</current_turn>") != 0)
 		return exitload(fp);
 	fscanf(fp, "%*[^\n]");
@@ -65,16 +71,16 @@ CH_GAME_MESSAGE load(char *path, CHGame *src, int *currentTurn, int *gameMode, i
 	if(strcmp(buf,"<game_mode>") != 0)
 		return exitload(fp);
 	fscanf(fp, "%d",gameMode);
-    fscanf(fp,"%12s",buf);
+	fscanf(fp,"%12s",buf);
 	if (strcmp(buf,"</game_mode>") != 0)
 		return exitload(fp);
 	fscanf(fp, "%*[^\n]");
-	if (*gameMode != 2) {
+	if (*gameMode == 1) {
 		fscanf(fp,"%12s",buf);
 		if (strcmp(buf,"<difficulty>") != 0)
 			return exitload(fp);
 		fscanf(fp, "%d",gameDifficulty);
-	    fscanf(fp,"%13s",buf);
+		fscanf(fp,"%13s",buf);
 		if (strcmp(buf,"</difficulty>") != 0)
 			return exitload(fp);
 		fscanf(fp, "%*[^\n]");
@@ -82,12 +88,12 @@ CH_GAME_MESSAGE load(char *path, CHGame *src, int *currentTurn, int *gameMode, i
 		if (strcmp(buf,"<user_color>") != 0)
 			return exitload(fp);
 		fscanf(fp, "%d",userColor);
-	    fscanf(fp,"%13s",buf);
+		fscanf(fp,"%13s",buf);
 		if (strcmp(buf,"</user_color>") != 0)
 			return exitload(fp);
 		fscanf(fp, "%*[^\n]");
 	}
-	if (!readBoard(fp,src))
+	if (readBoard(fp,src) != CH_GAME_SUCCESS)
 		return exitload(fp);
 	fscanf(fp,"%7s",buf);
 	if (strcmp(buf,"</game>") != 0)
@@ -96,10 +102,9 @@ CH_GAME_MESSAGE load(char *path, CHGame *src, int *currentTurn, int *gameMode, i
 	src->currentTurn = *currentTurn;
 	src->gameMode = *gameMode;
 	if ((mes = chGameCreateMode1(src,*gameDifficulty,*userColor)) == CH_GAME_INVALID_ARGUMENT)
-		return 0;
-	else if (mes == CH_GAME_MEMORY_PROBLEM) {
+		return CH_GAME_INVALID_ARGUMENT;
+	else if (mes == CH_GAME_MEMORY_PROBLEM)
 		return CH_GAME_MEMORY_PROBLEM;
-	}
 	return CH_GAME_SUCCESS;
 }
 
@@ -136,17 +141,17 @@ CH_GAME_MESSAGE chGameSave(CHGame* src,char *path) {
 
 
 char *slotPath(int slotNum) {
-	switch(slotNum){
-	case 1:
-		return "./savedGames/gameSlot1.xml";
-	case 2:
-		return "./savedGames/gameSlot2.xml";
-	case 3:
-		return "./savedGames/gameSlot3.xml";
-	case 4:
-		return "./savedGames/gameSlot4.xml";
-	case 5:
-		return "./savedGames/gameSlot5.xml";
+	switch(slotNum){ // save the game to the chosen slot
+		case 1:
+			return "./savedGames/gameSlot1.xml";
+		case 2:
+			return "./savedGames/gameSlot2.xml";
+		case 3:
+			return "./savedGames/gameSlot3.xml";
+		case 4:
+			return "./savedGames/gameSlot4.xml";
+		case 5:
+			return "./savedGames/gameSlot5.xml";
 	}
 	return "";
 }
@@ -192,9 +197,9 @@ CH_GAME_MESSAGE chGuiSave(CHGame* src) {
 		}
 		chGameDestroy(tmp);
 	}
-	chGameSave(src,slotPath(i));
+	chGameSave(src,slotPath(i)); // save the game to the cohsen slot
 	fp = fopen("./savedGames/readMeForLoad.txt","w");
-	if (!fp){
+	if (!fp) {
 		return CH_GAME_FILE_PROBLEM;
 	}
 	fprintf(fp,"%d",numOfSaves);
@@ -203,37 +208,32 @@ CH_GAME_MESSAGE chGuiSave(CHGame* src) {
 }
 
 CH_GAME_MESSAGE chGuiLoad(CHGame* src,int slot){
-	int erCheck = 0;
+	CH_GAME_MESSAGE mes;
 	if (!src){
-		printf("Error: malloc has failed\n");
+		printf("ERROR: malloc has failed\n");
 		return CH_GAME_MEMORY_PROBLEM;
 	}
 	int currentTurn = 1;
 	int gameMode = 2;
 	int gameDifficulty = 2;
 	int userColor = 1;
-	switch (slot) {
-	case 1:
-		erCheck = load("./savedGames/gameSlot1.xml",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
-		break;
-	case 2:
-		erCheck = load("./savedGames/gameSlot2.xml",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
-		break;
-	case 3:
-		erCheck = load("./savedGames/gameSlot3.xml",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
-		break;
-	case 4:
-		erCheck = load("./savedGames/gameSlot4.xml",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
-		break;
-	case 5:
-		erCheck = load("./savedGames/gameSlot5.xml",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
-		break;
+	switch (slot) { // load the game from the chosen slot
+		case 1:
+			mes = load("./savedGames/gameSlot1.xml",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
+			break;
+		case 2:
+			mes = load("./savedGames/gameSlot2.xml",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
+			break;
+		case 3:
+			mes = load("./savedGames/gameSlot3.xml",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
+			break;
+		case 4:
+			mes = load("./savedGames/gameSlot4.xml",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
+			break;
+		case 5:
+			mes = load("./savedGames/gameSlot5.xml",src,&currentTurn,&gameMode,&gameDifficulty,&userColor);
+			break;
 	}
-	if(erCheck == -1){
-		return CH_GAME_FILE_PROBLEM;
-	}else{
-		return CH_GAME_SUCCESS;
-	}
+	return mes;
 }
-
 
