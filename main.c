@@ -28,8 +28,7 @@ int main(int argc, char** argv) {
 	}
 	while (true) {
 		command.cmd = CH_INVALID_LINE;
-		if (game->gameMode == 2
-				|| (game->gameMode == 1 && game->currentTurn == game->userColor)) {
+		if (game->gameMode == 2 || (game->gameMode == 1 && game->currentTurn == game->userColor)) {
 			if (isTurnChanged) {
 				chGamePrintBoard(game);
 				if (isGuiMode)
@@ -40,7 +39,7 @@ int main(int argc, char** argv) {
 			if (isGuiMode) {
 				SDL_WaitEvent(&event);
 				handleMainEvents(&game, &window, &event, &command, &isSaved,
-						&draw);
+						&draw, best_move);
 			} else {
 				fgets(strCommand, MAX_LINE_SIZE, stdin);
 				command = chParserPraseLine(strCommand);
