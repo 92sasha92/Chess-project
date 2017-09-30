@@ -372,6 +372,10 @@ CH_GAME_MESSAGE chGameSetMove(CHGame* src, char piece, int fRow, int fCol, int t
 		return CH_GAME_INVALID_COLOR;
 	}
 	list = createMoveList(src->gameBoard, c, fRow, fCol, src->currentTurn);
+    if (list == NULL) {
+		free(node);
+        return CH_GAME_MEMORY_PROBLEM;
+    }
 	if (isValidMove(list, toRow, toCol)) {
 		src->gameBoard[toRow][toCol] = piece;
 		src->gameBoard[fRow][fCol] = CH_GAME_EMPTY_ENTRY;
@@ -440,8 +444,9 @@ CH_GAME_MESSAGE chIsCheckmateOrTie(CHGame* src) {
 		for (j = 0; j < CH_GAME_N_COLUMNS; j++) {
 			curC = src->gameBoard[i][j];
 			if (isThePieceMyColor(curC, src->currentTurn)) {
-				list = createMoveList(src->gameBoard, curC, i, j,
-						src->currentTurn); // checks if the king is safe
+				list = createMoveList(src->gameBoard, curC, i, j, src->currentTurn); // checks if the king is safe
+				if (!list)
+					return CH_GAME_MEMORY_PROBLEM;
 				if (list->isValid) {
 					destroyMoveList(list);
 					return CH_GAME_NO_WIN_OR_TIE;

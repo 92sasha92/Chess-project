@@ -244,7 +244,7 @@ bool isPawnThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, i
 }
 
 
-bool isKingThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS],int color, int mRow, int mCol,int mode) {
+bool isKingThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], int color, int mRow, int mCol,int mode) {
 	int i;
 	int curRow = mRow - 1;
 	int curCol = mCol - 1;
