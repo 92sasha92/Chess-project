@@ -126,4 +126,144 @@ bool isThePieceMyColor(char c, int color);
  * or if the piece is threatened by the opponent in the current board state (if c== '_').
  */
 bool isMyPieceSafe(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, int fRow, int fCol, int toRow, int toCol, int color, int mRow, int mCol,int mode);
+
+/** create move node and insert it to the beginning of the list
+ * @param list - the move list.
+ * @param row - the row of the piece.
+ * @param col - the column of the piece.
+ * @return
+ * the move node
+ */
+CHMovesList * insertFirst(CHMovesList *list, int row, int col);
+
+/** checks if there ia a knight that threat the piece.
+ * @param gameBoard - the game board.
+ * @param color - the piece color.
+ * @param row - the row of the piece.
+ * @param col - the column of the piece.
+ * @param mode - is king mode.
+ * @return
+ * true - if the piece is threatened by the knight
+ * false - otherwise
+ */
+bool isKnightThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], int color, int mRow, int mCol, int mode);
+
+/** checks if there is a queen or rook that threat the piece.
+ * @param gameBoard - the game board.
+ * @param color - the piece color.
+ * @param row - the row of the piece.
+ * @param col - the column of the piece.
+ * @param mode - is king mode.
+ * @return
+ * true - if the piece is threatened by queen or rook
+ * false - otherwise
+ */
+bool isRookOrQueenThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], int color, int mRow, int mCol, int mode);
+
+/** checks if there is a queen or bishop that threat the piece.
+* @param gameBoard - the game board.
+* @param color - the piece color.
+* @param row - the row of the piece.
+* @param col - the column of the piece.
+* @param mode - is king mode.
+* @return
+* true - if the piece is threatened by queen or bishop
+* false - otherwise
+*/
+bool isBishopOrQueenThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], int color, int mRow, int mCol, int mode);
+
+/** checks if there is a pawn that threat the piece.
+* @param gameBoard - the game board.
+* @param color - the piece color.
+* @param row - the row of the piece.
+* @param col - the column of the piece.
+* @param mode - is king mode.
+* @return
+* true - if the piece is threatened by pawn
+* false - otherwise
+*/
+bool isPawnThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], int color, int mRow, int mCol, int mode);
+
+/** checks if there is a king that threat the piece.
+* @param gameBoard - the game board.
+* @param color - the piece color.
+* @param row - the row of the piece.
+* @param col - the column of the piece.
+* @param mode - is king mode.
+* @return
+* true - if the piece is threatened by king
+* false - otherwise
+*/
+bool isKingThreat(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], int color, int mRow, int mCol, int mode);
+
+/** checks for all the possible moves of the pawn.
+* @param gameBoard - the game board.
+* @param c - the piece character.
+* @param color - the piece color.
+* @param row - the row of the piece.
+* @param col - the column of the piece.
+* @param list - pointer to the move list.
+* @param kRow - the row of the piece to check.
+* @param kCol - the column of the piece to check.
+* @return
+* move list of the piece, empty list if there is no moves
+*/
+CHMovesList *pawnMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, int row, int col, CHMovesList *list, int color,int kRow,int kCol);
+
+/** checks for all the possible moves of the rook.
+* @param gameBoard - the game board.
+* @param c - the piece character.
+* @param color - the piece color.
+* @param row - the row of the piece.
+* @param col - the column of the piece.
+* @param list - pointer to the move list.
+* @param kRow - the row of the piece to check.
+* @param kCol - the column of the piece to check.
+* @return
+* move list of the piece, empty list if there is no moves
+*/
+CHMovesList *rookMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, int row, int col, CHMovesList *list, int color,int kRow, int kCol);
+
+/** checks for all the possible moves of the knight.
+* @param gameBoard - the game board.
+* @param c - the piece character.
+* @param color - the piece color.
+* @param row - the row of the piece.
+* @param col - the column of the piece.
+* @param list - pointer to the move list.
+* @param kRow - the row of the piece to check.
+* @param kCol - the column of the piece to check.
+* @return
+* move list of the piece, empty list if there is no moves
+*/
+CHMovesList *knightMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, int row, int col, CHMovesList *list, int color,int kRow,int kCol);
+
+/** checks for all the possible moves of the bishop.
+* @param gameBoard - the game board.
+* @param c - the piece character.
+* @param color - the piece color.
+* @param row - the row of the piece.
+* @param col - the column of the piece.
+* @param list - pointer to the move list.
+* @param kRow - the row of the piece to check.
+* @param kCol - the column of the piece to check.
+* @return
+* move list of the piece, empty list if there is no moves
+*/
+CHMovesList *bishopMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, int row, int col, CHMovesList *list, int color,int kRow,int kCol);
+
+/** checks for all the possible moves of the king.
+* @param gameBoard - the game board.
+* @param c - the piece character.
+* @param color - the piece color.
+* @param row - the row of the piece.
+* @param col - the column of the piece.
+* @param list - pointer to the move list.
+* @param kRow - the row of the piece to check.
+* @param kCol - the column of the piece to check.
+* @return
+* move list of the piece, empty list if there is no moves
+*/
+CHMovesList *kingMoves(char gameBoard[CH_GAME_N_ROWS][CH_GAME_N_COLUMNS], char c, int row, int col, CHMovesList *list, int color);
+
 #endif /* CHMOVES_H_ */
