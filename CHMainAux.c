@@ -8,6 +8,9 @@
 #include <stdlib.h>
 #include "CHMainAux.h"
 
+
+
+
 void setGuiMode(int argc, char** argv, bool *isGuiMode){
 	if (argc >= 1 && argc <3) {
 		if(argc == 2){
@@ -46,6 +49,18 @@ char *getPieceName(char piece) {
 	return "";
 }
 
+void showComputerPawnPromotionMsg(CHMoveNode* best_move){
+    char buf[50];
+    sprintf(buf,"Computer: promoted pawn to %s",getPieceName(best_move->current_piece));
+	if (SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Computer pawn promotion",
+			buf, NULL ) < 0) {
+		SDL_Log("ERROR: displaying message box");
+		SDL_FlushEvents(SDL_QUIT, SDL_USEREVENT);
+		return;
+	}
+	SDL_FlushEvents(SDL_QUIT, SDL_USEREVENT);
+}
+
 char *getPlayerName(int player) {
 	if (player != 0)
 		return "black";
@@ -74,18 +89,21 @@ int end_of_move(CHGame* game, CHMoveNode* best_move, bool *isTurnChanged,bool is
 			if (isGuiMode) {
 				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Info",
 						"Checkmate! white player wins the game", NULL );
+				SDL_FlushEvents(SDL_QUIT, SDL_USEREVENT);
 			}
 		} else if (winner == CH_GAME_BLACK_WINS) {
 			printf("Checkmate! black player wins the game\n");
 			if (isGuiMode) {
 				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Info",
 						"Checkmate! black player wins the game", NULL );
+				SDL_FlushEvents(SDL_QUIT, SDL_USEREVENT);
 			}
 		} else {
 			printf("The game is tied\n");
 			if (isGuiMode) {
 				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Info",
 						"The game is tied", NULL );
+				SDL_FlushEvents(SDL_QUIT, SDL_USEREVENT);
 			}
 		}
 		free(best_move);
@@ -538,6 +556,9 @@ void computerTurn(CHGame* game, SPWindow* window, CHMoveNode *best_move,
                best_move->from_row + 1, best_move->from_col + 65,
                best_move->to_row + 1, best_move->to_col + 65,
                getPieceName(best_move->current_piece));
+        if(isGuiMode){
+        	showComputerPawnPromotionMsg(best_move);
+        }
     } else {
         printf("Computer: move %s at <%d,%c> to <%d,%c>\n",
                getPieceName(best_move->current_piece), best_move->from_row + 1,
