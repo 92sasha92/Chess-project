@@ -120,7 +120,7 @@ BestMove max_rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer, 
                                         break;
                                 }
                             } else {
-                                printf("problem occurred when trying to undo move\n ");
+                                printf("ERROR:problem occurred when trying to undo move\n ");
                             }
                         }
                         node = node->next;
@@ -199,7 +199,7 @@ BestMove min_rec_alphabeta(CHGame* src, int depth, int a, int b, int maximizer, 
 void setMaxPawnPromotion(char piece, BestMove *best_move, CHGame* src, int depth , int a, int b, int maximizer , int toRow, int toCol, bool isGuiMode){
     BestMove cur_move;
     src->gameBoard[toRow][toCol] = piece;
-    cur_move = max_rec_alphabeta(src, depth - 1, a, b, maximizer, isGuiMode);
+    cur_move = min_rec_alphabeta(src, depth - 1, a, b, maximizer, isGuiMode);
     if (cur_move.best_score > best_move->best_score) {
         best_move->best_score = cur_move.best_score;
         best_move->peice = piece;
@@ -210,7 +210,7 @@ void setMaxPawnPromotion(char piece, BestMove *best_move, CHGame* src, int depth
 void setMinPawnPromotion(char piece, BestMove *best_move, CHGame* src, int depth , int a, int b, int maximizer , int toRow, int toCol, bool isGuiMode){
     BestMove cur_move;
     src->gameBoard[toRow][toCol] = piece;
-    cur_move = min_rec_alphabeta(src, depth - 1, a, b, maximizer, isGuiMode);
+    cur_move = max_rec_alphabeta(src, depth - 1, a, b, maximizer, isGuiMode);
     if (cur_move.best_score < best_move->best_score) {
         best_move->best_score = cur_move.best_score;
         best_move->peice = piece;
@@ -290,7 +290,7 @@ CH_GAME_MESSAGE alphabeta(CHGame* src, int depth, int maximizer, CHMoveNode* bes
                 return CH_GAME_MEMORY_PROBLEM;
             if ((cur_piece_moves_list->isValid)){
                 while (node != NULL) {
-                    mes = chGameSetMove(src, src->gameBoard[i][j], i, j, node->row,node->col, true, isGuiMode);
+                    mes = chGameSetMove(src, src->gameBoard[i][j], i, j, node->row, node->col, true, isGuiMode);
                     if (mes == CH_GAME_SUCCESS){
                         if (((src->gameBoard[node->row][node->col] == CH_BLACK_PAWN) && (node->row == 0)) || ((src->gameBoard[node->row][node->col] == CH_WHITE_PAWN) && (node->row == CH_GAME_N_ROWS - 1))) {
                             new_score = pawn_promotion_rec_alphabeta(src, depth , a, b, maximizer , node->row, node->col, isGuiMode);
