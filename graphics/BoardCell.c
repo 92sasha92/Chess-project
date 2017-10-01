@@ -11,15 +11,32 @@
 #include "../CHMoves.h"
 #include "SimpleButton.h"
 
-//You need a create function:
+
+
+void destroyBoardCellTextures(SDL_Texture* gameBoardTexture, SDL_Texture* glowTexture, SDL_Texture* glowBlueTexture, SDL_Texture* glowRedTexture, SDL_Texture* glowGreenTexture){
+	SDL_DestroyTexture(gameBoardTexture);
+	SDL_DestroyTexture(glowTexture);
+	SDL_DestroyTexture(glowBlueTexture);
+	SDL_DestroyTexture(glowRedTexture);
+	SDL_DestroyTexture(glowGreenTexture);
+}
+
+void destroyBoardCellSurfaces(SDL_Surface* loadingSurface, SDL_Surface* glowSurface, SDL_Surface* glowBlueSurface, SDL_Surface* glowRedSurface, SDL_Surface* glowGreenSurface){
+	SDL_FreeSurface(loadingSurface);
+	SDL_FreeSurface(glowSurface);
+	SDL_FreeSurface(glowBlueSurface);
+	SDL_FreeSurface(glowRedSurface);
+	SDL_FreeSurface(glowGreenSurface);
+}
+
 Widget* createBoardCell(SDL_Renderer* windowRender, SDL_Rect* location,
 		const char* image,char c){
 	if (windowRender == NULL || location == NULL || image == NULL ) {
 		return NULL ;
 	}
-	//Allocate data
 	Widget* res = (Widget*) malloc(sizeof(Widget));
 	BoardCell* data = (BoardCell*) malloc(sizeof(BoardCell));
+	SDL_Rect* copyLocation = spCopyRect(location);
 	SDL_Surface* loadingSurface = SDL_LoadBMP(image); //We use the surface as a temp var;
 	SDL_Texture* gameBoardTexture = SDL_CreateTextureFromSurface(windowRender,loadingSurface);
 	SDL_Surface* glowSurface = SDL_LoadBMP("./graphics/images/pieceGlow.bmp");
@@ -34,28 +51,18 @@ Widget* createBoardCell(SDL_Renderer* windowRender, SDL_Rect* location,
 			|| gameBoardTexture == NULL || glowBlueSurface == NULL
 			|| glowBlueTexture == NULL || glowRedSurface == NULL
 			|| glowRedTexture == NULL || glowGreenSurface == NULL
-			|| glowGreenTexture == NULL ) {
-		free(res);
-		free(data);
-		SDL_FreeSurface(loadingSurface); //It is safe to pass NULL
-		SDL_DestroyTexture(gameBoardTexture); ////It is safe to pass NULL
-		SDL_FreeSurface(glowSurface);
-		SDL_DestroyTexture(glowTexture);
-		SDL_FreeSurface(glowBlueSurface);
-		SDL_DestroyTexture(glowBlueTexture);
-		SDL_FreeSurface(glowRedSurface);
-		SDL_DestroyTexture(glowRedTexture);
-		SDL_FreeSurface(glowGreenSurface);
-		SDL_DestroyTexture(glowGreenTexture);
-		printf("3/n");
+			|| glowGreenTexture == NULL || copyLocation == NULL) {
+		if(res != NULL)
+			free(res);
+		if(data != NULL)
+			free(data);
+		if(copyLocation != NULL)
+			free(copyLocation);
+		destroyBoardCellSurfaces(loadingSurface, glowSurface, glowBlueSurface, glowRedSurface, glowGreenSurface);
+		destroyBoardCellTextures(gameBoardTexture, glowTexture, glowBlueTexture, glowRedTexture, glowGreenTexture);
 		return NULL ;
 	}
-	SDL_FreeSurface(glowSurface);
-	SDL_FreeSurface(loadingSurface);
-	SDL_FreeSurface(glowBlueSurface);
-	SDL_FreeSurface(glowRedSurface);
-	SDL_FreeSurface(glowGreenSurface);
-
+	destroyBoardCellSurfaces(loadingSurface, glowSurface, glowBlueSurface, glowRedSurface, glowGreenSurface);
 	if (c == '_') {
 		data->piece = NULL;
 	} else {
@@ -63,12 +70,7 @@ Widget* createBoardCell(SDL_Renderer* windowRender, SDL_Rect* location,
         if (data->piece == NULL) {
     		free(res);
     		free(data);
-    		SDL_DestroyTexture(gameBoardTexture);
-    		SDL_DestroyTexture(glowTexture);
-			SDL_DestroyTexture(glowBlueTexture);
-			SDL_DestroyTexture(glowRedTexture);
-			SDL_DestroyTexture(glowGreenTexture);
-			printf("4/n");
+    		destroyBoardCellTextures(gameBoardTexture, glowTexture, glowBlueTexture, glowRedTexture, glowGreenTexture);
     		return NULL ;
         }
 	}
@@ -77,7 +79,7 @@ Widget* createBoardCell(SDL_Renderer* windowRender, SDL_Rect* location,
 	data->blueGlowTexture = glowBlueTexture;
 	data->redGlowTexture = glowRedTexture;
 	data->greenGlowTexture = glowGreenTexture;
-	data->location = spCopyRect(location);
+	data->location = copyLocation;
 	data->windowRenderer = windowRender;
 	data->glow = CELL_GLOW_COLOR_NONE;
 	data->isChosenByUser = 0;
@@ -100,7 +102,7 @@ void drawGlowCell(Widget* src) {
 }
 
 
-//You need this function in order to destroy all data Associate with a button:
+//You need this function in order to destroy all data Associate with a board Cell:
 void destroyBoardCell(Widget* src) {
 	if (src == NULL ) {
 		return;
@@ -109,12 +111,9 @@ void destroyBoardCell(Widget* src) {
 	if (castData->piece != NULL) {
 		castData->piece->destroyWidget(castData->piece);
 	}
-	free(castData->location);
-	SDL_DestroyTexture(castData->regularBoardCellTexture);
-	SDL_DestroyTexture(castData->regularGlowTexture);
-	SDL_DestroyTexture(castData->blueGlowTexture);
-	SDL_DestroyTexture(castData->redGlowTexture);
-	SDL_DestroyTexture(castData->greenGlowTexture);
+	if(castData->location != NULL)
+		free(castData->location);
+	destroyBoardCellTextures(castData->regularBoardCellTexture, castData->regularGlowTexture, castData->blueGlowTexture, castData->redGlowTexture, castData->greenGlowTexture);
 	free(castData);
 	free(src);
 }
@@ -123,16 +122,15 @@ void destroyBoardCell(Widget* src) {
 void handleBoardCellEvent(Widget* src, SDL_Event* event) {
 	static int isDragged = 0;
 	if (src == NULL || event == NULL ) {
-		return; //Better to return an error value
+		printf("ERROR: invalid arguments\n");
+		return;
 	}
 	BoardCell* castData = (BoardCell*) src->data;
 	SDL_Event user_event;
-	if (event->type == SDL_MOUSEMOTION ) {
-
-	} else if (event->type == SDL_MOUSEBUTTONDOWN && event->button.button == SDL_BUTTON_RIGHT) {
-		SDL_Point point;
-		point.x = event->button.x;
-		point.y = event->button.y;
+	SDL_Point point;
+	point.x = event->button.x;
+	point.y = event->button.y;
+	if (event->type == SDL_MOUSEBUTTONDOWN && event->button.button == SDL_BUTTON_RIGHT) {
 		if (SDL_PointInRect(&point, castData->location)) {
 			castData->isChosenByUser = 1;
 			castData->glow = CELL_GLOW_COLOR_REGULAR;
@@ -142,9 +140,6 @@ void handleBoardCellEvent(Widget* src, SDL_Event* event) {
 			SDL_PushEvent(&user_event);
 		}
 	} else if (event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT && isDragged) {
-		SDL_Point point;
-		point.x = event->button.x;
-		point.y = event->button.y;
 		if (SDL_PointInRect(&point, castData->location)) {
 			castData->isChosenByUser = 1;
 			isDragged = 0;
@@ -153,9 +148,6 @@ void handleBoardCellEvent(Widget* src, SDL_Event* event) {
 			SDL_PushEvent(&user_event);
 		}
 	} else if (event->type == SDL_MOUSEBUTTONDOWN && event->button.button == SDL_BUTTON_LEFT ) {
-		SDL_Point point;
-		point.x = event->button.x;
-		point.y = event->button.y;
 		if (SDL_PointInRect(&point, castData->location)) {
 			if (castData->piece != NULL) {
 				castData->isChosenByUser = 1;
@@ -164,8 +156,6 @@ void handleBoardCellEvent(Widget* src, SDL_Event* event) {
 				user_event.user.code = EVENT_BEGIN_DRAG;
 				SDL_PushEvent(&user_event);
 			}
-				//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Title",
-						//"We did it", NULL );
 		}
 	} else if (event->type == SDL_USEREVENT && event->user.code == EVENT_DRAGGED_NOT_ON_BOARD) {
 		isDragged = 0;

@@ -290,7 +290,7 @@ CHGame* seloadCommandHandle(bool *isLoaded, SECommand command){
 	if(command.validArg){
 		src = (CHGame*) malloc(sizeof(CHGame)); /* allocate place in memory */
 		if (!src){
-			printf("Error: malloc has failed\n");
+			printf("ERROR: malloc has failed\n");
 			return NULL;
 		}
 		if(load(command.path,src,&currentTurn,&gameMode,&gameDifficulty,&userColor)!= CH_GAME_SUCCESS){

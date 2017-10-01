@@ -82,7 +82,6 @@ Widget** createLoadWindowWidgets(SDL_Renderer* renderer,int numOfWidgets) {
 				destroyWidget(widgets[j]);
 			}
 			free(widgets);
-			printf("ERROR:\n");
 			return NULL ;
 		}
 
@@ -92,29 +91,46 @@ Widget** createLoadWindowWidgets(SDL_Renderer* renderer,int numOfWidgets) {
 
 
 SPWindow* createLoadWindow() {
+	int i,numOfWidgets = 0;;
 	SPWindow* res = malloc(sizeof(SPWindow));
 	SPSimpleWindow* data = malloc(sizeof(SPSimpleWindow));
-	SDL_Window* window = SDL_CreateWindow("Tests", SDL_WINDOWPOS_CENTERED,
+	SDL_Window* window = SDL_CreateWindow("Chess", SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED, 800, 500, SDL_WINDOW_OPENGL);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,SDL_RENDERER_ACCELERATED);
 	SDL_Surface* loadingSurface = SDL_LoadBMP("./graphics/images/background.bmp");
 	SDL_Texture* windowTexture = SDL_CreateTextureFromSurface(renderer,loadingSurface);
-	int numOfWidgets = 0;
 	FILE *fp = fopen("./savedGames/readMeForLoad.txt","r");
+	if(fp == NULL){
+		if(res != NULL)
+			free(res);
+		if(data != NULL)
+			free(data);
+		SDL_FreeSurface(loadingSurface);
+		SDL_DestroyTexture(windowTexture);
+		SDL_DestroyRenderer(renderer);
+		SDL_DestroyWindow(window);
+		return NULL ;
+	}
 	fscanf(fp,"%d",&numOfWidgets);
 	numOfWidgets += 2;
 	Widget** widgets = createLoadWindowWidgets(renderer,numOfWidgets);
 	fclose(fp);
 	if (res == NULL || data == NULL || window == NULL || renderer == NULL
-			|| widgets == NULL || windowTexture == NULL) {
+			|| widgets == NULL || windowTexture == NULL || loadingSurface == NULL) {
 		SDL_FreeSurface(loadingSurface);
 		SDL_DestroyTexture(windowTexture);
-		free(res);
-		free(data);
-		free(widgets);
-		//We first destroy the renderer
-		SDL_DestroyRenderer(renderer); //NULL safe
-		SDL_DestroyWindow(window); //NULL safe
+		if(res != NULL)
+			free(res);
+		if(data != NULL)
+			free(data);
+		if(widgets != NULL){
+			for(i = 0;i < numOfWidgets;i++){
+				destroyWidget(widgets[i]);
+			}
+			free(widgets);
+		}
+		SDL_DestroyRenderer(renderer);
+		SDL_DestroyWindow(window);
 		return NULL ;
 	}
 	SDL_FreeSurface(loadingSurface);

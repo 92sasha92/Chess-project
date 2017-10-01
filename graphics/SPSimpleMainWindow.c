@@ -4,9 +4,8 @@
 #include "gameBoard.h"
 #include "../CHGame.h"
 
-//Helper function to create buttons in the simple window;
-#define startBtnPosY 150
 
+#define startBtnPosY 150
 
 Widget** createSimpleWindowWidgets(SDL_Renderer* renderer,CHGame *game) {
 	if (renderer == NULL || game == NULL ) {
@@ -50,9 +49,10 @@ SPWindow* createSimpleWindow(CHGame *game) {
 	if (game == NULL) {
 		return NULL ;
 	}
+	int i;
 	SPWindow* res = malloc(sizeof(SPWindow));
 	SPSimpleWindow* data = malloc(sizeof(SPSimpleWindow));
-	SDL_Window* window = SDL_CreateWindow("Tests", SDL_WINDOWPOS_CENTERED,
+	SDL_Window* window = SDL_CreateWindow("Chess", SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED, 1130, 730, SDL_WINDOW_OPENGL);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,
 			SDL_RENDERER_ACCELERATED);
@@ -63,12 +63,18 @@ SPWindow* createSimpleWindow(CHGame *game) {
 			|| widgets == NULL || loadingSurface == NULL || windowTexture == NULL) {
 		SDL_FreeSurface(loadingSurface);
 		SDL_DestroyTexture(windowTexture);
-		free(res);
-		free(data);
-		free(widgets);
-		//We first destroy the renderer
-		SDL_DestroyRenderer(renderer); //NULL safe
-		SDL_DestroyWindow(window); //NULL safe
+		if(res != NULL)
+			free(res);
+		if(data != NULL)
+			free(data);
+		if(widgets != NULL){
+			for(i = 0;i < 7;i++){
+				destroyWidget(widgets[i]);
+			}
+			free(widgets);
+		}
+		SDL_DestroyRenderer(renderer);
+		SDL_DestroyWindow(window);
 		return NULL ;
 	}
 	SDL_FreeSurface(loadingSurface);

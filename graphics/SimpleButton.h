@@ -1,7 +1,7 @@
 #ifndef SIMPLEBUTTON_H_
 #define SIMPLEBUTTON_H_
 
-#include "Widget.h" //A button is a widget also
+#include "Widget.h"
 
 #define BTN_ACTIVE 1
 #define BTN_NOT_ACTIVE 0
@@ -60,10 +60,6 @@ typedef enum _btnType {
 } BtnType;
 
 
-
-
-
-
 typedef struct simplebutton_t {
 	SDL_Texture* buttonTexture;
 	int isSecondTextureValid;
@@ -77,19 +73,70 @@ typedef struct simplebutton_t {
 } SimpleButton;
 
 
-
-void updateTextureBtn(Widget* src, int active);
-//You need a create function:
+/** creates a simple button widget and returns the pointer to it
+ * @param windowRender - the renderer of the window the button is created on.
+ * @param location - the location of the button on the window
+ * @param image - the image of the button
+ * @param image2 - the second image of the button or NULL if there isn't one.
+ * @param type - the type of the button
+ * @param isPressed - is the button showed as pressed when created
+ * @param isActive - is the button clickable
+ * @return
+ * the pointer to the button widget or NULL if there was an error in creating the button
+ */
 Widget* createSimpleButton(SDL_Renderer* windowRender, SDL_Rect* location,
 		const char* image, const char* image2, BtnType type, int isPressed, int isActive);
 
-//You need this function in order to destroy all data Associate with a button:
-void destroySimpleButton(Widget*);
+/** checks if the point is inside the button (takes in to account the surrounding transparent pixels that are not the button itself)
+ * @param p - a point to be checked
+ * @param r - the locating and sizes of the button
+ */
+int PointInRect(const SDL_Point *p, const SDL_Rect *r);
 
+/** destroy all data Associate with a button:
+ * @param src - pointer to a button widget
+ */
+void destroySimpleButton(Widget* src);
+
+/** initilaze the user event code to one of the slot events codes
+ * @param src - pointer to a button
+ * @param event - pointer to an event that is a click on one of the slot buttons
+ */
+void initilazeUserSlotEvent(SDL_Event *user_event, SimpleButton* btn);
+
+/** initilaze the user event code to one of the difficulty events codes
+ * @param src - pointer to a button
+ * @param event - pointer to an event that is a click on one of the difficulty buttons
+ */
+void initilazeUserDifficultyEvent(SDL_Event *user_event, SimpleButton* btn);
+
+/** initilaze the user event code
+ * @param src - pointer to a button
+ * @param event - pointer to an event that is a click on one of the buttons
+ */
+void initilazeUserEvent(SDL_Event *user_event,SimpleButton* btn);
+
+/** handle button events
+ * @param src - pointer to a button widget
+ * @param event - pointer to an event
+ */
 void handleSimpleButtonEvent(Widget* src, SDL_Event* event);
 
+/** draw the button
+ * @param src - pointer to a button widget
+ */
 void drawSimpleButton(Widget* src);
 
+/** draw the button glow
+ * @param src - pointer to a button widget
+ */
 void drawSimpleGlow(Widget* src);
+
+/** change the button texture that beeing presented to the second texture
+ * and sets the button isActive argument
+ * @param src - pointer to a button widget
+ * @param active - is the button will be active or not
+ */
+void updateTextureBtn(Widget* src, int active);
 
 #endif

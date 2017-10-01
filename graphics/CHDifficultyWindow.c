@@ -11,7 +11,6 @@
 #include "SPSimpleMainWindow.h"
 #include "CHDifficultyWindow.h"
 #include "SimpleButton.h"
-#define startBtnPosY 100
 
 
 void pressDifficultyChange(SPWindow* src,int difficulty) {
@@ -47,7 +46,6 @@ Widget** createSimpleDifficultyWindowWidgets(SDL_Renderer* renderer) {
 	SDL_Rect easyR = { .x = 100, .y = 240, .h = 80, .w = 296};
 	SDL_Rect moderateR = { .x = 404, .y = 160, .h = 80, .w = 296};
 	SDL_Rect hardR = { .x = 404, .y = 240, .h = 80, .w = 296};
-
 	widgets[0] = createSimpleButton(renderer, &noobR, "./graphics/images/noobBtn.bmp",NULL,CH_BTN_NOOB,0,BTN_ACTIVE);
 	widgets[1] = createSimpleButton(renderer, &easyR, "./graphics/images/easyBtn.bmp",NULL,CH_BTN_EASY,1,BTN_ACTIVE);
 	widgets[2] = createSimpleButton(renderer, &moderateR, "./graphics/images/moderateBtn.bmp",NULL,CH_BTN_MODERATE,0,BTN_ACTIVE);
@@ -59,7 +57,6 @@ Widget** createSimpleDifficultyWindowWidgets(SDL_Renderer* renderer) {
 			destroyWidget(widgets[i]);
 		}
 		free(widgets);
-		printf("ERROR:\n");
 		return NULL ;
 	}
 	return widgets;
@@ -67,9 +64,10 @@ Widget** createSimpleDifficultyWindowWidgets(SDL_Renderer* renderer) {
 
 
 SPWindow* createSimpleDifficultyWindow() {
+	int i;
 	SPWindow* res = malloc(sizeof(SPWindow));
 	SPSimpleWindow* data = malloc(sizeof(SPSimpleWindow));
-	SDL_Window* window = SDL_CreateWindow("Tests", SDL_WINDOWPOS_CENTERED,
+	SDL_Window* window = SDL_CreateWindow("Chess", SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED, 800, 500, SDL_WINDOW_OPENGL);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,
 			SDL_RENDERER_ACCELERATED);
@@ -77,13 +75,21 @@ SPWindow* createSimpleDifficultyWindow() {
 	SDL_Texture* windowTexture = SDL_CreateTextureFromSurface(renderer,loadingSurface);
 	Widget** widgets = createSimpleDifficultyWindowWidgets(renderer);
 	if (res == NULL || data == NULL || window == NULL || renderer == NULL
-			|| widgets == NULL || windowTexture == NULL) {
-		free(res);
-		free(data);
-		free(widgets);
-		//We first destroy the renderer
-		SDL_DestroyRenderer(renderer); //NULL safe
-		SDL_DestroyWindow(window); //NULL safe
+			|| widgets == NULL || windowTexture == NULL || loadingSurface == NULL) {
+		if(res != NULL)
+			free(res);
+		if(data != NULL)
+			free(data);
+		if(widgets != NULL){
+			for(i = 0;i < 6;i++){
+				destroyWidget(widgets[i]);
+			}
+			free(widgets);
+		}
+		SDL_FreeSurface(loadingSurface);
+		SDL_DestroyTexture(windowTexture);
+		SDL_DestroyRenderer(renderer);
+		SDL_DestroyWindow(window);
 		return NULL ;
 	}
 	SDL_FreeSurface(loadingSurface);

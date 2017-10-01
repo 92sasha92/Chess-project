@@ -9,7 +9,6 @@ struct spwindow_t {
 	void (*drawWindow)(SPWindow* );
 	void (*handleEventWindow)(SPWindow* , SDL_Event* );
 	void (*destroyWindow)(SPWindow* );
-	//You can add more common functions Like exit/hide etc...
 };
 
 //NULL safe FUNCTION

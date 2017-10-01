@@ -8,22 +8,18 @@
 #include "CHMainAux.h"
 #define REC_DEPTH 4
 
-
-
 int main(int argc, char** argv) {
 	SP_BUFF_SET();
 	bool isGuiMode = false, isSaved = true, isTurnChanged = true;;
 	setGuiMode(argc, argv, &isGuiMode);
 	int draw = 1;
 	char strCommand[MAX_LINE_SIZE];
-
 	CHCommand command;
 	SPWindow* window;
 	SDL_Event event;
 	CHGame *game = startSettingsMode(isGuiMode);
-	if (!game){
+	if (!game)
 		return 0;
-	}
 	CHMoveNode *best_move = (CHMoveNode *) malloc(sizeof(CHMoveNode));
 	if (!best_move){
 		chGameDestroy(game);
@@ -47,13 +43,12 @@ int main(int argc, char** argv) {
 				if (isGuiMode)
 					printTurn(game);
 			}
-			if (!isGuiMode)
-				printTurn(game);
 			if (isGuiMode) {
 				SDL_WaitEvent(&event);
 				handleMainEvents(&game, &window, &event, &command, &isSaved,
-						&draw);
+						&draw,best_move);
 			} else {
+				printTurn(game);
 				fgets(strCommand, MAX_LINE_SIZE, stdin);
 				command = chParserPraseLine(strCommand);
 			}

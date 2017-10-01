@@ -6,12 +6,12 @@
 	<user_color>1</user_color>
 	<board>
 		<row_8>RNBQKBNR</row_8>
-		<row_7>_MMMMMMM</row_7>
-		<row_6>________</row_6>
-		<row_5>M_______</row_5>
-		<row_4>________</row_4>
-		<row_3>__m_____</row_3>
-		<row_2>mm_mmmmm</row_2>
+		<row_7>___MMMMM</row_7>
+		<row_6>_M______</row_6>
+		<row_5>M_M_____</row_5>
+		<row_4>__m_____</row_4>
+		<row_3>_m_m____</row_3>
+		<row_2>m___mmmm</row_2>
 		<row_1>rnbqkbnr</row_1>
 	</board>
 </game>

@@ -92,6 +92,15 @@ CH_GAME_MESSAGE load(char *path, CHGame *src, int *currentTurn, int *gameMode, i
 		if (strcmp(buf,"</user_color>") != 0)
 			return exitload(fp);
 		fscanf(fp, "%*[^\n]");
+	}else{
+		fscanf(fp,"%12s",buf);
+		if (strcmp(buf,"<difficulty>") == 0){
+			fscanf(fp, "%*[^\n]");
+			fscanf(fp,"%12s",buf);
+			fscanf(fp, "%*[^\n]");
+		}else{
+			fseek(fp, -7, SEEK_CUR);
+		}
 	}
 	if (readBoard(fp,src) != CH_GAME_SUCCESS)
 		return exitload(fp);

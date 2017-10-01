@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "Widget.h"
 
-void destroyWidget(Widget* src) {//Making NULL Safe Destroy
+void destroyWidget(Widget* src) {
 	if (src == NULL ) {
 		return;
 	}

@@ -3,67 +3,72 @@
 #include "SPCommon.h"
 #include "SimpleButton.h"
 #include "../CHGame.h"
+#define CELL_SIZE 77
 
+
+void destroyGameBoardCells(GameBoard* src){
+	int i, j;
+	if(src == NULL){
+		return;
+	}
+	for (i = 0; i < CH_GAME_N_ROWS; i++) {
+		for (j = 0; j < CH_GAME_N_COLUMNS; j++) {
+			destroyBoardCell(src->gameBoard[i][j]);
+		}
+	}
+}
 
 Widget* createGameBoard(SDL_Renderer* windowRender, SDL_Rect* location, const char* image, CHGame *game) {
-	if (windowRender == NULL || location == NULL || image == NULL || game == NULL) {
+	if (windowRender == NULL || location == NULL || image == NULL || game == NULL)
 		return NULL ;
-	}
-	//Allocate data
-	int i, j;
+	int i, j,isWhite = 1, isProblemInMemory = 0;;
 	Widget* res = (Widget*) malloc(sizeof(Widget));
 	GameBoard* data = (GameBoard*) malloc(sizeof(GameBoard));
-	SDL_Surface* loadingSurface = SDL_LoadBMP(image); //We use the surface as a temp var;
-	loadingSurface->format->Amask = 0xFF000000;
-	loadingSurface->format->Ashift = 24;
-	if(SDL_SetColorKey(loadingSurface, SDL_TRUE,SDL_MapRGB(loadingSurface->format, 255, 0, 0)) < 0){
-		printf("color\n");
-
-	}
+	SDL_Rect* copyLocation = spCopyRect(location);
+	SDL_Surface* loadingSurface = SDL_LoadBMP(image);
 	SDL_Texture* gameBoardTexture = SDL_CreateTextureFromSurface(windowRender,loadingSurface);
-//	SDL_SetTextureBlendMode(gameBoardTexture, SDL_BLENDMODE_BLEND);
-	SDL_Rect loc = { .x = startX, .y = startY, .h = 77, .w = 77 };
+	SDL_Rect loc = { .x = startX, .y = startY, .h = CELL_SIZE, .w = CELL_SIZE };
 	char* imageBlack = "./graphics/images/blackSquare.bmp";
 	char* imageWhite = "./graphics/images/whiteSquare.bmp";
-	int isWhite = 1;
-	int isProblemInMemory = 0;
-	for (i = 7; i >=0; i--) {
-		loc.x = startX;
-		if (i != 7)
-			loc.y += 77;
-		for (j = 0; j < 8; j++) {
-			loc.x += 77;
-			if (isWhite) {
-				data->gameBoard[i][j] = createBoardCell(windowRender, &loc,imageWhite,game->gameBoard[i][j]);
-			} else
-				data->gameBoard[i][j] = createBoardCell(windowRender, &loc,imageBlack,game->gameBoard[i][j]);
-			if (data->gameBoard[i][j] == NULL) {
-				isProblemInMemory = 1;
+	if(data != NULL){
+		for (i = CH_GAME_N_ROWS - 1; i >=0; i--) {
+			loc.x = startX;
+			if (i != CH_GAME_N_ROWS - 1)
+				loc.y += CELL_SIZE;
+			for (j = 0; j < CH_GAME_N_COLUMNS; j++) {
+				loc.x += CELL_SIZE;
+				if (isWhite) {
+					data->gameBoard[i][j] = createBoardCell(windowRender, &loc,imageWhite,game->gameBoard[i][j]);
+				} else
+					data->gameBoard[i][j] = createBoardCell(windowRender, &loc,imageBlack,game->gameBoard[i][j]);
+				if (data->gameBoard[i][j] == NULL) {
+					isProblemInMemory = 1;
+					break;
+				}
+				if (j != CH_GAME_N_COLUMNS - 1)
+					isWhite = !isWhite;
+			}
+			if (isProblemInMemory)
 				break;
-			}
-			if (j != 7) {
-				isWhite = !isWhite;
-			}
 		}
-		if (isProblemInMemory)
-			break;
 	}
 	if (res == NULL || data == NULL || loadingSurface == NULL
-			|| gameBoardTexture == NULL) {
-		free(res);
-		free(data);
+			|| gameBoardTexture == NULL || copyLocation == NULL || isProblemInMemory) {
+		if(res != NULL)
+			free(res);
+		if(data != NULL){
+			destroyGameBoardCells(data);
+			free(data);
+		}
+		if(copyLocation != NULL)
+			free(copyLocation);
 		SDL_FreeSurface(loadingSurface);
 		SDL_DestroyTexture(gameBoardTexture);
-		for (i = 0; i < 8; i++) {
-			for (j = 0; j < 8; j++) {
-				destroyBoardCell(data->gameBoard[i][j]);
-			}
-		}
 		return NULL ;
 	}
 	SDL_FreeSurface(loadingSurface);
 	data->gameBoardTexture = gameBoardTexture;
-	data->location = spCopyRect(location);
+	data->location = copyLocation;
 	data->windowRenderer = windowRender;
 	res->destroyWidget = destroyGameBoard;
 	res->drawWidget = drawGameBoard;
@@ -74,16 +79,11 @@ Widget* createGameBoard(SDL_Renderer* windowRender, SDL_Rect* location, const ch
 
 
 void destroyGameBoard(Widget* src) {
-	int i, j;
 	GameBoard* castData = (GameBoard*) src->data;
 	if (src == NULL ) {
 		return;
 	}
-	for (i = 0; i < 8; i++) {
-		for (j = 0; j < 8; j++) {
-			destroyBoardCell(castData->gameBoard[i][j]);
-		}
-	}
+	destroyGameBoardCells(castData);
 	free(castData->location);
 	SDL_DestroyTexture(castData->gameBoardTexture);
 	free(castData);
@@ -99,18 +99,15 @@ void handleGameBoardEvent(Widget* src, SDL_Event* event) {
 	}
 	GameBoard* castData = (GameBoard*) src->data;
 	SDL_Event user_event;
+	SDL_Point point;
+	point.x = event->button.x;
+	point.y = event->button.y;
 	if (event->type == SDL_MOUSEBUTTONDOWN && event->button.button == SDL_BUTTON_LEFT) {
-		SDL_Point point;
-		point.x = event->button.x;
-		point.y = event->button.y;
 		if (SDL_PointInRect(&point, castData->location)) {
 			isDragged = 1;
 		}
 	}
 	if (event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT && isDragged == 1) {
-		SDL_Point point;
-		point.x = event->button.x;
-		point.y = event->button.y;
 		isDragged = 0;
 		if (!SDL_PointInRect(&point, castData->location)) {
 			user_event.type = SDL_USEREVENT;
@@ -118,8 +115,8 @@ void handleGameBoardEvent(Widget* src, SDL_Event* event) {
 			SDL_PushEvent(&user_event);
 		}
 	}
-	for (i = 0; i < 8; i++) {
-		for(j = 0; j < 8; j++) {
+	for (i = 0; i < CH_GAME_N_ROWS; i++) {
+		for (j = 0; j < CH_GAME_N_COLUMNS; j++) {
 			castData->gameBoard[i][j]->handleEvent(castData->gameBoard[i][j],event);
 		}
 	}
@@ -141,8 +138,8 @@ void setNoGlowCells(Widget* src) {
 	}
 	int i, j;
 	GameBoard* castData = (GameBoard*) src->data;
-	for (i = 0; i < 8; i++) {
-		for (j = 0; j < 8; j++) {
+	for (i = 0; i < CH_GAME_N_ROWS; i++) {
+		for (j = 0; j < CH_GAME_N_COLUMNS; j++) {
 			((BoardCell *)(castData->gameBoard[i][j]->data))->glow = CELL_GLOW_COLOR_NONE;
 		}
 	}
@@ -155,8 +152,8 @@ void drawGameBoard(Widget* src) {
 	}
 	int i,j;
 	GameBoard* castData = (GameBoard*) src->data;
-	for (i = 0; i < 8; i++) {
-		for (j = 0; j < 8; j++) {
+	for (i = 0; i < CH_GAME_N_ROWS; i++) {
+		for (j = 0; j < CH_GAME_N_COLUMNS; j++) {
 			drawBoardCell(castData->gameBoard[i][j]);
 		}
 	}
@@ -172,8 +169,8 @@ void nulifeDrag(Widget* src) {
 	int i, j;
 	GameBoard* castData = (GameBoard*) src->data;
 	BoardCell* cellData;
-	for (i = 0; i < 8; i++) {
-		for (j = 0; j < 8; j++) {
+	for (i = 0; i < CH_GAME_N_ROWS; i++) {
+		for (j = 0; j < CH_GAME_N_COLUMNS; j++) {
 			cellData = (BoardCell*) castData->gameBoard[i][j]->data;
 			cellData->isChosenByUser = 0;
 			if (cellData->piece != NULL) {

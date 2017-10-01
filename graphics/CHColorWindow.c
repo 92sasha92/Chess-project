@@ -11,14 +11,13 @@
 #include "SPSimpleMainWindow.h"
 #include "CHColorWindow.h"
 #include "SimpleButton.h"
-#define startBtnPosY 100
 
 
 void pressColorChange(SPWindow* src,int color) {
-	int i;
 	if (src == NULL ) {
 		return;
 	}
+	int i;
 	SPSimpleWindow * castData = (SPSimpleWindow *) src->data;
 	SimpleButton* castBtnData;
 	for (i = 0; i < castData->numOfWidgets; i++) {
@@ -54,7 +53,6 @@ Widget** createSimpleColorWindowWidgets(SDL_Renderer* renderer) {
 			destroyWidget(widgets[i]);
 		}
 		free(widgets);
-		printf("ERROR:\n");
 		return NULL ;
 	}
 	return widgets;
@@ -62,9 +60,10 @@ Widget** createSimpleColorWindowWidgets(SDL_Renderer* renderer) {
 
 
 SPWindow* createSimpleColorWindow() {
+	int i;
 	SPWindow* res = malloc(sizeof(SPWindow));
 	SPSimpleWindow* data = malloc(sizeof(SPSimpleWindow));
-	SDL_Window* window = SDL_CreateWindow("Tests", SDL_WINDOWPOS_CENTERED,
+	SDL_Window* window = SDL_CreateWindow("Chess", SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED, 800, 500, SDL_WINDOW_OPENGL);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,
 			SDL_RENDERER_ACCELERATED);
@@ -73,12 +72,20 @@ SPWindow* createSimpleColorWindow() {
 	Widget** widgets = createSimpleColorWindowWidgets(renderer);
 	if (res == NULL || data == NULL || window == NULL || renderer == NULL
 			|| widgets == NULL || windowTexture == NULL) {
-		free(res);
-		free(data);
-		free(widgets);
-		//We first destroy the renderer
-		SDL_DestroyRenderer(renderer); //NULL safe
-		SDL_DestroyWindow(window); //NULL safe
+		if(res != NULL)
+			free(res);
+		if(data != NULL)
+			free(data);
+		if(widgets != NULL){
+			for(i = 0;i < 4;i++){
+				destroyWidget(widgets[i]);
+			}
+			free(widgets);
+		}
+		SDL_FreeSurface(loadingSurface);
+		SDL_DestroyTexture(windowTexture);
+		SDL_DestroyRenderer(renderer);
+		SDL_DestroyWindow(window);
 		return NULL ;
 	}
 	SDL_FreeSurface(loadingSurface);

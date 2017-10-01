@@ -19,15 +19,40 @@ typedef struct CHPiece_t{
 	int deltaY;
 }CHPiece;
 
-//You need a create function:
+/**
+ * draws the piece and present it on the window
+ * @param src - a pointer to a piece widget
+ */
+void drawCHPieceDrag(Widget* src);
+
+SDL_Texture* createTexturePiece(SDL_Renderer* windowRender,const char* image);
+
+/** creates a piece widget and returns the pointer to it
+ * @param windowRender - the renderer of the window the button is created on.
+ * @param location - the location of the button on the window
+ * @param c - the character representing the piece to create
+ * @return
+ * the pointer to the piece widget or NULL if there was an error in creating the piece
+ */
 Widget* createCHPiece(SDL_Renderer* windowRender, SDL_Rect* location,
 		char c);
 
-//You need this function in order to destroy all data Associate with a button:
+/**
+ * destroy all data Associate with the piece widget
+ * @param src - a pointer to a piece widget
+ */
 void destroyCHPiece(Widget* src);
 
+/** handle piece events
+ * @param src - pointer to a button widget
+ * @param event - pointer to an event
+ */
 void handleCHPieceEvent(Widget* src, SDL_Event* event);
 
+/**
+ * draws the piece
+ * @param src - a pointer to a piece widget
+ */
 void drawCHPiece(Widget* src);
 
 

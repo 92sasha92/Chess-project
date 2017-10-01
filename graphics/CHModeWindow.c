@@ -45,7 +45,6 @@ Widget** createSimpleModeWindowWidgets(SDL_Renderer* renderer) {
 		destroyWidget(widgets[2]);
 		destroyWidget(widgets[3]);
 		free(widgets);
-		printf("ERROR:\n");
 		return NULL ;
 	}
 	return widgets;
@@ -53,9 +52,10 @@ Widget** createSimpleModeWindowWidgets(SDL_Renderer* renderer) {
 
 
 SPWindow* createSimpleModeWindow() {
+	int i,numOfWidgets = 4;
 	SPWindow* res = malloc(sizeof(SPWindow));
 	SPSimpleWindow* data = malloc(sizeof(SPSimpleWindow));
-	SDL_Window* window = SDL_CreateWindow("Tests", SDL_WINDOWPOS_CENTERED,
+	SDL_Window* window = SDL_CreateWindow("Chess", SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED, 800, 500, SDL_WINDOW_OPENGL);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,
 			SDL_RENDERER_ACCELERATED);
@@ -63,13 +63,21 @@ SPWindow* createSimpleModeWindow() {
 	SDL_Texture* windowTexture = SDL_CreateTextureFromSurface(renderer,loadingSurface);
 	Widget** widgets = createSimpleModeWindowWidgets(renderer);
 	if (res == NULL || data == NULL || window == NULL || renderer == NULL
-			|| widgets == NULL || windowTexture == NULL) {
-		free(res);
-		free(data);
-		free(widgets);
-		//We first destroy the renderer
-		SDL_DestroyRenderer(renderer); //NULL safe
-		SDL_DestroyWindow(window); //NULL safe
+			|| widgets == NULL || windowTexture == NULL || loadingSurface == NULL) {
+		SDL_FreeSurface(loadingSurface);
+		SDL_DestroyTexture(windowTexture);
+		if(res != NULL)
+			free(res);
+		if(data != NULL)
+			free(data);
+		if(widgets != NULL){
+			for(i = 0;i < numOfWidgets;i++){
+				destroyWidget(widgets[i]);
+			}
+			free(widgets);
+		}
+		SDL_DestroyRenderer(renderer);
+		SDL_DestroyWindow(window);
 		return NULL ;
 	}
 	SDL_FreeSurface(loadingSurface);

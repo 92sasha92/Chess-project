@@ -16,7 +16,10 @@ struct widget_t {
 	void* data;
 };
 
-
+/**
+ * null safe destroy for a widget
+ * @param src - a pointer to a widget
+ */
 void destroyWidget(Widget* src);
 
 
