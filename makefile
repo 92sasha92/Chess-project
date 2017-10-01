@@ -1,5 +1,5 @@
 CC = gcc
-OBJS = CHMoves.o CHGame.o SimpleButton.o SPSimpleMainWindow.o SPCommon.o gameBoard.o SPArrayList.o CHParser.o SEMode.o main.o CHMiniMax.o BoardCell.o CHColorWindow.o CHDifficultyWindow.o CHLoadWindow.o CHModeWindow.o CHPiece.o CHStartWindow.o SEParser.o CHMainAux.o SPWindow.o Widget.o saveAndLoad.o
+OBJS = SPArrayList.o SEMode.o CHMoves.o CHGame.o SimpleButton.o SPSimpleMainWindow.o SPCommon.o gameBoard.o CHParser.o main.o CHMiniMax.o BoardCell.o CHColorWindow.o CHDifficultyWindow.o CHLoadWindow.o CHModeWindow.o CHPiece.o CHStartWindow.o SEParser.o CHMainAux.o SPWindow.o Widget.o saveAndLoad.o
 EXEC = chessprog
 COMP_FLAG = -std=c99 -Wall -Wextra \
 -Werror -pedantic-errors
@@ -57,4 +57,4 @@ Widget.o: Widget.c Widget.h
 SimpleButton.o: graphics/SimpleButton.c SimpleButton.h graphics/SPCommon.h Widget.h	
 	$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c graphics/$*.c
 clean:
-	rm -f *.o $(EXEC) $(UNIT_TESTS)
+	rm -f *.o $(EXEC)
